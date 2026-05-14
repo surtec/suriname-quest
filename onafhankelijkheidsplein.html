@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Onafhankelijkheidsplein — Suriname Quest</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #0d1b12;
+      color: #f0e6c8;
+      font-family: 'Nunito', sans-serif;
+      min-height: 100vh;
+      padding: 0 0 60px;
+    }
+
+    .hero {
+      background: linear-gradient(160deg, #2a1a0d 0%, #1e1208 60%, #0d1b12 100%);
+      padding: 48px 24px 36px;
+      text-align: center;
+      border-bottom: 2px solid rgba(234,88,12,0.25);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 50%, rgba(234,88,12,0.07) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #fb923c;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.9rem;
+      letter-spacing: 0.03em;
+      margin-bottom: 24px;
+      padding: 6px 14px;
+      border: 1px solid rgba(234,88,12,0.3);
+      border-radius: 20px;
+      transition: background 0.2s;
+    }
+    .back-btn:hover { background: rgba(234,88,12,0.1); }
+
+    .year-badge {
+      display: inline-block;
+      background: #ea580c;
+      color: #fff;
+      font-family: 'Fredoka One', cursive;
+      font-size: 0.95rem;
+      padding: 4px 14px;
+      border-radius: 20px;
+      margin-bottom: 14px;
+      letter-spacing: 0.05em;
+    }
+
+    .location-icon {
+      font-size: 72px;
+      display: block;
+      margin: 0 auto 16px;
+      filter: drop-shadow(0 0 18px rgba(234,88,12,0.4));
+    }
+
+    h1 {
+      font-family: 'Fredoka One', cursive;
+      font-size: clamp(1.8rem, 5.5vw, 3rem);
+      color: #fb923c;
+      text-shadow: 0 2px 12px rgba(234,88,12,0.3);
+      margin-bottom: 14px;
+    }
+
+    .description {
+      max-width: 620px;
+      margin: 0 auto;
+      font-size: 1.05rem;
+      line-height: 1.7;
+      color: #e8d0b8;
+      font-weight: 600;
+    }
+
+    .section {
+      max-width: 760px;
+      margin: 40px auto 0;
+      padding: 0 20px;
+    }
+
+    .section-title {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.5rem;
+      color: #fb923c;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 2px;
+      background: linear-gradient(90deg, rgba(234,88,12,0.4), transparent);
+      border-radius: 2px;
+    }
+
+    /* highlight box for the independence date */
+    .highlight-box {
+      background: linear-gradient(135deg, rgba(234,88,12,0.15), rgba(244,196,48,0.08));
+      border: 1px solid rgba(234,88,12,0.35);
+      border-radius: 14px;
+      padding: 18px 22px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .highlight-box .hl-icon { font-size: 36px; flex-shrink: 0; }
+    .highlight-box .hl-text { font-weight: 700; font-size: 0.95rem; color: #e8d0b8; line-height: 1.6; }
+    .highlight-box .hl-date { font-family: 'Fredoka One', cursive; font-size: 1.2rem; color: #fb923c; }
+
+    .collectibles-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+    }
+
+    .collectible-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(234,88,12,0.2);
+      border-radius: 16px;
+      padding: 22px 18px;
+      text-align: center;
+      backdrop-filter: blur(6px);
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .collectible-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(234,88,12,0.5);
+    }
+
+    .collectible-emoji { font-size: 40px; display: block; margin-bottom: 10px; }
+    .collectible-name { font-weight: 800; font-size: 0.95rem; color: #f0e6c8; }
+
+    .quiz-list { display: flex; flex-direction: column; gap: 20px; }
+
+    .quiz-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px;
+      padding: 22px 20px;
+    }
+
+    .quiz-question {
+      font-weight: 800;
+      font-size: 1rem;
+      color: #f0e6c8;
+      margin-bottom: 14px;
+      line-height: 1.5;
+    }
+
+    .quiz-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .quiz-option {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #e8d0b8;
+      cursor: pointer;
+      transition: background 0.18s, border-color 0.18s;
+      text-align: left;
+    }
+    .quiz-option:hover { background: rgba(234,88,12,0.1); border-color: rgba(234,88,12,0.4); }
+    .quiz-option.correct { background: rgba(34,197,94,0.15); border-color: rgba(34,197,94,0.5); color: #86efac; }
+    .quiz-option.wrong   { background: rgba(239,68,68,0.12);  border-color: rgba(239,68,68,0.4);  color: #fca5a5; }
+
+    .quiz-answer-reveal {
+      margin-top: 12px;
+      font-size: 0.88rem;
+      color: #86efac;
+      font-weight: 700;
+      display: none;
+    }
+
+    .nav-bar {
+      max-width: 760px;
+      margin: 48px auto 0;
+      padding: 0 20px;
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .nav-link {
+      flex: 1;
+      min-width: 160px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 14px 20px;
+      border-radius: 14px;
+      font-family: 'Fredoka One', cursive;
+      font-size: 1rem;
+      text-decoration: none;
+      transition: transform 0.18s, opacity 0.18s;
+    }
+    .nav-link:hover { transform: translateY(-2px); opacity: 0.9; }
+    .nav-link.prev {
+      background: rgba(72,180,220,0.15);
+      border: 1px solid rgba(72,180,220,0.3);
+      color: #48b4dc;
+    }
+    .nav-link.home {
+      background: rgba(244,196,48,0.12);
+      border: 1px solid rgba(244,196,48,0.25);
+      color: #f4c430;
+    }
+
+    .score-card {
+      background: linear-gradient(135deg, rgba(244,196,48,0.12), rgba(234,88,12,0.08));
+      border: 1px solid rgba(244,196,48,0.3);
+      border-radius: 16px;
+      padding: 22px 24px;
+      text-align: center;
+    }
+    .score-card p { font-weight: 700; color: #f0e6c8; font-size: 1rem; margin-bottom: 8px; }
+    .score-points { font-family: 'Fredoka One', cursive; font-size: 2rem; color: #f4c430; }
+  </style>
+</head>
+<body>
+
+  <div class="hero">
+    <a href="index.html" class="back-btn">← Terug naar spel</a>
+    <div class="year-badge">25 november 1975</div>
+    <span class="location-icon">🇸🇷</span>
+    <h1>Onafhankelijkheidsplein</h1>
+    <p class="description">
+      Het centrale plein in Paramaribo dat de onafhankelijkheid van Suriname herdenkt.
+      Vroeger heette het Oranjeplein — nu is het een symbool van vrijheid en nationale trots.
+    </p>
+  </div>
+
+  <div class="section">
+    <div class="highlight-box">
+      <span class="hl-icon">🎉</span>
+      <div class="hl-text">
+        Op <span class="hl-date">25 november 1975</span> werd Suriname onafhankelijk van Nederland.
+        Dit plein is de plek waar de onafhankelijkheid werd gevierd en wordt herdacht.
+      </div>
+    </div>
+
+    <h2 class="section-title">🎒 Verzamelobjecten</h2>
+    <div class="collectibles-grid">
+      <div class="collectible-card">
+        <span class="collectible-emoji">🇸🇷</span>
+        <div class="collectible-name">Surinaamse Vlag</div>
+      </div>
+      <div class="collectible-card">
+        <span class="collectible-emoji">📸</span>
+        <div class="collectible-name">Foto 25 november</div>
+      </div>
+      <div class="collectible-card">
+        <span class="collectible-emoji">🏅</span>
+        <div class="collectible-name">Onafhankelijkheidsmunt</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2 class="section-title">🧠 Quizvragen</h2>
+    <div class="quiz-list">
+
+      <div class="quiz-card">
+        <div class="quiz-question">📅 Op welke datum werd Suriname onafhankelijk?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="answer(this, false)">1 januari 1975</button>
+          <button class="quiz-option" onclick="answer(this, false)">4 juli 1975</button>
+          <button class="quiz-option" onclick="answer(this, true)">25 november 1975</button>
+          <button class="quiz-option" onclick="answer(this, false)">25 december 1975</button>
+        </div>
+        <div class="quiz-answer-reveal">✅ Juist antwoord: 25 november 1975</div>
+      </div>
+
+      <div class="quiz-card">
+        <div class="quiz-question">⭐ Wat staat er in het midden van de Surinaamse vlag?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="answer(this, false)">Een vogel</button>
+          <button class="quiz-option" onclick="answer(this, true)">Een gele ster</button>
+          <button class="quiz-option" onclick="answer(this, false)">Een palm</button>
+          <button class="quiz-option" onclick="answer(this, false)">Een schild</button>
+        </div>
+        <div class="quiz-answer-reveal">✅ Juist antwoord: Een gele ster</div>
+      </div>
+
+      <div class="quiz-card">
+        <div class="quiz-question">🏛️ Hoe heette het Onafhankelijkheidsplein vroeger?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="answer(this, false)">Vrijheidsplein</button>
+          <button class="quiz-option" onclick="answer(this, false)">Nassauplein</button>
+          <button class="quiz-option" onclick="answer(this, true)">Oranjeplein</button>
+          <button class="quiz-option" onclick="answer(this, false)">Wilhelminaplein</button>
+        </div>
+        <div class="quiz-answer-reveal">✅ Juist antwoord: Oranjeplein</div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="section" style="margin-top: 32px;">
+    <div class="score-card">
+      <p>Je hebt alle 3 locaties ontdekt!</p>
+      <div class="score-points">🌟 Goed gedaan! 🌟</div>
+    </div>
+  </div>
+
+  <div class="nav-bar">
+    <a href="de-waterkant.html" class="nav-link prev">← De Waterkant</a>
+    <a href="index.html" class="nav-link home">🏠 Hoofdmenu</a>
+  </div>
+
+  <script>
+    function answer(btn, isCorrect) {
+      const card = btn.closest('.quiz-card');
+      const allBtns = card.querySelectorAll('.quiz-option');
+      allBtns.forEach(b => b.disabled = true);
+      btn.classList.add(isCorrect ? 'correct' : 'wrong');
+      if (!isCorrect) {
+        allBtns.forEach(b => { if (b.onclick.toString().includes('true')) b.classList.add('correct'); });
+      }
+      card.querySelector('.quiz-answer-reveal').style.display = 'block';
+    }
+  </script>
+
+</body>
+</html>
