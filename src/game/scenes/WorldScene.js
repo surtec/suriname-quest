@@ -63,8 +63,9 @@ export default class WorldScene extends Phaser.Scene {
       right: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D),
     }
 
+    this.cameras.main.setBounds(0, 0, W, H)
     this.cameras.main.startFollow(this.player.container, true, 0.08, 0.08)
-    this.cameras.main.setZoom(1)
+    this.cameras.main.setZoom(1.6)
 
     this.interactBubble = this.maakInteractieBubble()
 

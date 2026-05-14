@@ -4,7 +4,7 @@
 export default class Player {
   constructor(scene, x, y) {
     this.scene  = scene
-    this.speed  = 120
+    this.speed  = 160
     this.facing = 'down'  // 'up' | 'down' | 'left' | 'right'
 
     // Teken het karakter met Phaser Graphics (geen externe sprites nodig)
