@@ -33,7 +33,7 @@ export default class WorldScene extends Phaser.Scene {
   constructor() { super('WorldScene') }
 
   init(data) {
-    this.spelerData = data.speler || { naam: 'Sari', punten: 0, level: 1, collectibles: [] }
+    this.spelerData = data.speler || { naam: 'Sari', punten: 0, level: 1, collectibles: [], completedLocations: [] }
   }
 
   create() {
@@ -403,40 +403,116 @@ export default class WorldScene extends Phaser.Scene {
   // ═══════════════════════════════════════════════════════════
 
   maakHotspots() {
+    this.tekeningPad()
+
+    const completed = this.spelerData.completedLocations || []
+    let nodeNummer = 1
+
     LOCATIONS.forEach(locatie => {
       const { x, y } = locatie.wereldPositie
+      const isDone = completed.includes(locatie.id)
 
+      // Gebouw tekening
       const gebouw = this.add.graphics().setDepth(y - 5)
       this.tekenGebouw(gebouw, x, y, locatie)
 
-      const spot = this.add.graphics().setDepth(y + 50)
-      spot.fillStyle(0xf4d03f, 1)
-      spot.fillCircle(x, y - 52, 10)
-      spot.fillStyle(0xffffff, 0.8)
-      spot.fillCircle(x - 3, y - 56, 3)
+      // Grotere node cirkel
+      const nodeRing = this.add.graphics().setDepth(y + 55)
+      // Buitenste gloed
+      nodeRing.fillStyle(isDone ? 0xf4c430 : 0xffffff, 0.18)
+      nodeRing.fillCircle(x, y - 58, 22)
+      // Ringrand
+      nodeRing.lineStyle(3, isDone ? 0xf4c430 : 0x7ec98f, 1)
+      nodeRing.strokeCircle(x, y - 58, 17)
+      // Vulling
+      nodeRing.fillStyle(isDone ? 0x5a3a00 : 0x1a4a2e, 1)
+      nodeRing.fillCircle(x, y - 58, 15)
 
-      const label = this.add.text(x, y - 70, locatie.naam, {
+      // Nummer in de cirkel
+      this.add.text(x, y - 58, isDone ? '✓' : String(nodeNummer), {
         fontFamily: "'Fredoka One', cursive",
         fontSize:   '13px',
-        color:      '#ffee88',
+        color:      isDone ? '#f4c430' : '#7ec98f',
+      }).setOrigin(0.5).setDepth(y + 60)
+
+      // Pulseer animatie op actieve (niet-voltooide) nodes
+      if (!isDone) {
+        const gloedRing = this.add.graphics().setDepth(y + 52)
+        gloedRing.lineStyle(2, 0x7ec98f, 0.5)
+        gloedRing.strokeCircle(x, y - 58, 17)
+        this.tweens.add({
+          targets:  gloedRing,
+          scaleX:   1.5, scaleY: 1.5, alpha: 0,
+          yoyo:     false, repeat: -1,
+          duration: 1200, ease: 'Sine.easeOut',
+        })
+      }
+
+      const label = this.add.text(x, y - 82, locatie.naam, {
+        fontFamily: "'Fredoka One', cursive",
+        fontSize:   '12px',
+        color:      isDone ? '#f4c430' : '#ffffff',
         stroke:     '#000',
         strokeThickness: 3,
-        backgroundColor: 'rgba(0,0,0,0.60)',
+        backgroundColor: isDone ? 'rgba(90,58,0,0.75)' : 'rgba(0,0,0,0.60)',
         padding:    { x: 7, y: 3 },
-      }).setOrigin(0.5, 1).setDepth(y + 60)
+      }).setOrigin(0.5, 1).setDepth(y + 65)
 
-      this.tweens.add({
-        targets:  spot,
-        scaleX:   1.35, scaleY: 1.35, alpha: 0.55,
-        yoyo: true, repeat: -1,
-        duration: 1100, ease: 'Sine.easeInOut',
-      })
-
-      const zone = this.add.zone(x, y, 96, 96)
+      const zone = this.add.zone(x, y - 20, 96, 110)
       this.physics.add.existing(zone, true)
 
-      this.hotspots.push({ zone, locatieId: locatie.id, label, spot })
+      this.hotspots.push({ zone, locatieId: locatie.id, label, spot: nodeRing })
+      nodeNummer++
     })
+  }
+
+  tekeningPad() {
+    // Pad-volgorde langs de kaart
+    const padPunten = [
+      { x: 266, y: 296 },   // waterkant
+      { x: 805, y: 267 },   // fort_zeelandia
+      { x: 700, y: 425 },   // hendrikschool
+      { x: 534, y: 413 },   // onafhankelijkheidsplein
+      { x: 394, y: 340 },   // anton_de_kom
+      { x: 160, y: 425 },   // cultuurhuis
+    ]
+
+    const gPad = this.add.graphics().setDepth(90)
+
+    // Schaduwpad
+    gPad.lineStyle(9, 0x000000, 0.18)
+    gPad.beginPath()
+    gPad.moveTo(padPunten[0].x, padPunten[0].y - 56)
+    for (let i = 1; i < padPunten.length; i++) {
+      gPad.lineTo(padPunten[i].x, padPunten[i].y - 56)
+    }
+    gPad.strokePath()
+
+    // Wit pad
+    gPad.lineStyle(5, 0xffffff, 0.55)
+    gPad.beginPath()
+    gPad.moveTo(padPunten[0].x, padPunten[0].y - 56)
+    for (let i = 1; i < padPunten.length; i++) {
+      gPad.lineTo(padPunten[i].x, padPunten[i].y - 56)
+    }
+    gPad.strokePath()
+
+    // Goud stippelpad bovenop
+    gPad.lineStyle(3, 0xf4c430, 0.7)
+    for (let i = 0; i < padPunten.length - 1; i++) {
+      const ax = padPunten[i].x, ay = padPunten[i].y - 56
+      const bx = padPunten[i + 1].x, by = padPunten[i + 1].y - 56
+      const dist = Math.hypot(bx - ax, by - ay)
+      const stappen = Math.floor(dist / 14)
+      for (let s = 0; s < stappen; s += 2) {
+        const t0 = s / stappen
+        const t1 = (s + 1) / stappen
+        gPad.beginPath()
+        gPad.moveTo(ax + (bx - ax) * t0, ay + (by - ay) * t0)
+        gPad.lineTo(ax + (bx - ax) * t1, ay + (by - ay) * t1)
+        gPad.strokePath()
+      }
+    }
   }
 
   // ═══════════════════════════════════════════════════════════

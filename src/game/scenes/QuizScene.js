@@ -35,6 +35,29 @@ export default class QuizScene extends Phaser.Scene {
     this.toonVraag()
   }
 
+  spawConfetti(W) {
+    const kleuren = [0xf4c430, 0x7ec98f, 0xe24b4a, 0x4a9eff, 0xff9f4a, 0xff69b4, 0xffffff]
+    for (let i = 0; i < 32; i++) {
+      const g = this.add.graphics().setDepth(200)
+      g.fillStyle(kleuren[i % kleuren.length], 1)
+      const maat = Phaser.Math.Between(5, 10)
+      g.fillRect(-maat / 2, -maat / 2, maat, maat)
+      const sx = Phaser.Math.Between(20, W - 20)
+      g.setPosition(sx, -10)
+      this.tweens.add({
+        targets:  g,
+        y:        this.scale.height + 20,
+        x:        sx + Phaser.Math.Between(-80, 80),
+        angle:    Phaser.Math.Between(-360, 360),
+        alpha:    { from: 1, to: 0.15 },
+        duration: Phaser.Math.Between(900, 1600),
+        delay:    i * 35,
+        ease:     'Quad.easeIn',
+        onComplete: () => g.destroy(),
+      })
+    }
+  }
+
   tekeningHoekDecoratie(W, H) {
     const g = this.add.graphics()
     // Bladeren in hoeken
@@ -194,11 +217,32 @@ export default class QuizScene extends Phaser.Scene {
       gekozenBg.strokeRoundedRect(x, y, w, h, 12)
       gekozenTekst.setColor('#7ec98f')
 
-      // Confetti effect
-      this.cameras.main.flash(150, 126, 201, 143, false)
+      // Confetti + schudden
+      this.cameras.main.flash(120, 126, 201, 143, false)
+      this.cameras.main.shake(280, 0.006)
+      this.spawConfetti(W)
+
+      // +1 score popup
+      const plusTekst = this.add.text(W / 2, 170, '+1 ⭐', {
+        fontFamily: "'Fredoka One', cursive",
+        fontSize:   '28px',
+        color:      '#f4c430',
+        stroke:     '#000',
+        strokeThickness: 3,
+      }).setOrigin(0.5).setDepth(150)
+      this.tweens.add({
+        targets:  plusTekst,
+        y:        120,
+        alpha:    0,
+        duration: 900,
+        ease:     'Quad.easeOut',
+        onComplete: () => plusTekst.destroy(),
+      })
     } else {
       if (this.cache.audio.exists('fout')) this.sound.play('fout', { volume: 0.6 })
-      // Rood — fout
+      // Rood — fout + schudden
+      this.cameras.main.shake(350, 0.014)
+      this.cameras.main.flash(200, 226, 75, 74, false)
       const { x, y, w, h } = this.antwoordKnoppen[keuze]
       gekozenBg.clear()
       gekozenBg.fillStyle(0xe24b4a, 0.25)
@@ -206,6 +250,16 @@ export default class QuizScene extends Phaser.Scene {
       gekozenBg.fillRoundedRect(x, y, w, h, 12)
       gekozenBg.strokeRoundedRect(x, y, w, h, 12)
       gekozenTekst.setColor('#e24b4a')
+
+      // Wiebel animatie op fout knop
+      this.tweens.add({
+        targets:  gekozenBg,
+        x:        { from: -6, to: 6 },
+        duration: 60,
+        yoyo:     true,
+        repeat:   4,
+        ease:     'Sine.easeInOut',
+      })
 
       // Toon het juiste antwoord in groen
       const juistKnop = this.antwoordKnoppen[vraag.juist]
@@ -297,18 +351,40 @@ export default class QuizScene extends Phaser.Scene {
       color:      '#7a4a00',
     }).setOrigin(0.5)
 
-    // Sterren resultaat
-    const sterEmoji = '⭐'.repeat(sterren) + '☆'.repeat(3 - sterren)
-    this.add.text(W / 2, 160, sterEmoji, { fontSize: '32px' }).setOrigin(0.5)
+    // Sterren — één voor één animeren
+    const sterOffsets = [-44, 0, 44]
+    sterOffsets.forEach((offset, i) => {
+      const isSter = i < sterren
+      const s = this.add.text(W / 2 + offset, 160, isSter ? '⭐' : '☆', {
+        fontSize: '32px',
+      }).setOrigin(0.5).setScale(0).setAlpha(0)
+      this.tweens.add({
+        targets:  s,
+        scaleX:   1, scaleY: 1, alpha: 1,
+        duration: 380,
+        delay:    300 + i * 180,
+        ease:     'Back.easeOut',
+      })
+    })
 
-    // Titel
-    this.add.text(W / 2, 205, sterren === 3 ? 'PERFECT! 🎉' : 'GOED GEDAAN!', {
+    // Titel — springt in na de sterren
+    const titelTekst = this.add.text(W / 2, 205, sterren === 3 ? 'PERFECT! 🎉' : 'GOED GEDAAN!', {
       fontFamily: "'Fredoka One', cursive",
       fontSize:   '28px',
       color:      '#f4c430',
       stroke:     '#8B4513',
       strokeThickness: 3,
-    }).setOrigin(0.5)
+    }).setOrigin(0.5).setScale(0)
+    this.tweens.add({
+      targets:  titelTekst,
+      scaleX:   1, scaleY: 1,
+      duration: 500,
+      delay:    300 + sterOffsets.length * 180,
+      ease:     'Elastic.easeOut',
+    })
+
+    // Confetti op het winscherm
+    if (sterren >= 2) this.time.delayedCall(300, () => this.spawConfetti(W))
 
     // Score
     this.add.text(W / 2, 248, `${this.score} van de ${this.vragen.length} vragen goed!`, {
@@ -358,10 +434,14 @@ export default class QuizScene extends Phaser.Scene {
     }).setOrigin(0.5)
       .setInteractive({ useHandCursor: true })
       .on('pointerdown', () => {
+        const bestaandCompleted = this.spelerData.completedLocations || []
         const nieuweData = {
           ...this.spelerData,
-          punten: (this.spelerData.punten || 0) + puntBonus,
-          level:  nieuwLevel,
+          punten:             (this.spelerData.punten || 0) + puntBonus,
+          level:              nieuwLevel,
+          completedLocations: bestaandCompleted.includes(this.locatieId)
+            ? bestaandCompleted
+            : [...bestaandCompleted, this.locatieId],
         }
         // Sla op in Firebase via game event
         this.game.events.emit('sla-quiz-op', {

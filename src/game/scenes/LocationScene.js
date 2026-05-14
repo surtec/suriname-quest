@@ -181,35 +181,103 @@ export default class LocationScene extends Phaser.Scene {
     // Goud flash animatie
     this.cameras.main.flash(200, 244, 196, 48, false)
 
-    // Popup melding onderaan
-    const popup = this.add.container(W / 2, this.scale.height - 80)
-    const popBg = this.add.graphics()
-    popBg.fillStyle(0xf4c430, 0.95)
-    popBg.fillRoundedRect(-140, -20, 280, 40, 10)
-    const popTekst = this.add.text(0, 0, `${item.emoji} ${item.naam} gevonden! +50 punten`, {
-      fontFamily: "'Fredoka One', cursive",
-      fontSize:   '14px',
-      color:      '#1a3a00',
-    }).setOrigin(0.5)
-    popup.add([popBg, popTekst])
-    popup.setAlpha(0).setScale(0.8)
-
-    this.tweens.add({
-      targets:  popup,
-      alpha:    1,
-      scaleX:   1,
-      scaleY:   1,
-      duration: 300,
-      ease:     'Back.easeOut',
-      onComplete: () => {
-        this.time.delayedCall(1800, () => {
-          this.tweens.add({ targets: popup, alpha: 0, y: '-=20', duration: 300 })
-        })
-      },
-    })
+    // Toon trading card overlay
+    this.toonKaartOverlay(item)
 
     // Update HUD
     this.game.events.emit('item-gevonden', { item, punten: 50 })
+  }
+
+  toonKaartOverlay(item) {
+    const W = this.scale.width
+    const H = this.scale.height
+
+    const dim = this.add.rectangle(W / 2, H / 2, W, H, 0x000000, 0.75)
+      .setInteractive().setDepth(200)
+
+    const card = this.add.container(W / 2, H / 2).setDepth(201)
+
+    // Kaart achtergrond
+    const bg = this.add.graphics()
+    bg.fillStyle(0x0d2018, 1)
+    bg.fillRoundedRect(-115, -155, 230, 315, 18)
+    // Goud buitenrand
+    bg.lineStyle(3, 0xf4c430, 1)
+    bg.strokeRoundedRect(-115, -155, 230, 315, 18)
+    // Subtiele binnenrand
+    bg.lineStyle(1, 0xf4c430, 0.3)
+    bg.strokeRoundedRect(-107, -147, 214, 299, 14)
+    card.add(bg)
+
+    // Emoji groot
+    const emojiTekst = this.add.text(0, -90, item.emoji, { fontSize: '62px' }).setOrigin(0.5)
+    card.add(emojiTekst)
+
+    // Naam
+    const naamTekst = this.add.text(0, -28, item.naam, {
+      fontFamily: "'Fredoka One', cursive",
+      fontSize:   '17px',
+      color:      '#f4c430',
+      wordWrap:   { width: 200 },
+      align:      'center',
+    }).setOrigin(0.5)
+    card.add(naamTekst)
+
+    // Beschrijving
+    const beschTekst = this.add.text(0, 10, item.beschrijving, {
+      fontFamily: "'Nunito', sans-serif",
+      fontSize:   '11px',
+      color:      'rgba(255,255,255,0.82)',
+      wordWrap:   { width: 200 },
+      align:      'center',
+      lineSpacing: 3,
+    }).setOrigin(0.5, 0)
+    card.add(beschTekst)
+
+    // Groene "VERZAMELD!" badge
+    const badgeBg = this.add.graphics()
+    badgeBg.fillStyle(0x2a8a50, 1)
+    badgeBg.fillRoundedRect(-65, 118, 130, 28, 8)
+    card.add(badgeBg)
+    const badgeTekst = this.add.text(0, 132, '✓  VERZAMELD!', {
+      fontFamily: "'Fredoka One', cursive",
+      fontSize:   '14px',
+      color:      '#f4c430',
+    }).setOrigin(0.5)
+    card.add(badgeTekst)
+
+    // Tik-hint
+    const hint = this.add.text(0, 150, 'tik om te sluiten', {
+      fontFamily: "'Nunito', sans-serif",
+      fontSize:   '10px',
+      color:      'rgba(255,255,255,0.35)',
+    }).setOrigin(0.5)
+    card.add(hint)
+
+    // Animeer in
+    card.setScale(0.05).setAlpha(0)
+    this.tweens.add({
+      targets:  card,
+      scaleX:   1,
+      scaleY:   1,
+      alpha:    1,
+      duration: 420,
+      ease:     'Back.easeOut',
+    })
+
+    const sluiten = () => {
+      this.tweens.add({
+        targets:  [card, dim],
+        alpha:    0,
+        scaleX:   card.scaleX * 0.8,
+        scaleY:   card.scaleY * 0.8,
+        duration: 200,
+        onComplete: () => { card.destroy(); dim.destroy() },
+      })
+    }
+    dim.on('pointerdown', sluiten)
+    card.setInteractive(new Phaser.Geom.Rectangle(-115, -155, 230, 315), Phaser.Geom.Rectangle.Contains)
+    card.on('pointerdown', sluiten)
   }
 
   maakQuizKnop(W, H) {
