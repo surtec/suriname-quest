@@ -3,13 +3,13 @@ import { getAuth } from 'firebase/auth'
 import { getFirestore } from 'firebase/firestore'
 
 const firebaseConfig = {
-  apiKey:            import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain:        import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId:         import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket:     import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId:             import.meta.env.VITE_FIREBASE_APP_ID,
-  measurementId:     import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
+  apiKey:            'AIzaSyDHi7nL2hMSVl-vbdrXNNSQro0yqfK_EL0',
+  authDomain:        'suriname-quest.firebaseapp.com',
+  projectId:         'suriname-quest',
+  storageBucket:     'suriname-quest.firebasestorage.app',
+  messagingSenderId: '235613739866',
+  appId:             '1:235613739866:web:87e5761aafe895ee40b163',
+  measurementId:     'G-0JRHG2D59S',
 }
 
 const app = initializeApp(firebaseConfig)
