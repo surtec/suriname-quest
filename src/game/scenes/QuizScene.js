@@ -324,7 +324,11 @@ export default class QuizScene extends Phaser.Scene {
     badgeBg.fillRoundedRect(W / 2 - 80, 270, 160, 80, 16)
     badgeBg.strokeRoundedRect(W / 2 - 80, 270, 160, 80, 16)
 
-    this.add.text(W / 2, 294, this.locatie.id === 'fort_zeelandia' ? '🏰' : this.locatie.id === 'waterkant' ? '🚢' : '🎆', {
+    const locatieBadge = {
+      fort_zeelandia: '🏰', waterkant: '🚢', onafhankelijkheidsplein: '🎆',
+      anton_de_kom: '✊', cultuurhuis: '🎭', hendrikschool: '🎓',
+    }
+    this.add.text(W / 2, 294, locatieBadge[this.locatie.id] || '⭐', {
       fontSize: '32px',
     }).setOrigin(0.5)
 

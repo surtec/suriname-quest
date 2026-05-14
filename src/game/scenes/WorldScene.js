@@ -447,6 +447,9 @@ export default class WorldScene extends Phaser.Scene {
       case 'fort_zeelandia':          this.tekenFortZeelandia(g, x, y);          break
       case 'waterkant':               this.tekenWaterkant(g, x, y);               break
       case 'onafhankelijkheidsplein': this.tekenOnafhankelijkheidsplein(g, x, y); break
+      case 'anton_de_kom':            this.tekenAntonDeKom(g, x, y);              break
+      case 'cultuurhuis':             this.tekenCultuurhuis(g, x, y);             break
+      case 'hendrikschool':           this.tekenHendrikschool(g, x, y);           break
       default: this._tekenStandaard(g, x, y, locatie.kleur)
     }
   }
@@ -650,6 +653,174 @@ export default class WorldScene extends Phaser.Scene {
     g.fillStyle(0x2D7D2D, 0.78)
     g.fillEllipse(x - 48, y - 21, 23, 16)
     g.fillEllipse(x + 48, y - 21, 23, 16)
+  }
+
+  // Anton de Kom Straat — rood koloniaal houten huis (woonhuis stijl)
+  tekenAntonDeKom(g, x, y) {
+    // Schaduw
+    g.fillStyle(0x000000, 0.22)
+    g.fillEllipse(x, y + 3, 90, 22)
+
+    // Houten zijwanden
+    g.fillStyle(0xC84040, 1)
+    g.fillRect(x - 36, y - 58, 72, 58)
+
+    // Plankentextuur
+    g.fillStyle(0xD85050, 0.38)
+    for (let i = 0; i < 72; i += 9) g.fillRect(x - 36 + i, y - 58, 4, 58)
+    g.lineStyle(0.5, 0x901818, 0.25)
+    for (let row = y - 58; row < y; row += 7) {
+      g.beginPath(); g.moveTo(x - 36, row); g.lineTo(x + 36, row); g.strokePath()
+    }
+    g.lineStyle(0, 0, 0)
+
+    // Veranda
+    g.fillStyle(0xA03020, 1)
+    g.fillRect(x - 40, y - 20, 80, 20)
+    // Veranda overkapping
+    g.fillStyle(0x702010, 1)
+    g.fillRect(x - 42, y - 30, 84, 10)
+    // Palen
+    g.fillStyle(0x902818, 1)
+    ;[-24, 0, 22].forEach(px => g.fillRect(x + px, y - 30, 4, 30))
+
+    // Ramen
+    ;[-22, 14].forEach(wx => {
+      g.fillStyle(0xA8D8EE, 0.75)
+      g.fillRect(x + wx, y - 52, 16, 15)
+      g.lineStyle(0.8, 0x901818, 0.55)
+      g.strokeRect(x + wx, y - 52, 16, 15)
+      g.lineStyle(0, 0, 0)
+    })
+
+    // Deur
+    g.fillStyle(0x5A1A0A, 1)
+    g.fillRoundedRect(x - 6, y - 28, 12, 28, { tl: 4, tr: 4, bl: 0, br: 0 })
+
+    // Donker dak
+    g.fillStyle(0x701010, 1)
+    g.fillTriangle(x - 42, y - 58, x + 42, y - 58, x, y - 88)
+    g.fillStyle(0x501010, 0.6)
+    g.fillRect(x - 42, y - 60, 84, 4)
+
+    // Naambordje
+    g.fillStyle(0xF4C430, 0.9)
+    g.fillRect(x - 22, y - 47, 44, 8)
+  }
+
+  // Cultureel Centrum Suriname — paars/groen gebouw met decoratieve boog
+  tekenCultuurhuis(g, x, y) {
+    // Schaduw
+    g.fillStyle(0x000000, 0.22)
+    g.fillEllipse(x, y + 3, 100, 22)
+
+    // Sokkel
+    g.fillStyle(0x4A2870, 1)
+    g.fillRect(x - 44, y - 60, 88, 60)
+
+    // Muurpatroon (sierlijk)
+    g.fillStyle(0x6A3890, 0.35)
+    for (let i = 0; i < 88; i += 11) g.fillRect(x - 44 + i, y - 60, 5, 60)
+    g.lineStyle(0.5, 0x8A58B0, 0.20)
+    for (let row = y - 60; row < y; row += 8) {
+      g.beginPath(); g.moveTo(x - 44, row); g.lineTo(x + 44, row); g.strokePath()
+    }
+    g.lineStyle(0, 0, 0)
+
+    // Gewelfde ingang (boog)
+    g.fillStyle(0x2A5A40, 1)
+    g.fillRect(x - 44, y - 28, 88, 28)
+    g.fillStyle(0x3A7A58, 0.4)
+    g.fillEllipse(x, y - 38, 60, 24)
+
+    // Boogdeur
+    g.fillStyle(0x3A1A60, 1)
+    g.fillRect(x - 10, y - 32, 20, 32)
+    g.fillStyle(0x4A2870, 1)
+    g.fillEllipse(x, y - 32, 20, 10)
+
+    // Ramen links en rechts
+    ;[-28, 20].forEach(wx => {
+      g.fillStyle(0xF4C430, 0.55)
+      g.fillRect(x + wx, y - 52, 14, 18)
+      g.fillStyle(0xF4C430, 0.80)
+      g.fillEllipse(x + wx + 7, y - 52, 14, 7)
+      g.lineStyle(0.8, 0x8A58B0, 0.50)
+      g.strokeRect(x + wx, y - 52, 14, 18)
+      g.lineStyle(0, 0, 0)
+    })
+
+    // Dak met traptop (sierlijk)
+    g.fillStyle(0x2A1A50, 1)
+    g.fillRect(x - 44, y - 65, 88, 7)
+    g.fillRect(x - 36, y - 72, 72, 7)
+    g.fillRect(x - 24, y - 79, 48, 7)
+    // Decoratief midden-torentje
+    g.fillStyle(0x6A3890, 1)
+    g.fillRect(x - 8, y - 94, 16, 15)
+    g.fillStyle(0xF4C430, 1)
+    g.fillTriangle(x - 10, y - 94, x + 10, y - 94, x, y - 108)
+  }
+
+  // Hendrikschool — klassiek schoolgebouw, lichtblauw met witte details
+  tekenHendrikschool(g, x, y) {
+    // Schaduw
+    g.fillStyle(0x000000, 0.22)
+    g.fillEllipse(x, y + 3, 100, 22)
+
+    // Hoofdgebouw
+    g.fillStyle(0x4A88C4, 1)
+    g.fillRect(x - 44, y - 58, 88, 58)
+
+    // Horizontale banden
+    g.fillStyle(0xFFFFFF, 0.18)
+    g.fillRect(x - 44, y - 38, 88, 5)
+    g.fillRect(x - 44, y - 20, 88, 3)
+
+    // Vier ramen in rij
+    ;[-30, -10, 10, 28].forEach(wx => {
+      g.fillStyle(0xB8E0F8, 0.80)
+      g.fillRect(x + wx, y - 52, 12, 12)
+      g.lineStyle(0.8, 0xFFFFFF, 0.55)
+      g.strokeRect(x + wx, y - 52, 12, 12)
+      // Kruisroede
+      g.beginPath(); g.moveTo(x + wx + 6, y - 52); g.lineTo(x + wx + 6, y - 40); g.strokePath()
+      g.beginPath(); g.moveTo(x + wx, y - 46); g.lineTo(x + wx + 12, y - 46); g.strokePath()
+      g.lineStyle(0, 0, 0)
+    })
+
+    // Twee ramen benedenrij
+    ;[-20, 10].forEach(wx => {
+      g.fillStyle(0xB8E0F8, 0.75)
+      g.fillRect(x + wx, y - 32, 16, 14)
+      g.lineStyle(0.8, 0xFFFFFF, 0.50)
+      g.strokeRect(x + wx, y - 32, 16, 14)
+      g.lineStyle(0, 0, 0)
+    })
+
+    // Brede voordeur (midden)
+    g.fillStyle(0x2A5A8A, 1)
+    g.fillRoundedRect(x - 8, y - 30, 16, 30, { tl: 6, tr: 6, bl: 0, br: 0 })
+    g.fillStyle(0xFFFFFF, 0.3)
+    g.fillRect(x - 7, y - 29, 6, 12)
+
+    // Driehoekig fronton boven deur
+    g.fillStyle(0xFFFFFF, 1)
+    g.fillTriangle(x - 14, y - 58, x + 14, y - 58, x, y - 72)
+
+    // Plat dak met balustrade
+    g.fillStyle(0x2A5A8A, 1)
+    g.fillRect(x - 48, y - 62, 96, 5)
+    // Kleine balusters
+    for (let bx = x - 44; bx < x + 48; bx += 8) {
+      g.fillStyle(0xFFFFFF, 0.75)
+      g.fillRect(bx, y - 70, 3, 8)
+    }
+
+    // Vlaggenmast met Surinaamse vlag
+    g.fillStyle(0x7A6040, 1)
+    g.fillRect(x + 26, y - 70, 2, 28)
+    this._vlag(g, x + 28, y - 70, 16, 10)
   }
 
   _tekenStandaard(g, x, y, kleur) {
