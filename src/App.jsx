@@ -62,6 +62,11 @@ export default function App() {
     setSpelerData(speler)
     if (gebruiker) {
       await slaQuizResultaatOp(gebruiker.uid, locatieId, score, sterren)
+      await slaVoortgangOp(gebruiker.uid, {
+        completedLocations: speler.completedLocations || [],
+        punten: speler.punten || 0,
+        level:  speler.level  || 1,
+      })
     }
   }
 
