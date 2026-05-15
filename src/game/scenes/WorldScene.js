@@ -33,6 +33,7 @@ export default class WorldScene extends Phaser.Scene {
     this.klikOpNode  = false
 
     this.maakHotspots()
+    this.maakSpelerKarakter()
 
     // Sluit popup bij klik buiten node
     this.input.on('pointerdown', () => {
@@ -96,9 +97,9 @@ export default class WorldScene extends Phaser.Scene {
       const ring = this.add.graphics().setDepth(y + 50)
       const tekenRing = (hover) => {
         ring.clear()
-        ring.fillStyle(isDone ? 0x3a2800 : (hover ? 0x1e4830 : 0x0d2018), 1)
+        ring.fillStyle(isDone ? 0x3a2800 : (hover ? 0x1a3a68 : 0x0a1e3a), 1)
         ring.fillCircle(x, nodeY, 34)
-        ring.lineStyle(3.5, isDone ? 0xf4c430 : (hover ? 0xffffff : 0x7ec98f), 1)
+        ring.lineStyle(3.5, isDone ? 0xf4c430 : (hover ? 0xffffff : 0x40AAFF), 1)
         ring.strokeCircle(x, nodeY, 34)
       }
       tekenRing(false)
@@ -107,7 +108,7 @@ export default class WorldScene extends Phaser.Scene {
       this.add.text(x, nodeY, isDone ? '✓' : String(idx + 1), {
         fontFamily: "'Fredoka One', cursive",
         fontSize:   isDone ? '26px' : '22px',
-        color:      isDone ? '#f4c430' : '#7ec98f',
+        color:      isDone ? '#f4c430' : '#40aaff',
         stroke:     '#000000',
         strokeThickness: 2,
       }).setOrigin(0.5).setDepth(y + 52)
@@ -153,6 +154,74 @@ export default class WorldScene extends Phaser.Scene {
   }
 
   // ═══════════════════════════════════════════════════════════
+  //  SPELER KARAKTER OP DE KAART
+  // ═══════════════════════════════════════════════════════════
+
+  maakSpelerKarakter() {
+    const completed = this.spelerData.completedLocations || []
+    // Vind eerste niet-voltooide locatie, of laatste als alles klaar
+    const idx = LOCATIONS.findIndex(l => !completed.includes(l.id))
+    const loc  = LOCATIONS[idx >= 0 ? idx : LOCATIONS.length - 1]
+    const cx   = loc.wereldPositie.x
+    const cy   = loc.wereldPositie.y - 72 + 44  // onder de node
+
+    const g = this.add.graphics().setDepth(999)
+
+    const tekenKarakter = (flip) => {
+      g.clear()
+      const sx = flip ? -1 : 1
+      // Schaduw
+      g.fillStyle(0x000000, 0.18)
+      g.fillEllipse(cx, cy + 22, 28, 8)
+      // Lichaam
+      g.fillStyle(0xF4C430, 1)
+      g.fillRoundedRect(cx - 8 * sx, cy + 4, 16, 18, 4)
+      // Hoofd
+      g.fillStyle(0xF5C17A, 1)
+      g.fillCircle(cx, cy - 4, 10)
+      // Haar
+      g.fillStyle(0x3A2000, 1)
+      g.fillEllipse(cx, cy - 11, 18, 8)
+      // Ogen
+      g.fillStyle(0x000000, 1)
+      g.fillCircle(cx - 3, cy - 5, 1.5)
+      g.fillCircle(cx + 3, cy - 5, 1.5)
+      // Glimlach
+      g.lineStyle(1.5, 0x8B4513, 1)
+      g.beginPath(); g.arc(cx, cy - 2, 4, 0.2, Math.PI - 0.2); g.strokePath()
+      // Benen (geanimeerd)
+      g.fillStyle(0x2858D8, 1)
+      g.fillRoundedRect(cx - 7, cy + 20, 6, 12, 2)
+      g.fillRoundedRect(cx + 1, cy + 20, 6, 12, 2)
+      // Schoenen
+      g.fillStyle(0x1A1A1A, 1)
+      g.fillRoundedRect(cx - 8, cy + 30, 8, 4, 2)
+      g.fillRoundedRect(cx, cy + 30, 8, 4, 2)
+    }
+
+    tekenKarakter(false)
+
+    // Hup animatie
+    this.tweens.add({
+      targets:  g,
+      y:        { from: 0, to: -5 },
+      yoyo:     true, repeat: -1,
+      duration: 400, ease: 'Sine.easeInOut',
+    })
+
+    // Naam boven karakter
+    this.add.text(cx, cy - 26, this.spelerData.naam || 'Sari', {
+      fontFamily: "'Fredoka One', cursive",
+      fontSize:   '11px',
+      color:      '#f4c430',
+      stroke:     '#000',
+      strokeThickness: 3,
+      backgroundColor: 'rgba(0,0,0,0.55)',
+      padding:    { x: 4, y: 2 },
+    }).setOrigin(0.5).setDepth(1000)
+  }
+
+  // ═══════════════════════════════════════════════════════════
   //  LOCATIE POPUP — STAGE CARD
   // ═══════════════════════════════════════════════════════════
 
@@ -174,29 +243,29 @@ export default class WorldScene extends Phaser.Scene {
 
     // ── Kaart achtergrond ──
     const bg = this.add.graphics()
-    bg.fillStyle(0x071410, 1)
+    bg.fillStyle(0x0A1E38, 1)
     bg.fillRoundedRect(-205, -180, 410, 362, 22)
-    bg.lineStyle(3, isDone ? 0xf4c430 : 0x7ec98f, 1)
+    bg.lineStyle(3, isDone ? 0xf4c430 : 0x40AAFF, 1)
     bg.strokeRoundedRect(-205, -180, 410, 362, 22)
-    bg.lineStyle(1, isDone ? 0xf4c430 : 0x7ec98f, 0.22)
+    bg.lineStyle(1, isDone ? 0xf4c430 : 0x40AAFF, 0.22)
     bg.strokeRoundedRect(-197, -172, 394, 346, 18)
     pop.add(bg)
 
     // ── Gekleurde header band ──
     const header = this.add.graphics()
-    header.fillStyle(isDone ? 0x3a2800 : 0x0d2a1a, 1)
+    header.fillStyle(isDone ? 0x3a2800 : 0x0d2a4a, 1)
     header.fillRoundedRect(-205, -180, 410, 64, { tl: 22, tr: 22, bl: 0, br: 0 })
     pop.add(header)
 
     // Jaar badge
     const jaarBg = this.add.graphics()
-    jaarBg.fillStyle(isDone ? 0xf4c430 : 0x7ec98f, 0.25)
+    jaarBg.fillStyle(isDone ? 0xf4c430 : 0x40AAFF, 0.25)
     jaarBg.fillRoundedRect(-38, -170, 76, 22, 10)
     pop.add(jaarBg)
     pop.add(this.add.text(0, -159, locatie.jaar, {
       fontFamily: "'Nunito', sans-serif",
       fontSize:   '11px', fontStyle: 'bold',
-      color:      isDone ? '#f4c430' : '#7ec98f',
+      color:      isDone ? '#f4c430' : '#40aaff',
     }).setOrigin(0.5))
 
     // Naam
@@ -212,7 +281,7 @@ export default class WorldScene extends Phaser.Scene {
 
     // Scheidingslijn
     const lijn = this.add.graphics()
-    lijn.lineStyle(1, isDone ? 0xf4c430 : 0x7ec98f, 0.3)
+    lijn.lineStyle(1, isDone ? 0xf4c430 : 0x40AAFF, 0.3)
     lijn.beginPath()
     lijn.moveTo(-180, -95)
     lijn.lineTo(180, -95)
@@ -388,35 +457,72 @@ export default class WorldScene extends Phaser.Scene {
 
   tekeningAchtergrond(W, H) {
 
-    // ── SURINAME RIVIER ───────────────────────────────────────
-    const gRiv = this.add.graphics()
-    gRiv.fillGradientStyle(0x1B4F8A, 0x1B4F8A, 0x3878B8, 0x2460A0, 1)
-    gRiv.fillRect(0, 0, W, RIV_H + 4)
-    gRiv.fillStyle(0x60A0D0, 0.18)
-    gRiv.fillRect(0, RIV_H * 0.12, W, RIV_H * 0.50)
-    gRiv.fillGradientStyle(0x0C3870, 0x0C3870, 0x1B5090, 0x1B5090, 0.55)
-    gRiv.fillRect(W * 0.65, 0, W * 0.35, RIV_H)
-    gRiv.fillStyle(0xC8B06A, 0.45)
-    gRiv.fillRect(0, 0, W, 7)
+    // ── LUCHT (SKY) ──────────────────────────────────────────
+    const gSky = this.add.graphics()
+    gSky.fillGradientStyle(0x1890E8, 0x1890E8, 0x68C0FF, 0x48AEFF, 1)
+    gSky.fillRect(0, 0, W, 108)
 
-    for (let i = 0; i < 11; i++) {
-      const wg = this.add.graphics()
-      wg.lineStyle(1.5, 0xffffff, 0.20)
-      wg.beginPath()
-      const wx = W * (0.02 + i * 0.09)
-      const wy = RIV_H * (0.22 + (i % 4) * 0.18)
-      wg.moveTo(wx, wy)
-      wg.lineTo(wx + 80, wy)
-      wg.strokePath()
-      this.tweens.add({
-        targets:  wg,
-        x: { from: -12, to: 12 },
-        alpha: { from: 0.50, to: 0.05 },
-        yoyo: true, repeat: -1,
-        duration: 1800 + i * 320,
-      })
+    // Zon
+    gSky.fillStyle(0xFFE030, 0.30)
+    gSky.fillCircle(W * 0.80, 46, 42)
+    gSky.fillStyle(0xFFE030, 0.55)
+    gSky.fillCircle(W * 0.80, 46, 30)
+    gSky.fillStyle(0xFFF080, 1)
+    gSky.fillCircle(W * 0.80, 46, 20)
+    // Zonnestralen
+    gSky.lineStyle(2.5, 0xFFE030, 0.45)
+    for (let i = 0; i < 8; i++) {
+      const a = (i / 8) * Math.PI * 2
+      gSky.beginPath()
+      gSky.moveTo(W * 0.80 + Math.cos(a) * 33, 46 + Math.sin(a) * 33)
+      gSky.lineTo(W * 0.80 + Math.cos(a) * 50, 46 + Math.sin(a) * 50)
+      gSky.strokePath()
     }
 
+    // Wolk 1 (geanimeerd)
+    const wolk1 = this.add.graphics()
+    wolk1.fillStyle(0xFFFFFF, 0.90)
+    wolk1.fillEllipse(0, 0, 78, 28); wolk1.fillEllipse(-22, -10, 58, 24); wolk1.fillEllipse(22, -8, 54, 20)
+    wolk1.setPosition(160, 36)
+    this.tweens.add({ targets: wolk1, x: { from: 140, to: 190 }, yoyo: true, repeat: -1, duration: 9000, ease: 'Sine.easeInOut' })
+
+    // Wolk 2
+    const wolk2 = this.add.graphics()
+    wolk2.fillStyle(0xFFFFFF, 0.80)
+    wolk2.fillEllipse(0, 0, 65, 22); wolk2.fillEllipse(-18, -8, 48, 19); wolk2.fillEllipse(18, -7, 44, 17)
+    wolk2.setPosition(480, 26)
+    this.tweens.add({ targets: wolk2, x: { from: 460, to: 510 }, yoyo: true, repeat: -1, duration: 12000, ease: 'Sine.easeInOut' })
+
+    // Wolk 3
+    const wolk3 = this.add.graphics()
+    wolk3.fillStyle(0xFFFFFF, 0.70)
+    wolk3.fillEllipse(0, 0, 55, 20); wolk3.fillEllipse(-15, -7, 42, 17)
+    wolk3.setPosition(670, 55)
+    this.tweens.add({ targets: wolk3, x: { from: 650, to: 700 }, yoyo: true, repeat: -1, duration: 10000, ease: 'Sine.easeInOut' })
+
+    // ── SURINAME RIVIER (WATER STRIP) ─────────────────────────
+    const gRiv = this.add.graphics()
+    gRiv.fillGradientStyle(0x1A72C8, 0x1A72C8, 0x3A9AE8, 0x2880D8, 1)
+    gRiv.fillRect(0, 108, W, 46)
+    gRiv.fillStyle(0x80CCFF, 0.25)
+    gRiv.fillRect(0, 116, W, 20)
+    // Zon spiegeling in water
+    gRiv.fillStyle(0xFFE030, 0.18)
+    gRiv.fillRect(W * 0.72, 108, 70, 46)
+
+    // Golvende lijntjes
+    for (let i = 0; i < 8; i++) {
+      const wg = this.add.graphics()
+      wg.lineStyle(1.5, 0xffffff, 0.22)
+      wg.beginPath()
+      const wx = W * (0.03 + i * 0.12)
+      wg.moveTo(wx, 120 + (i % 3) * 10)
+      wg.lineTo(wx + 70, 120 + (i % 3) * 10)
+      wg.strokePath()
+      this.tweens.add({ targets: wg, x: { from: -10, to: 10 }, alpha: { from: 0.5, to: 0.05 }, yoyo: true, repeat: -1, duration: 1800 + i * 350 })
+    }
+
+    // Schip
     const gSchip = this.add.graphics()
     gSchip.fillStyle(0x7A5020, 1)
     gSchip.fillRoundedRect(0, 0, 68, 18, 4)
@@ -426,19 +532,14 @@ export default class WorldScene extends Phaser.Scene {
     gSchip.fillTriangle(14, -28, 14, -10, 44, -19)
     gSchip.fillStyle(0xDD2828, 1)
     gSchip.fillRect(10, -36, 14, 8)
-    gSchip.setPosition(W * 0.27, RIV_H * 0.50)
-    this.tweens.add({
-      targets: gSchip,
-      x: { from: W * 0.20, to: W * 0.38 },
-      yoyo: true, repeat: -1,
-      duration: 14000, ease: 'Sine.easeInOut',
-    })
+    gSchip.setPosition(W * 0.27, 120)
+    this.tweens.add({ targets: gSchip, x: { from: W * 0.18, to: W * 0.42 }, yoyo: true, repeat: -1, duration: 14000, ease: 'Sine.easeInOut' })
 
     // ── WATERKANT PROMENADE ───────────────────────────────────
     const gPrm = this.add.graphics()
-    gPrm.fillGradientStyle(0xCAAA68, 0xC2A260, 0xD2B272, 0xCAAA68, 1)
+    gPrm.fillGradientStyle(0xF0CC50, 0xE8C040, 0xF8DC68, 0xF0CC50, 1)
     gPrm.fillRect(0, PRM_Y, W, PRM_H)
-    gPrm.lineStyle(0.7, 0xAA8840, 0.30)
+    gPrm.lineStyle(0.7, 0xC89A28, 0.35)
     for (let tx = 0; tx < W; tx += 28) {
       gPrm.beginPath(); gPrm.moveTo(tx, PRM_Y); gPrm.lineTo(tx, PRM_Y + PRM_H); gPrm.strokePath()
     }
@@ -451,16 +552,16 @@ export default class WorldScene extends Phaser.Scene {
 
     // ── STADSGEBIED BASIS ─────────────────────────────────────
     const gStad = this.add.graphics()
-    gStad.fillStyle(0xD2BC7A, 1)
+    gStad.fillStyle(0xF2E070, 1)
     gStad.fillRect(0, CITY_Y, W, H - CITY_Y)
 
     const kolX = [0, ...VX.map(x => x + STR_W / 2), W]
     const rijY  = [CITY_Y, ...HY.map(y => y + STR_W / 2), BOS_Y]
     const blokKleuren = [
-      0xDBC67E, 0xCFBA72, 0xD6C27C, 0xCAB46A, 0xD2BE78, 0xCCB670,
-      0xD4C07A, 0xC8AE68, 0xCEB872, 0xD6C47E, 0xCAB46C, 0xD0BE74,
-      0xD8C47A, 0xCCB66C, 0xD4C076, 0xC6AC68, 0xCEBA70, 0xD2BE78,
-      0xD6C27C, 0xCAB66E, 0xD0BC72, 0xCCB06A, 0xD4BE76, 0xC8B270,
+      0xFBE98C, 0xF5DD80, 0xFCEF94, 0xF2E07A, 0xF8E888, 0xF0DA82,
+      0xFAEC90, 0xEEDA7A, 0xF6E888, 0xFBED8C, 0xF2E082, 0xF8E88E,
+      0xFCEB8A, 0xF4E07C, 0xFAEC8C, 0xEEDA78, 0xF6EA86, 0xF2E07E,
+      0xFAED90, 0xF6E480, 0xF4EC8A, 0xFCE880, 0xF8EC88, 0xF0E07C,
     ]
     let blokIdx = 0
     for (let ri = 0; ri < rijY.length - 1; ri++) {
@@ -478,12 +579,12 @@ export default class WorldScene extends Phaser.Scene {
     }
 
     const gStraat = this.add.graphics()
-    gStraat.fillStyle(0xB8A45C, 0.9)
+    gStraat.fillStyle(0xD4A840, 0.9)
     HY.forEach(hy => gStraat.fillRect(0, hy - STR_W / 2, W, STR_W))
     gStraat.fillRect(0, CITY_Y, W, STR_W / 2)
     VX.forEach(vx => gStraat.fillRect(vx - STR_W / 2, CITY_Y, STR_W, H - CITY_Y))
 
-    gStraat.lineStyle(0.5, 0xA09050, 0.28)
+    gStraat.lineStyle(0.5, 0xB89030, 0.35)
     HY.forEach(hy => {
       gStraat.beginPath(); gStraat.moveTo(0, hy); gStraat.lineTo(W, hy); gStraat.strokePath()
     })
@@ -494,11 +595,11 @@ export default class WorldScene extends Phaser.Scene {
 
     // ── ONAFHANKELIJKHEIDSPLEIN GROEN PARK ────────────────────
     const gPlein = this.add.graphics()
-    gPlein.fillStyle(0x4A9A3C, 1)
+    gPlein.fillStyle(0x2EB828, 1)
     gPlein.fillRect(492, 383, 141, 67)
-    gPlein.fillStyle(0x5AAC4C, 0.50)
+    gPlein.fillStyle(0x40D038, 0.50)
     gPlein.fillRect(498, 389, 129, 55)
-    gPlein.lineStyle(1.5, 0x3A8A2C, 0.65)
+    gPlein.lineStyle(1.5, 0x209018, 0.65)
     gPlein.strokeRect(492, 383, 141, 67)
     gPlein.lineStyle(0, 0, 0)
     gPlein.lineStyle(1, 0xC8B850, 0.45)
@@ -511,27 +612,27 @@ export default class WorldScene extends Phaser.Scene {
 
     // ── PRESIDENTIEEL PALMTUIN ────────────────────────────────
     const gPalmtuin = this.add.graphics()
-    gPalmtuin.fillStyle(0x3A8A30, 0.50)
+    gPalmtuin.fillStyle(0x38C030, 0.50)
     gPalmtuin.fillRect(319, 383, 150, 67)
-    gPalmtuin.fillStyle(0x2A7A20, 0.30)
+    gPalmtuin.fillStyle(0x28A820, 0.30)
     gPalmtuin.fillRect(326, 389, 136, 55)
 
     this.tekeningStadsgebouwen(W, H)
 
     // ── REGENWOUD RAND ────────────────────────────────────────
     const gBos = this.add.graphics()
-    gBos.fillGradientStyle(0x256A20, 0x22601C, 0x1E5618, 0x1A5014, 1)
+    gBos.fillGradientStyle(0x2E9028, 0x288020, 0x227018, 0x1E6818, 1)
     gBos.fillRect(0, BOS_Y, W, H - BOS_Y)
-    gBos.fillStyle(0x185010, 0.85)
+    gBos.fillStyle(0x1E7818, 0.85)
     for (let bx = 5; bx < W; bx += 44) {
       const bh = 18 + Math.sin(bx * 0.17) * 11
       gBos.fillEllipse(bx + 20, BOS_Y, 38, bh + 12)
     }
-    gBos.fillStyle(0x2E6A26, 0.55)
+    gBos.fillStyle(0x38882E, 0.55)
     for (let bx = 20; bx < W; bx += 62) {
       gBos.fillEllipse(bx + 14, BOS_Y - 5, 28, 18)
     }
-    gBos.fillStyle(0x4A8A3C, 0.30)
+    gBos.fillStyle(0x5CA848, 0.35)
     for (let bx = 10; bx < W; bx += 38) {
       gBos.fillEllipse(bx + 16, BOS_Y - 8, 20, 12)
     }
@@ -599,37 +700,64 @@ export default class WorldScene extends Phaser.Scene {
 
   tekeningStadsgebouwen(W, H) {
     const gebouwtjes = [
-      { x: 54,  y: 262, w: 72, h: 38, k: 0xEAC250, dk: 0xC09030 },
-      { x: 104, y: 262, w: 40, h: 33, k: 0xD4E870, dk: 0x88B038 },
-      { x: 198, y: 253, w: 66, h: 40, k: 0xF0D060, dk: 0xC8A040 },
-      { x: 262, y: 255, w: 40, h: 36, k: 0xE0CA48, dk: 0xB89028 },
-      { x: 358, y: 258, w: 74, h: 38, k: 0xDAEA70, dk: 0x9AC040 },
-      { x: 432, y: 249, w: 40, h: 36, k: 0xF0C860, dk: 0xC09030 },
-      { x: 668, y: 255, w: 69, h: 36, k: 0xEABA48, dk: 0xB89028 },
-      { x: 736, y: 259, w: 42, h: 33, k: 0xF0D060, dk: 0xC0A030 },
-      { x: 57,  y: 338, w: 78, h: 38, k: 0xE0C040, dk: 0xAE9020 },
-      { x: 86,  y: 343, w: 42, h: 33, k: 0xDADA68, dk: 0xA0A830 },
-      { x: 203, y: 333, w: 66, h: 38, k: 0xF0CA58, dk: 0xC09030 },
-      { x: 836, y: 338, w: 77, h: 36, k: 0xEAC248, dk: 0xB89028 },
-      { x: 878, y: 330, w: 60, h: 42, k: 0xF0D060, dk: 0xC0A030 },
-      { x: 54,  y: 426, w: 74, h: 38, k: 0xDAC040, dk: 0xA69020 },
-      { x: 105, y: 421, w: 31, h: 30, k: 0xEACA48, dk: 0xB89028 },
-      { x: 836, y: 422, w: 80, h: 38, k: 0xF0CA50, dk: 0xC09030 },
+      { x: 54,  y: 262, w: 72, h: 38, k: 0xE83828, dk: 0xA82010 },
+      { x: 104, y: 262, w: 40, h: 33, k: 0x2858D8, dk: 0x1840B0 },
+      { x: 198, y: 253, w: 66, h: 40, k: 0xF0C020, dk: 0xC09010 },
+      { x: 262, y: 255, w: 40, h: 36, k: 0x28A840, dk: 0x187828 },
+      { x: 358, y: 258, w: 74, h: 38, k: 0xE86820, dk: 0xA84810 },
+      { x: 432, y: 249, w: 40, h: 36, k: 0x9830C8, dk: 0x701898 },
+      { x: 668, y: 255, w: 69, h: 36, k: 0xD04080, dk: 0xA02058 },
+      { x: 736, y: 259, w: 42, h: 33, k: 0x18A898, dk: 0x087868 },
+      { x: 57,  y: 338, w: 78, h: 38, k: 0x2858D8, dk: 0x1840B0 },
+      { x: 86,  y: 343, w: 42, h: 33, k: 0xE83828, dk: 0xA82010 },
+      { x: 203, y: 333, w: 66, h: 38, k: 0x28A840, dk: 0x187828 },
+      { x: 836, y: 338, w: 77, h: 36, k: 0xF0C020, dk: 0xC09010 },
+      { x: 878, y: 330, w: 60, h: 42, k: 0x9830C8, dk: 0x701898 },
+      { x: 54,  y: 426, w: 74, h: 38, k: 0xE86820, dk: 0xA84810 },
+      { x: 105, y: 421, w: 31, h: 30, k: 0x18A898, dk: 0x087868 },
+      { x: 836, y: 422, w: 80, h: 38, k: 0xD04080, dk: 0xA02058 },
     ]
     gebouwtjes.forEach(({ x, y, w, h, k, dk }) => {
       const g = this.add.graphics().setDepth(y + 5)
-      g.fillStyle(0x000000, 0.13)
-      g.fillRect(x + 3, y + 3, w, h)
+      // Schaduw
+      g.fillStyle(0x000000, 0.18)
+      g.fillRect(x + 4, y + 4, w, h)
+      // Muur
       g.fillStyle(k, 1)
       g.fillRect(x, y, w, h)
+      // Lichtere zijpanelen
+      g.fillStyle(0xFFFFFF, 0.08)
+      g.fillRect(x, y, 4, h)
+      // Dak
       g.fillStyle(dk, 1)
-      g.fillTriangle(x - 4, y, x + w + 4, y, x + w / 2, y - h * 0.58)
-      g.fillStyle(0x88CCEE, 0.70)
-      g.fillRect(x + w * 0.18, y + h * 0.18, w * 0.24, h * 0.38)
-      if (w > 50) g.fillRect(x + w * 0.56, y + h * 0.18, w * 0.24, h * 0.38)
-      g.lineStyle(0.8, 0xA09040, 0.55)
-      g.strokeRect(x + w * 0.18, y + h * 0.18, w * 0.24, h * 0.38)
-      if (w > 50) g.strokeRect(x + w * 0.56, y + h * 0.18, w * 0.24, h * 0.38)
+      g.fillTriangle(x - 5, y, x + w + 5, y, x + w / 2, y - h * 0.62)
+      // Dakrand
+      g.fillStyle(0x000000, 0.15)
+      g.fillRect(x - 3, y - 2, w + 6, 4)
+      // Ramen
+      const aantalRamen = w > 55 ? 2 : 1
+      const raamB = w * 0.20, raamH = h * 0.36
+      for (let r = 0; r < aantalRamen; r++) {
+        const rx = x + w * (aantalRamen === 1 ? 0.38 : (r === 0 ? 0.15 : 0.58))
+        const ry = y + h * 0.15
+        // Raam achtergrond (nacht = donkerblauw, dag = lichtblauw)
+        g.fillStyle(0xA8D8F0, 0.85)
+        g.fillRoundedRect(rx, ry, raamB, raamH, 2)
+        // Raamkozijn
+        g.lineStyle(1.5, dk, 0.9)
+        g.strokeRoundedRect(rx, ry, raamB, raamH, 2)
+        // Kruisje in raam
+        g.lineStyle(0.8, dk, 0.5)
+        g.beginPath(); g.moveTo(rx + raamB / 2, ry); g.lineTo(rx + raamB / 2, ry + raamH); g.strokePath()
+        g.beginPath(); g.moveTo(rx, ry + raamH / 2); g.lineTo(rx + raamB, ry + raamH / 2); g.strokePath()
+      }
+      // Deur
+      const deurB = w * 0.22, deurH = h * 0.38
+      const deurX = x + (w - deurB) / 2
+      g.fillStyle(0x3A1A00, 1)
+      g.fillRoundedRect(deurX, y + h - deurH, deurB, deurH, { tl: 3, tr: 3, bl: 0, br: 0 })
+      g.fillStyle(0xF4C430, 1)
+      g.fillCircle(deurX + deurB * 0.75, y + h - deurH * 0.5, 1.5)
       g.lineStyle(0, 0, 0)
     })
   }

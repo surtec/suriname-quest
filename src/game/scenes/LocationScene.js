@@ -20,8 +20,7 @@ export default class LocationScene extends Phaser.Scene {
     const L = this.locatie
 
     // ── ACHTERGROND ───────────────────────────────────────────
-    // Sfeer achtergrond passend bij de locatie
-    this.add.rectangle(W / 2, H / 2, W, H, 0x0d1b12)
+    this.add.rectangle(W / 2, H / 2, W, H, 0x080E20)
     this.tekeningAchtergrond(W, H)
 
     // ── TERUG KNOP ────────────────────────────────────────────
@@ -79,14 +78,13 @@ export default class LocationScene extends Phaser.Scene {
 
   tekeningAchtergrond(W, H) {
     const g = this.add.graphics()
-    // Tropisch landschap achtergrond voor de locatie
-    g.fillGradientStyle(0x1a4a2e, 0x0d2818, 0x1a3a22, 0x0a1f10, 1)
+    g.fillGradientStyle(0x1a3a70, 0x0d2858, 0x1a3060, 0x0a1848, 1)
     g.fillRect(0, 0, W, H * 0.5)
-    g.fillStyle(0x2a5a35, 0.3)
-    g.fillEllipse(W * 0.15, H * 0.3, 120, 80)
-    g.fillEllipse(W * 0.85, H * 0.25, 100, 70)
+    g.fillStyle(0x2860B0, 0.28)
+    g.fillEllipse(W * 0.15, H * 0.3, 130, 85)
+    g.fillEllipse(W * 0.85, H * 0.25, 110, 75)
     // Bodem
-    g.fillGradientStyle(0x0d1b12, 0x0a1510, 0x08100a, 0x060c08, 1)
+    g.fillGradientStyle(0x080E20, 0x060C1A, 0x050A16, 0x040810, 1)
     g.fillRect(0, H * 0.5, W, H * 0.5)
   }
 
@@ -106,11 +104,11 @@ export default class LocationScene extends Phaser.Scene {
       // Kaart achtergrond
       const bg = this.add.graphics()
       if (gevonden) {
-        bg.fillStyle(0xf4c430, 0.15)
-        bg.lineStyle(2, 0xf4c430, 0.8)
+        bg.fillStyle(0xf4c430, 0.18)
+        bg.lineStyle(2, 0xf4c430, 0.9)
       } else {
-        bg.fillStyle(0xffffff, 0.06)
-        bg.lineStyle(1.5, 0xffffff, 0.1)
+        bg.fillStyle(0x0A1E48, 0.85)
+        bg.lineStyle(1.5, 0x2860C0, 0.55)
       }
       bg.fillRoundedRect(x - kaartBreedte / 2, y, kaartBreedte, kaartHoogte, 12)
       bg.strokeRoundedRect(x - kaartBreedte / 2, y, kaartBreedte, kaartHoogte, 12)
@@ -148,15 +146,15 @@ export default class LocationScene extends Phaser.Scene {
         // Hover effect
         zone.on('pointerover', () => {
           bg.clear()
-          bg.fillStyle(0xffffff, 0.12)
-          bg.lineStyle(1.5, 0x7ec98f, 0.8)
+          bg.fillStyle(0x1A3A78, 1)
+          bg.lineStyle(2, 0x50AAFF, 1)
           bg.fillRoundedRect(x - kaartBreedte / 2, y, kaartBreedte, kaartHoogte, 12)
           bg.strokeRoundedRect(x - kaartBreedte / 2, y, kaartBreedte, kaartHoogte, 12)
         })
         zone.on('pointerout', () => {
           bg.clear()
-          bg.fillStyle(0xffffff, 0.06)
-          bg.lineStyle(1.5, 0xffffff, 0.1)
+          bg.fillStyle(0x0A1E48, 0.85)
+          bg.lineStyle(1.5, 0x2860C0, 0.55)
           bg.fillRoundedRect(x - kaartBreedte / 2, y, kaartBreedte, kaartHoogte, 12)
           bg.strokeRoundedRect(x - kaartBreedte / 2, y, kaartBreedte, kaartHoogte, 12)
         })

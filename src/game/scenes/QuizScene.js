@@ -21,10 +21,27 @@ export default class QuizScene extends Phaser.Scene {
     const H = this.scale.height
 
     // Achtergrond (donker, gefocust)
-    this.add.rectangle(W / 2, H / 2, W, H, 0x0a1208)
+    this.add.rectangle(W / 2, H / 2, W, H, 0x080E20)
 
     // Decoratieve planten hoeken
     this.tekeningHoekDecoratie(W, H)
+
+    // Terug knop
+    this.add.text(16, 16, '← Stoppen', {
+      fontFamily: "'Fredoka One', cursive",
+      fontSize:   '13px',
+      color:      '#7ec98f',
+      backgroundColor: 'rgba(0,0,0,0.5)',
+      padding:    { x: 9, y: 5 },
+    }).setInteractive({ useHandCursor: true })
+      .on('pointerdown', () => {
+        this.cameras.main.fadeOut(250, 0, 0, 0)
+        this.time.delayedCall(250, () => {
+          this.scene.start('WorldScene', { speler: this.spelerData })
+        })
+      })
+      .on('pointerover', function() { this.setColor('#f4c430') })
+      .on('pointerout',  function() { this.setColor('#7ec98f') })
 
     // Progress dots bovenaan
     this.progressDots = []
@@ -60,16 +77,21 @@ export default class QuizScene extends Phaser.Scene {
 
   tekeningHoekDecoratie(W, H) {
     const g = this.add.graphics()
-    // Bladeren in hoeken
-    g.fillStyle(0x2a6a20, 0.4)
-    g.fillTriangle(0, 0, 80, 0, 0, 80)
-    g.fillTriangle(W, 0, W - 80, 0, W, 80)
-    g.fillStyle(0x3a8a30, 0.3)
-    g.fillCircle(30, 30, 25)
-    g.fillCircle(W - 30, 30, 25)
-    g.fillStyle(0x4aa040, 0.25)
-    g.fillCircle(15, 60, 18)
-    g.fillCircle(W - 15, 60, 18)
+    g.fillStyle(0x1050B0, 0.45)
+    g.fillTriangle(0, 0, 100, 0, 0, 100)
+    g.fillTriangle(W, 0, W - 100, 0, W, 100)
+    g.fillStyle(0x2070D0, 0.28)
+    g.fillCircle(35, 35, 28)
+    g.fillCircle(W - 35, 35, 28)
+    g.fillStyle(0x40A0FF, 0.18)
+    g.fillCircle(15, 75, 20)
+    g.fillCircle(W - 15, 75, 20)
+    // Gouden sterretjes
+    g.fillStyle(0xF4C430, 0.35)
+    g.fillCircle(60, 18, 4)
+    g.fillCircle(W - 60, 18, 4)
+    g.fillCircle(90, 45, 3)
+    g.fillCircle(W - 90, 45, 3)
   }
 
   maakProgressDots(W) {
@@ -107,34 +129,39 @@ export default class QuizScene extends Phaser.Scene {
 
   toonVraag() {
     this.beantwoord = false
+    // Vernietig alles — container + losse scene-objecten
     this.vraagContainer.removeAll(true)
+    if (this._vraagObjecten) {
+      this._vraagObjecten.forEach(o => { if (o && o.active) o.destroy() })
+    }
+    this._vraagObjecten = []
 
     const W = this.scale.width
-    const H = this.scale.height
     const vraag = this.vragen[this.huidig]
 
-    // Emoji afbeelding
+    // Emoji box — in container
     const emojiBox = this.add.graphics()
-    emojiBox.fillStyle(0x1a4a2e, 1)
-    emojiBox.lineStyle(1.5, 0x2a6a3e, 1)
+    emojiBox.fillStyle(0x0A1E48, 1)
+    emojiBox.lineStyle(1.5, 0x2860C0, 1)
     emojiBox.fillRoundedRect(W / 2 - 130, 45, 260, 90, 12)
     emojiBox.strokeRoundedRect(W / 2 - 130, 45, 260, 90, 12)
     this.vraagContainer.add(emojiBox)
 
-    this.add.text(W / 2, 90, vraag.emoji, {
-      fontSize: '46px',
-    }).setOrigin(0.5).setDepth(1)
+    // Emoji tekst — in container
+    const emojiTekst = this.add.text(W / 2, 90, vraag.emoji, { fontSize: '46px' }).setOrigin(0.5)
+    this.vraagContainer.add(emojiTekst)
 
-    // Vraag tekst
-    this.add.text(W / 2, 150, vraag.vraag, {
+    // Vraag tekst — in container
+    const vraagTekst = this.add.text(W / 2, 150, vraag.vraag, {
       fontFamily: "'Fredoka One', cursive",
       fontSize:   '18px',
       color:      '#ffffff',
       wordWrap:   { width: W - 40 },
       align:      'center',
     }).setOrigin(0.5, 0)
+    this.vraagContainer.add(vraagTekst)
 
-    // Antwoord knoppen
+    // Antwoord knoppen — allemaal in container
     this.antwoordKnoppen = []
     const cols = 2
     const knopB = (W - 40) / cols - 8
@@ -147,10 +174,11 @@ export default class QuizScene extends Phaser.Scene {
       const y   = 200 + rij * (knopH + 8)
 
       const knopBg = this.add.graphics()
-      knopBg.fillStyle(0xffffff, 0.07)
-      knopBg.lineStyle(2, 0xffffff, 0.18)
+      knopBg.fillStyle(0x0A1E48, 1)
+      knopBg.lineStyle(2, 0x2860C0, 0.7)
       knopBg.fillRoundedRect(x, y, knopB, knopH, 12)
       knopBg.strokeRoundedRect(x, y, knopB, knopH, 12)
+      this.vraagContainer.add(knopBg)
 
       const tekst = this.add.text(x + knopB / 2, y + knopH / 2, optie, {
         fontFamily: "'Nunito', sans-serif",
@@ -160,16 +188,16 @@ export default class QuizScene extends Phaser.Scene {
         wordWrap:   { width: knopB - 16 },
         align:      'center',
       }).setOrigin(0.5)
+      this.vraagContainer.add(tekst)
 
-      // Interactie zone
       const zone = this.add.zone(x + knopB / 2, y + knopH / 2, knopB, knopH)
         .setInteractive({ useHandCursor: true })
         .on('pointerdown', () => this.beantwoordVraag(i, knopBg, tekst))
         .on('pointerover', () => {
           if (!this.beantwoord) {
             knopBg.clear()
-            knopBg.fillStyle(0xffffff, 0.15)
-            knopBg.lineStyle(2, 0x7ec98f, 0.8)
+            knopBg.fillStyle(0x1A3A78, 1)
+            knopBg.lineStyle(2, 0x50AAFF, 1)
             knopBg.fillRoundedRect(x, y, knopB, knopH, 12)
             knopBg.strokeRoundedRect(x, y, knopB, knopH, 12)
           }
@@ -177,24 +205,20 @@ export default class QuizScene extends Phaser.Scene {
         .on('pointerout', () => {
           if (!this.beantwoord) {
             knopBg.clear()
-            knopBg.fillStyle(0xffffff, 0.07)
-            knopBg.lineStyle(2, 0xffffff, 0.18)
+            knopBg.fillStyle(0x0A1E48, 1)
+            knopBg.lineStyle(2, 0x2860C0, 0.7)
             knopBg.fillRoundedRect(x, y, knopB, knopH, 12)
             knopBg.strokeRoundedRect(x, y, knopB, knopH, 12)
           }
         })
+      this.vraagContainer.add(zone)
 
       this.antwoordKnoppen.push({ bg: knopBg, tekst, zone, juist: i === vraag.juist, x, y, w: knopB, h: knopH })
     })
 
-    // Animatie — slide in van rechts
+    // Slide in van rechts
     this.vraagContainer.setX(W)
-    this.tweens.add({
-      targets:  this.vraagContainer,
-      x:        0,
-      duration: 300,
-      ease:     'Back.easeOut',
-    })
+    this.tweens.add({ targets: this.vraagContainer, x: 0, duration: 300, ease: 'Back.easeOut' })
   }
 
   beantwoordVraag(keuze, gekozenBg, gekozenTekst) {
@@ -278,17 +302,18 @@ export default class QuizScene extends Phaser.Scene {
     uitlegBg.fillRoundedRect(20, 328, W - 40, 50, 10)
     uitlegBg.strokeRoundedRect(20, 328, W - 40, 50, 10)
 
-    this.add.text(W / 2, 353, vraag.uitleg, {
+    const uitlegTekst = this.add.text(W / 2, 353, vraag.uitleg, {
       fontFamily: "'Nunito', sans-serif",
       fontSize:   '12px',
       color:      isJuist ? '#7ec98f' : '#e24b4a',
       wordWrap:   { width: W - 60 },
       align:      'center',
     }).setOrigin(0.5)
+    this._vraagObjecten.push(uitlegBg, uitlegTekst)
 
     // Volgende knop
     this.time.delayedCall(400, () => {
-      const volgKnop = this.add.text(W / 2, H - 45, 'Volgende vraag →', {
+      const volgKnop = this.add.text(W / 2, 410, 'Volgende vraag →', {
         fontFamily: "'Fredoka One', cursive",
         fontSize:   '18px',
         color:      '#1a3a00',
@@ -303,10 +328,9 @@ export default class QuizScene extends Phaser.Scene {
           } else {
             this.verversProgressDots()
             this.toonVraag()
-            uitlegBg.destroy()
-            volgKnop.destroy()
           }
         })
+      this._vraagObjecten.push(uitlegBg, volgKnop)
     })
   }
 
@@ -320,7 +344,7 @@ export default class QuizScene extends Phaser.Scene {
     this.children.removeAll(true)
 
     // Achtergrond
-    this.add.rectangle(W / 2, H / 2, W, H, 0x0a1208)
+    this.add.rectangle(W / 2, H / 2, W, H, 0x080E20)
     this.tekeningHoekDecoratie(W, H)
 
     // Ster (zoals Snufkin Level Up!)
@@ -425,7 +449,7 @@ export default class QuizScene extends Phaser.Scene {
     }).setOrigin(0.5)
 
     // Terug naar stad knop
-    this.add.text(W / 2, H - 45, '🗺️  Terug naar de stad', {
+    this.add.text(W / 2, 440, '🗺️  Terug naar de stad', {
       fontFamily: "'Fredoka One', cursive",
       fontSize:   '18px',
       color:      '#1a3a00',

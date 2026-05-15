@@ -94,7 +94,7 @@ export default function App() {
   if (laadStatus === 'login') {
     return (
       <div style={{
-        background: 'linear-gradient(160deg, #0d2818 0%, #1a4a2e 50%, #0d1b12 100%)',
+        background: 'linear-gradient(160deg, #050E28 0%, #0A1E48 50%, #050E28 100%)',
         minHeight: '100vh', display: 'flex',
         alignItems: 'center', justifyContent: 'center',
         overflow: 'hidden', position: 'relative',
@@ -118,7 +118,7 @@ export default function App() {
   // ── GAME SCHERM ────────────────────────────────────────────
   return (
     <div style={{
-      background: 'linear-gradient(160deg, #071410 0%, #0d2018 50%, #071410 100%)',
+      background: 'linear-gradient(160deg, #040C20 0%, #080E28 50%, #040C20 100%)',
       minHeight: '100vh',
       display: 'flex', flexDirection: 'column',
       alignItems: 'center', justifyContent: 'center',
@@ -144,7 +144,7 @@ export default function App() {
         maxWidth: '960px',
         borderRadius: '14px',
         overflow: 'hidden',
-        boxShadow: '0 8px 40px rgba(0,0,0,0.7), 0 0 0 2px rgba(244,196,48,0.25)',
+        boxShadow: '0 8px 40px rgba(0,0,0,0.8), 0 0 0 2px rgba(244,196,48,0.40), 0 0 40px rgba(64,170,255,0.12)',
       }}>
         <PhaserGame
           spelerData={spelerData}
