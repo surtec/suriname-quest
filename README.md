@@ -22,7 +22,7 @@ npm install
 Maak de database en tabel aan:
 
 ```bash
-Get-Content server/setup.sql | mysql -u root -P 2004 -p
+Get-Content backend/setup.sql | mysql -u root -P 2004 -p
 ```
 
 > Vervang `2004` door jouw MySQL poort als die anders is. Druk Enter als je geen wachtwoord hebt.
