@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SuriQuest — Inloggen</title>
+  <title>SuriQuest — Welkom</title>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -45,6 +45,7 @@
       text-align: center;
     }
 
+    /* ── LOGIN FORM ── */
     .formulier {
       background: rgba(255,255,255,0.06);
       border: 1px solid rgba(255,255,255,0.12);
@@ -71,33 +72,49 @@
 
     .knop-primair {
       width: 100%;
-      padding: 13px;
+      padding: 14px;
       background: #f4c430;
       border: none;
-      border-radius: 10px;
+      border-radius: 12px;
       font-family: 'Fredoka One', cursive;
-      font-size: 20px;
+      font-size: 22px;
       color: #1a3a00;
       cursor: pointer;
       margin-top: 4px;
-      transition: opacity 0.2s;
+      transition: opacity 0.2s, transform 0.1s;
     }
-    .knop-primair:hover { opacity: 0.9; }
-    .knop-primair:disabled { opacity: 0.6; cursor: default; }
+    .knop-primair:hover { opacity: 0.9; transform: translateY(-1px); }
+    .knop-primair:active { transform: translateY(0); }
+    .knop-primair:disabled { opacity: 0.6; cursor: default; transform: none; }
 
     .knop-secundair {
       width: 100%;
-      padding: 10px;
+      padding: 12px;
       background: transparent;
       border: 1.5px solid rgba(255,255,255,0.3);
-      border-radius: 10px;
+      border-radius: 12px;
       font-family: 'Nunito', sans-serif;
-      font-size: 14px;
-      color: rgba(255,255,255,0.7);
+      font-size: 15px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.8);
       cursor: pointer;
-      margin-top: 8px;
+      margin-top: 10px;
+      transition: background 0.2s, transform 0.1s;
     }
-    .knop-secundair:hover { background: rgba(255,255,255,0.05); }
+    .knop-secundair:hover { background: rgba(255,255,255,0.07); transform: translateY(-1px); }
+
+    .knop-tekst {
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.45);
+      font-family: 'Nunito', sans-serif;
+      font-size: 13px;
+      cursor: pointer;
+      margin-top: 14px;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    .knop-tekst:hover { color: rgba(255,255,255,0.7); }
 
     .fout {
       color: #e24b4a;
@@ -108,33 +125,264 @@
 
     .naam-veld { display: none; }
     .naam-veld.zichtbaar { display: block; }
+
+    /* ── START MENU ── */
+    #menu-sectie { display: none; width: 100%; }
+
+    .welkom-box {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 16px;
+      padding: 1.5rem;
+      width: 100%;
+      margin-top: 1.5rem;
+      text-align: center;
+    }
+
+    .welkom-naam {
+      font-family: 'Fredoka One', cursive;
+      font-size: 26px;
+      color: #f4c430;
+      margin-bottom: 4px;
+    }
+
+    .welkom-stats {
+      font-size: 13px;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 1.2rem;
+    }
+
+    .menu-knoppen {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .knop-verder {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, #f4c430, #e0a800);
+      border: none;
+      border-radius: 12px;
+      font-family: 'Fredoka One', cursive;
+      font-size: 24px;
+      color: #1a3a00;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.1s;
+      letter-spacing: 0.5px;
+    }
+    .knop-verder:hover { opacity: 0.92; transform: translateY(-2px); }
+    .knop-verder:active { transform: translateY(0); }
+
+    .knop-nieuw {
+      width: 100%;
+      padding: 13px;
+      background: transparent;
+      border: 2px solid rgba(126,201,143,0.5);
+      border-radius: 12px;
+      font-family: 'Fredoka One', cursive;
+      font-size: 19px;
+      color: #7ec98f;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+    .knop-nieuw:hover { background: rgba(126,201,143,0.1); transform: translateY(-1px); }
+
+    .scheidslijn {
+      width: 100%;
+      border: none;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      margin: 6px 0;
+    }
+
+    .knop-uitlog {
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.4);
+      font-family: 'Nunito', sans-serif;
+      font-size: 13px;
+      cursor: pointer;
+      padding: 6px;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    .knop-uitlog:hover { color: rgba(255,255,255,0.7); }
+
+    /* bevestiging overlay */
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+    }
+    .overlay.actief { display: flex; }
+    .overlay-box {
+      background: #0d1e3d;
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 16px;
+      padding: 2rem 1.5rem;
+      max-width: 340px;
+      width: 90%;
+      text-align: center;
+    }
+    .overlay-box h2 {
+      font-family: 'Fredoka One', cursive;
+      color: #f4c430;
+      font-size: 22px;
+      margin-bottom: 8px;
+    }
+    .overlay-box p {
+      font-size: 14px;
+      color: rgba(255,255,255,0.6);
+      line-height: 1.5;
+      margin-bottom: 1.2rem;
+    }
+    .overlay-knoppen { display: flex; gap: 10px; }
+    .overlay-knoppen button { flex: 1; padding: 12px; border-radius: 10px; font-family: 'Fredoka One', cursive; font-size: 17px; cursor: pointer; border: none; }
+    .btn-annuleer { background: rgba(255,255,255,0.08); color: #fff; }
+    .btn-reset    { background: #e24b4a; color: #fff; }
+    .btn-annuleer:hover { background: rgba(255,255,255,0.15); }
+    .btn-reset:hover    { opacity: 0.85; }
   </style>
 </head>
 <body>
+
+  <!-- Bevestigingsvenster voor Nieuw Spel -->
+  <div class="overlay" id="bevestig-overlay">
+    <div class="overlay-box">
+      <h2>Nieuw Spel starten?</h2>
+      <p>Alle voortgang, punten en sterren worden gewist. Dit kan niet ongedaan worden gemaakt.</p>
+      <div class="overlay-knoppen">
+        <button type="button" class="btn-annuleer" onclick="sluitOverlay()">Annuleren</button>
+        <button type="button" class="btn-reset" onclick="bevestigNieuwSpel()">Ja, reset!</button>
+      </div>
+    </div>
+  </div>
 
   <div class="kaart">
     <div style="font-size:48px;margin-bottom:8px">🌴</div>
     <div class="logo">SuriQuest<br>2060</div>
     <div class="subtitel">Ontdek Surinaamse Geschiedenis</div>
 
-    <div class="formulier">
+    <!-- LOGIN / REGISTER -->
+    <div class="formulier" id="login-sectie">
       <div class="naam-veld" id="naam-veld">
         <input type="text" id="naam" placeholder="Jouw naam (bijv. Sari)" />
       </div>
       <input type="email" id="email" placeholder="E-mailadres" required />
       <input type="password" id="wachtwoord" placeholder="Wachtwoord" required />
 
-      <button class="knop-primair" id="submit-knop" onclick="submitForm()">Spelen! 🚀</button>
-      <button class="knop-secundair" onclick="wisselModus()">Nieuw account aanmaken →</button>
+      <button type="button" class="knop-primair" id="submit-knop" onclick="submitForm()">Spelen! 🚀</button>
+      <button type="button" class="knop-secundair" onclick="wisselModus()">Nieuw account aanmaken →</button>
 
       <div class="fout" id="fout-bericht"></div>
+    </div>
+
+    <!-- START MENU -->
+    <div id="menu-sectie">
+      <div class="welkom-box">
+        <div class="welkom-naam" id="menu-naam">Welkom terug! 👋</div>
+        <div class="welkom-stats" id="menu-stats">Even laden...</div>
+
+        <div class="menu-knoppen">
+          <button type="button" class="knop-verder" onclick="verderSpelen()">🗺️ Verder Spelen</button>
+          <button type="button" class="knop-nieuw"  onclick="nieuwSpel()">🔄 Nieuw Spel</button>
+          <hr class="scheidslijn" />
+          <button type="button" class="knop-uitlog" onclick="logUit()">Uitloggen</button>
+        </div>
+      </div>
     </div>
   </div>
 
   <script>
+    const API_URL = 'http://localhost:3001/api'
     let modus = 'login'
 
-    if (localStorage.getItem('token')) window.location.href = '/map.html'
+    function getToken()     { return localStorage.getItem('token') }
+    function getGebruiker() { const g = localStorage.getItem('gebruiker'); return g ? JSON.parse(g) : null }
+
+    function logUit() {
+      localStorage.removeItem('token')
+      localStorage.removeItem('gebruiker')
+      toonLogin()
+    }
+
+    async function toonMenu() {
+      document.getElementById('login-sectie').style.display = 'none'
+      document.getElementById('menu-sectie').style.display  = 'block'
+
+      const g = getGebruiker()
+      if (g) document.getElementById('menu-naam').textContent = `Welkom terug, ${g.naam}! 👋`
+
+      // laad live stats
+      try {
+        const res = await fetch(`${API_URL}/speler/${g.uid}`, {
+          headers: { 'Authorization': `Bearer ${getToken()}` }
+        })
+        if (res.ok) {
+          const speler = await res.json()
+          const voltooid = (JSON.parse ? speler.completedLocations || [] : []).length
+          document.getElementById('menu-stats').textContent =
+            `${speler.punten} punten · ${speler.completedLocations.length} van 5 locaties voltooid`
+        } else {
+          document.getElementById('menu-stats').textContent = ''
+        }
+      } catch {
+        document.getElementById('menu-stats').textContent = ''
+      }
+    }
+
+    function toonLogin() {
+      document.getElementById('login-sectie').style.display = 'block'
+      document.getElementById('menu-sectie').style.display  = 'none'
+    }
+
+    // check bij laden
+    if (getToken() && getGebruiker()) {
+      toonMenu()
+    }
+
+    function verderSpelen() {
+      window.location.href = '/map.html'
+    }
+
+    function nieuwSpel() {
+      document.getElementById('bevestig-overlay').classList.add('actief')
+    }
+
+    function sluitOverlay() {
+      document.getElementById('bevestig-overlay').classList.remove('actief')
+    }
+
+    async function bevestigNieuwSpel() {
+      sluitOverlay()
+      const g = getGebruiker()
+      if (!g) return
+      try {
+        await fetch(`${API_URL}/speler/${g.uid}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${getToken()}`
+          },
+          body: JSON.stringify({
+            punten: 0,
+            level: 1,
+            locatiesBezoekt: [],
+            collectibles: [],
+            quizResultaten: {},
+            badges: [],
+            completedLocations: []
+          })
+        })
+      } catch { /* doorgaan ook als het mislukt */ }
+      window.location.href = '/map.html'
+    }
+
+    // ── LOGIN / REGISTER FORM ──
 
     function wisselModus() {
       modus = modus === 'login' ? 'register' : 'login'
@@ -155,10 +403,10 @@
     }
 
     async function submitForm() {
-      const email     = document.getElementById('email').value.trim()
+      const email      = document.getElementById('email').value.trim()
       const wachtwoord = document.getElementById('wachtwoord').value
-      const foutEl    = document.getElementById('fout-bericht')
-      const knop      = document.getElementById('submit-knop')
+      const foutEl     = document.getElementById('fout-bericht')
+      const knop       = document.getElementById('submit-knop')
 
       foutEl.textContent = ''
       knop.disabled = true
@@ -167,15 +415,20 @@
       try {
         let res, data
         if (modus === 'login') {
-          res  = await fetch('http://localhost:3001/api/auth/login', {
+          res = await fetch(`${API_URL}/auth/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email, wachtwoord })
           })
         } else {
           const naam = document.getElementById('naam').value.trim()
-          if (!naam) { foutEl.textContent = 'Wat is jouw naam?'; knop.disabled = false; knop.textContent = 'Account aanmaken ✨'; return }
-          res = await fetch('http://localhost:3001/api/auth/register', {
+          if (!naam) {
+            foutEl.textContent = 'Wat is jouw naam?'
+            knop.disabled = false
+            knop.textContent = 'Account aanmaken ✨'
+            return
+          }
+          res = await fetch(`${API_URL}/auth/register`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ naam, email, wachtwoord })
@@ -187,7 +440,7 @@
 
         localStorage.setItem('token', data.token)
         localStorage.setItem('gebruiker', JSON.stringify(data.gebruiker))
-        window.location.href = '/map.html'
+        toonMenu()
       } catch (err) {
         foutEl.textContent = err.message
         knop.disabled = false
