@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fort Zeelandia — Suriname Quest</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #0d1b12; color: #f0e6c8; font-family: 'Nunito', sans-serif; min-height: 100vh; padding: 0 0 60px; }
+
+    .player-balk {
+      background: rgba(0,0,0,0.4);
+      padding: 8px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(244,196,48,0.15);
+    }
+    .player-balk span { font-weight: 700; font-size: 0.9rem; }
+    #player-name   { color: #f0e6c8; }
+    #player-points { color: #f4c430; font-family: 'Fredoka One', cursive; }
+    .uitloggen-knop { background: none; border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; color: rgba(255,255,255,0.5); padding: 4px 10px; font-size: 12px; cursor: pointer; }
+
+    .hero { background: linear-gradient(160deg, #1a3a2a 0%, #0d2218 60%, #0d1b12 100%); padding: 48px 24px 36px; text-align: center; border-bottom: 2px solid rgba(244,196,48,0.25); position: relative; overflow: hidden; }
+    .hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 60% 40%, rgba(244,196,48,0.07) 0%, transparent 70%); pointer-events: none; }
+    .back-btn { display: inline-flex; align-items: center; gap: 6px; color: #f4c430; text-decoration: none; font-weight: 700; font-size: 0.9rem; margin-bottom: 24px; padding: 6px 14px; border: 1px solid rgba(244,196,48,0.3); border-radius: 20px; transition: background 0.2s; }
+    .back-btn:hover { background: rgba(244,196,48,0.1); }
+    .year-badge { display: inline-block; background: #f4c430; color: #0d1b12; font-family: 'Fredoka One', cursive; font-size: 0.95rem; padding: 4px 14px; border-radius: 20px; margin-bottom: 14px; }
+    .location-icon { font-size: 72px; display: block; margin: 0 auto 16px; filter: drop-shadow(0 0 18px rgba(244,196,48,0.4)); }
+    h1 { font-family: 'Fredoka One', cursive; font-size: clamp(2rem, 6vw, 3.2rem); color: #f4c430; text-shadow: 0 2px 12px rgba(244,196,48,0.3); margin-bottom: 14px; }
+    .description { max-width: 620px; margin: 0 auto; font-size: 1.05rem; line-height: 1.7; color: #c8d8be; font-weight: 600; }
+
+    .section { max-width: 760px; margin: 40px auto 0; padding: 0 20px; }
+    .section-title { font-family: 'Fredoka One', cursive; font-size: 1.5rem; color: #f4c430; margin-bottom: 18px; display: flex; align-items: center; gap: 10px; }
+    .section-title::after { content: ''; flex: 1; height: 2px; background: linear-gradient(90deg, rgba(244,196,48,0.4), transparent); border-radius: 2px; }
+
+    .collectibles-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+    .collectible-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(244,196,48,0.2); border-radius: 16px; padding: 22px 18px; text-align: center; transition: transform 0.2s, border-color 0.2s; }
+    .collectible-card:hover { transform: translateY(-3px); border-color: rgba(244,196,48,0.5); }
+    .collectible-emoji { font-size: 40px; display: block; margin-bottom: 10px; }
+    .collectible-name { font-weight: 800; font-size: 0.95rem; }
+
+    .quiz-list { display: flex; flex-direction: column; gap: 20px; }
+    .quiz-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 22px 20px; }
+    .quiz-question { font-weight: 800; font-size: 1rem; color: #f0e6c8; margin-bottom: 14px; line-height: 1.5; }
+    .quiz-options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .quiz-option { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: 10px; padding: 10px 14px; font-size: 0.9rem; font-weight: 600; color: #c8d8be; cursor: pointer; transition: background 0.18s; text-align: left; }
+    .quiz-option:hover:not(:disabled) { background: rgba(244,196,48,0.1); border-color: rgba(244,196,48,0.4); }
+    .quiz-option.correct { background: rgba(34,197,94,0.15); border-color: rgba(34,197,94,0.5); color: #86efac; }
+    .quiz-option.wrong   { background: rgba(239,68,68,0.12);  border-color: rgba(239,68,68,0.4);  color: #fca5a5; }
+    .quiz-answer-reveal { margin-top: 12px; font-size: 0.88rem; color: #86efac; font-weight: 700; display: none; }
+
+    .resultaat { display: none; background: rgba(255,255,255,0.05); border-radius: 16px; padding: 24px; text-align: center; margin-top: 24px; }
+    .resultaat-titel { font-family: 'Fredoka One', cursive; font-size: 1.8rem; margin-bottom: 8px; }
+    .resultaat-tekst { color: rgba(240,230,200,0.7); margin-bottom: 8px; }
+    .resultaat-punten { font-family: 'Fredoka One', cursive; color: #f4c430; font-size: 1.2rem; }
+
+    .nav-bar { max-width: 760px; margin: 48px auto 0; padding: 0 20px; display: flex; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
+    .nav-link { flex: 1; min-width: 160px; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 20px; border-radius: 14px; font-family: 'Fredoka One', cursive; font-size: 1rem; text-decoration: none; transition: transform 0.18s; }
+    .nav-link:hover { transform: translateY(-2px); }
+    .nav-link.home { background: rgba(244,196,48,0.15); border: 1px solid rgba(244,196,48,0.3); color: #f4c430; }
+    .nav-link.next { background: linear-gradient(135deg, #1a7a4a, #0f5c34); color: #f0e6c8; }
+  </style>
+</head>
+<body>
+
+  <div class="player-balk">
+    <span id="player-name">...</span>
+    <span id="player-points">...</span>
+    <button class="uitloggen-knop" onclick="logUit()">Uitloggen</button>
+  </div>
+
+  <div class="hero">
+    <a href="map.html" class="back-btn">← Terug naar kaart</a>
+    <div class="year-badge">1667</div>
+    <span class="location-icon">🏰</span>
+    <h1>Fort Zeelandia</h1>
+    <p class="description">Het oudste fort van Suriname, gebouwd door de Nederlanders in 1667 aan de oever van de Surinamerivier. Nu een beroemd museum dat de geschiedenis van het land bewaart.</p>
+  </div>
+
+  <div class="section">
+    <h2 class="section-title">🎒 Verzamelobjecten</h2>
+    <div class="collectibles-grid">
+      <div class="collectible-card"><span class="collectible-emoji">🗺️</span><div class="collectible-name">Oude Zeekaart</div></div>
+      <div class="collectible-card"><span class="collectible-emoji">📜</span><div class="collectible-name">Koloniale Brief</div></div>
+      <div class="collectible-card"><span class="collectible-emoji">💣</span><div class="collectible-name">Oud Kanonkogel</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2 class="section-title">🧠 Quizvragen</h2>
+    <div class="quiz-list">
+
+      <div class="quiz-card">
+        <div class="quiz-question">🏰 In welk jaar werd Fort Zeelandia gebouwd?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="answer(this, false)">1492</button>
+          <button class="quiz-option" onclick="answer(this, true)">1667</button>
+          <button class="quiz-option" onclick="answer(this, false)">1750</button>
+          <button class="quiz-option" onclick="answer(this, false)">1800</button>
+        </div>
+        <div class="quiz-answer-reveal">✅ Juist antwoord: 1667</div>
+      </div>
+
+      <div class="quiz-card">
+        <div class="quiz-question">🌊 Aan welke rivier ligt Fort Zeelandia?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="answer(this, false)">Commewijne</button>
+          <button class="quiz-option" onclick="answer(this, false)">Marowijne</button>
+          <button class="quiz-option" onclick="answer(this, true)">Surinamerivier</button>
+          <button class="quiz-option" onclick="answer(this, false)">Saramacca</button>
+        </div>
+        <div class="quiz-answer-reveal">✅ Juist antwoord: Surinamerivier</div>
+      </div>
+
+      <div class="quiz-card">
+        <div class="quiz-question">🏛️ Wat is Fort Zeelandia tegenwoordig?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="answer(this, false)">Een gevangenis</button>
+          <button class="quiz-option" onclick="answer(this, true)">Een museum</button>
+          <button class="quiz-option" onclick="answer(this, false)">Een hotel</button>
+          <button class="quiz-option" onclick="answer(this, false)">Een school</button>
+        </div>
+        <div class="quiz-answer-reveal">✅ Juist antwoord: Een museum</div>
+      </div>
+
+    </div>
+
+    <div class="resultaat" id="resultaat">
+      <div class="resultaat-titel" id="resultaat-titel"></div>
+      <div class="resultaat-tekst" id="resultaat-tekst"></div>
+      <div class="resultaat-punten" id="resultaat-punten"></div>
+    </div>
+  </div>
+
+  <div class="nav-bar">
+    <a href="map.html" class="nav-link home">🏠 Hoofdmenu</a>
+    <a href="de-waterkant.html" class="nav-link next">Volgende: De Waterkant →</a>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script>
+    checkAuth()
+    toonSpelerBalk()
+
+    const LOCATIE_ID = 'fort_zeelandia'
+    const TOTAAL     = 3
+    let score     = 0
+    let beantwoord = 0
+
+    function answer(btn, isCorrect) {
+      const card    = btn.closest('.quiz-card')
+      const allBtns = card.querySelectorAll('.quiz-option')
+      if (allBtns[0].disabled) return
+
+      allBtns.forEach(b => b.disabled = true)
+      btn.classList.add(isCorrect ? 'correct' : 'wrong')
+      if (!isCorrect) {
+        allBtns.forEach(b => { if (b.onclick.toString().includes('true')) b.classList.add('correct') })
+      } else {
+        score++
+      }
+      card.querySelector('.quiz-answer-reveal').style.display = 'block'
+
+      beantwoord++
+      if (beantwoord === TOTAAL) setTimeout(toonResultaat, 700)
+    }
+
+    async function toonResultaat() {
+      const el = document.getElementById('resultaat')
+      el.style.display = 'block'
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+
+      let titel, kleur
+      if (score === TOTAAL)      { titel = 'Goed gedaan! 🎉';    kleur = '#86efac' }
+      else if (score >= 2)       { titel = 'Kan beter! 👍';      kleur = '#fbbf24' }
+      else                       { titel = 'Oefenen maar! 💪';   kleur = '#fca5a5' }
+
+      document.getElementById('resultaat-titel').style.color   = kleur
+      document.getElementById('resultaat-titel').textContent   = titel
+      document.getElementById('resultaat-tekst').textContent   = `${score} van de ${TOTAAL} vragen goed`
+      document.getElementById('resultaat-punten').textContent  = `+${score * 100} punten!`
+
+      try {
+        const speler = await laadSpeler()
+        if (!speler) return
+        const quizResultaten = speler.quizResultaten || {}
+        quizResultaten[LOCATIE_ID] = { score, totaal: TOTAAL, gespeeldOp: new Date().toISOString() }
+        const voltooid = [...new Set([...(speler.completedLocations || []), LOCATIE_ID])]
+        await slaVoortgangOp({
+          quizResultaten,
+          punten:             (speler.punten || 0) + score * 100,
+          completedLocations: voltooid,
+        })
+        document.getElementById('player-points').textContent = ((speler.punten || 0) + score * 100) + ' punten'
+      } catch (e) { console.error(e) }
+    }
+  </script>
+
+</body>
+</html>

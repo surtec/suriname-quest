@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SuriQuest — Inloggen</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: linear-gradient(160deg, #050E28 0%, #0A1E48 50%, #050E28 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Nunito', sans-serif;
+      color: #fff;
+    }
+
+    .kaart {
+      width: 100%;
+      max-width: 420px;
+      padding: 2rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .logo {
+      font-family: 'Fredoka One', cursive;
+      font-size: 52px;
+      color: #f4c430;
+      text-shadow: 3px 3px 0 #8B4513, 0 0 30px rgba(244,196,48,0.3);
+      text-align: center;
+      line-height: 1.1;
+    }
+
+    .subtitel {
+      font-size: 13px;
+      color: #7ec98f;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-top: 4px;
+      text-align: center;
+    }
+
+    .formulier {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 16px;
+      padding: 1.5rem;
+      width: 100%;
+      margin-top: 1.5rem;
+    }
+
+    input {
+      width: 100%;
+      padding: 11px 14px;
+      border-radius: 10px;
+      border: 1.5px solid rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.08);
+      color: #fff;
+      font-family: 'Nunito', sans-serif;
+      font-size: 14px;
+      margin-bottom: 10px;
+      outline: none;
+    }
+    input::placeholder { color: rgba(255,255,255,0.4); }
+    input:focus { border-color: rgba(244,196,48,0.5); }
+
+    .knop-primair {
+      width: 100%;
+      padding: 13px;
+      background: #f4c430;
+      border: none;
+      border-radius: 10px;
+      font-family: 'Fredoka One', cursive;
+      font-size: 20px;
+      color: #1a3a00;
+      cursor: pointer;
+      margin-top: 4px;
+      transition: opacity 0.2s;
+    }
+    .knop-primair:hover { opacity: 0.9; }
+    .knop-primair:disabled { opacity: 0.6; cursor: default; }
+
+    .knop-secundair {
+      width: 100%;
+      padding: 10px;
+      background: transparent;
+      border: 1.5px solid rgba(255,255,255,0.3);
+      border-radius: 10px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 14px;
+      color: rgba(255,255,255,0.7);
+      cursor: pointer;
+      margin-top: 8px;
+    }
+    .knop-secundair:hover { background: rgba(255,255,255,0.05); }
+
+    .fout {
+      color: #e24b4a;
+      font-size: 13px;
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    .naam-veld { display: none; }
+    .naam-veld.zichtbaar { display: block; }
+  </style>
+</head>
+<body>
+
+  <div class="kaart">
+    <div style="font-size:48px;margin-bottom:8px">🌴</div>
+    <div class="logo">SuriQuest<br>2060</div>
+    <div class="subtitel">Ontdek Surinaamse Geschiedenis</div>
+
+    <div class="formulier">
+      <div class="naam-veld" id="naam-veld">
+        <input type="text" id="naam" placeholder="Jouw naam (bijv. Sari)" />
+      </div>
+      <input type="email" id="email" placeholder="E-mailadres" required />
+      <input type="password" id="wachtwoord" placeholder="Wachtwoord" required />
+
+      <button class="knop-primair" id="submit-knop" onclick="submitForm()">Spelen! 🚀</button>
+      <button class="knop-secundair" onclick="wisselModus()">Nieuw account aanmaken →</button>
+
+      <div class="fout" id="fout-bericht"></div>
+    </div>
+  </div>
+
+  <script>
+    let modus = 'login'
+
+    if (localStorage.getItem('token')) window.location.href = '/map.html'
+
+    function wisselModus() {
+      modus = modus === 'login' ? 'register' : 'login'
+      const naamVeld   = document.getElementById('naam-veld')
+      const submitKnop = document.getElementById('submit-knop')
+      const wisselKnop = document.querySelector('.knop-secundair')
+
+      if (modus === 'register') {
+        naamVeld.classList.add('zichtbaar')
+        submitKnop.textContent = 'Account aanmaken ✨'
+        wisselKnop.textContent = '← Terug naar inloggen'
+      } else {
+        naamVeld.classList.remove('zichtbaar')
+        submitKnop.textContent = 'Spelen! 🚀'
+        wisselKnop.textContent = 'Nieuw account aanmaken →'
+      }
+      document.getElementById('fout-bericht').textContent = ''
+    }
+
+    async function submitForm() {
+      const email     = document.getElementById('email').value.trim()
+      const wachtwoord = document.getElementById('wachtwoord').value
+      const foutEl    = document.getElementById('fout-bericht')
+      const knop      = document.getElementById('submit-knop')
+
+      foutEl.textContent = ''
+      knop.disabled = true
+      knop.textContent = 'Even wachten...'
+
+      try {
+        let res, data
+        if (modus === 'login') {
+          res  = await fetch('http://localhost:3001/api/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, wachtwoord })
+          })
+        } else {
+          const naam = document.getElementById('naam').value.trim()
+          if (!naam) { foutEl.textContent = 'Wat is jouw naam?'; knop.disabled = false; knop.textContent = 'Account aanmaken ✨'; return }
+          res = await fetch('http://localhost:3001/api/auth/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ naam, email, wachtwoord })
+          })
+        }
+
+        data = await res.json()
+        if (!res.ok) throw new Error(data.fout || 'Er ging iets fout.')
+
+        localStorage.setItem('token', data.token)
+        localStorage.setItem('gebruiker', JSON.stringify(data.gebruiker))
+        window.location.href = '/map.html'
+      } catch (err) {
+        foutEl.textContent = err.message
+        knop.disabled = false
+        knop.textContent = modus === 'login' ? 'Spelen! 🚀' : 'Account aanmaken ✨'
+      }
+    }
+
+    document.addEventListener('keydown', e => { if (e.key === 'Enter') submitForm() })
+  </script>
+
+</body>
+</html>
