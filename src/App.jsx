@@ -2,49 +2,48 @@
 // Hoofd app — beheert auth state en schakelt tussen Login en Game
 
 import { useState, useEffect } from 'react'
-import { onAuthStateChanged }  from 'firebase/auth'
-import { auth }                from './firebase/config.js'
-import { laadVoortgang, slaVoortgangOp, slaQuizResultaatOp } from './firebase/database.js'
+import { getOpgeslagenGebruiker, logUit } from './api/auth.js'
+import { laadVoortgang, slaVoortgangOp, slaQuizResultaatOp } from './api/database.js'
 import Login    from './ui/Login.jsx'
 import HUD      from './ui/HUD.jsx'
 import PhaserGame from './game/PhaserGame.jsx'
 
 export default function App() {
-  const [gebruiker, setGebruiker]   = useState(null)   // Firebase user
-  const [spelerData, setSpelerData] = useState(null)   // Voortgang uit Firestore
+  const [gebruiker, setGebruiker]   = useState(null)
+  const [spelerData, setSpelerData] = useState(null)
   const [laadStatus, setLaadStatus] = useState('laden') // 'laden' | 'login' | 'spel'
   const [inGame, setInGame]         = useState(false)
 
-  // Luister naar auth veranderingen
+  // Controleer bij opstarten of er een opgeslagen sessie is
   useEffect(() => {
-    const stop = onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        setGebruiker(user)
-        // Laad voortgang uit Firestore
-        const data = await laadVoortgang(user.uid)
-        setSpelerData(data || {
-          naam:        user.displayName || 'Speler',
-          punten:      0, level: 1,
-          collectibles: [],
-          quizResultaten: {},
-          badges: [],
-        })
-        setLaadStatus('spel')
-        setInGame(true)
-      } else {
-        setGebruiker(null)
-        setSpelerData(null)
-        setLaadStatus('login')
-        setInGame(false)
+    async function checkSessie() {
+      const opgeslagen = getOpgeslagenGebruiker()
+      if (opgeslagen) {
+        const data = await laadVoortgang(opgeslagen.uid)
+        if (data) {
+          setGebruiker(opgeslagen)
+          setSpelerData(data)
+          setLaadStatus('spel')
+          setInGame(true)
+          return
+        }
       }
-    })
-    return () => stop()
+      logUit()
+      setLaadStatus('login')
+    }
+    checkSessie()
   }, [])
 
   async function handleIngelogd(user) {
     const data = await laadVoortgang(user.uid)
     setGebruiker(user)
-    setSpelerData(data)
+    setSpelerData(data || {
+      naam: user.naam || 'Speler',
+      punten: 0, level: 1,
+      collectibles: [],
+      quizResultaten: {},
+      badges: [],
+    })
     setLaadStatus('spel')
     setInGame(true)
   }

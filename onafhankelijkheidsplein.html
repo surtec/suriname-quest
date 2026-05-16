@@ -135,6 +135,7 @@
       border-radius: 16px;
       padding: 22px 18px;
       text-align: center;
+      -webkit-backdrop-filter: blur(6px);
       backdrop-filter: blur(6px);
       transition: transform 0.2s, border-color 0.2s;
     }
@@ -238,6 +239,8 @@
     }
     .score-card p { font-weight: 700; color: #f0e6c8; font-size: 1rem; margin-bottom: 8px; }
     .score-points { font-family: 'Fredoka One', cursive; font-size: 2rem; color: #f4c430; }
+
+    .section--sm { margin-top: 32px; }
   </style>
 </head>
 <body>
@@ -319,7 +322,7 @@
     </div>
   </div>
 
-  <div class="section" style="margin-top: 32px;">
+  <div class="section section--sm">
     <div class="score-card">
       <p>Je hebt alle 3 locaties ontdekt!</p>
       <div class="score-points">🌟 Goed gedaan! 🌟</div>

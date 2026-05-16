@@ -392,10 +392,20 @@ export default class QuizScene extends Phaser.Scene {
     })
 
     // Titel — springt in na de sterren
-    const titelTekst = this.add.text(W / 2, 205, sterren === 3 ? 'PERFECT! 🎉' : 'GOED GEDAAN!', {
+    const totaal = this.vragen.length
+    const titelOpties = {
+      goed:    { tekst: 'GOED GEDAAN! 🎉', kleur: '#f4c430' },
+      medium:  { tekst: 'KAN BETER! 👍',   kleur: '#ff9f4a' },
+      slecht:  { tekst: 'OEFENEN MAAR! 💪', kleur: '#e24b4a' },
+    }
+    const titelKeuze = this.score === totaal ? titelOpties.goed
+                     : this.score >= Math.ceil(totaal / 2) ? titelOpties.medium
+                     : titelOpties.slecht
+
+    const titelTekst = this.add.text(W / 2, 205, titelKeuze.tekst, {
       fontFamily: "'Fredoka One', cursive",
       fontSize:   '28px',
-      color:      '#f4c430',
+      color:      titelKeuze.kleur,
       stroke:     '#8B4513',
       strokeThickness: 3,
     }).setOrigin(0.5).setScale(0)
@@ -439,7 +449,16 @@ export default class QuizScene extends Phaser.Scene {
     }).setOrigin(0.5)
 
     // Uitleg tekst (Snufkin stijl)
-    this.add.text(W / 2, 368, `Je hebt ${puntBonus} punten verdiend!\nJe leert steeds meer over Suriname.`, {
+    const berichtOpties = [
+      'Wauw, alles goed! Jij bent een echte Suriname-kenner! 🌟',
+      'Bijna perfect! Nog een keer oefenen en je weet het helemaal! 📚',
+      'Niet erg, iedereen leert! Probeer het nog eens! 💡',
+    ]
+    const bericht = this.score === totaal ? berichtOpties[0]
+                  : this.score >= Math.ceil(totaal / 2) ? berichtOpties[1]
+                  : berichtOpties[2]
+
+    this.add.text(W / 2, 368, `Je hebt ${puntBonus} punten verdiend!\n${bericht}`, {
       fontFamily: "'Lora', serif",
       fontSize:   '12px',
       fontStyle:  'italic',

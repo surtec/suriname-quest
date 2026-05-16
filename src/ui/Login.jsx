@@ -2,7 +2,7 @@
 // Login en registratie scherm
 
 import { useState } from 'react'
-import { logIn, registreer } from '../firebase/auth.js'
+import { logIn, registreer } from '../api/auth.js'
 
 const stijl = {
   wrapper: {
@@ -77,7 +77,7 @@ export default function Login({ onIngelogd }) {
       const gebruiker = await logIn(email, wachtwoord)
       onIngelogd(gebruiker)
     } catch (err) {
-      setFout(foutVertaling(err.code))
+      setFout(err.message || 'Er ging iets fout. Probeer opnieuw.')
     } finally {
       setLaden(false)
     }
@@ -92,20 +92,9 @@ export default function Login({ onIngelogd }) {
       const gebruiker = await registreer(naam, email, wachtwoord)
       onIngelogd(gebruiker)
     } catch (err) {
-      setFout(foutVertaling(err.code))
+      setFout(err.message || 'Er ging iets fout. Probeer opnieuw.')
     } finally {
       setLaden(false)
-    }
-  }
-
-  function foutVertaling(code) {
-    switch (code) {
-      case 'auth/user-not-found':      return 'Dit account bestaat niet. Maak een nieuw account aan!'
-      case 'auth/wrong-password':      return 'Verkeerd wachtwoord. Probeer opnieuw!'
-      case 'auth/email-already-in-use':return 'Dit e-mailadres is al in gebruik.'
-      case 'auth/weak-password':       return 'Wachtwoord moet minstens 6 tekens zijn.'
-      case 'auth/invalid-email':       return 'Ongeldig e-mailadres.'
-      default:                          return 'Er ging iets fout. Probeer opnieuw.'
     }
   }
 
