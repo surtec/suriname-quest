@@ -83,65 +83,21 @@
       background: linear-gradient(90deg, rgba(244,196,48,0.5), transparent); border-radius: 2px;
     }
 
-    /* ── VOLGORDE SPEL ── */
-    .volgorde-spel {
-      background: rgba(255,255,255,0.03);
-      border: 2px solid rgba(244,196,48,0.35);
-      border-radius: 24px; padding: 26px;
-    }
-    .spel-instructie {
-      font-weight: 700; font-size: 0.95rem;
-      color: rgba(240,230,200,0.75); margin-bottom: 6px; text-align: center;
-    }
-    .spel-sub {
-      font-size: 0.8rem; font-weight: 600; color: rgba(240,230,200,0.4);
-      text-align: center; margin-bottom: 20px;
-    }
-    .volgorde-items {
-      display: flex; flex-direction: column; gap: 10px;
-    }
-    .volgorde-item {
-      background: rgba(255,255,255,0.06);
-      border: 2px solid rgba(255,255,255,0.14);
-      border-radius: 14px; padding: 14px 18px;
-      font-size: 0.92rem; font-weight: 700; color: #d8e8c8;
-      cursor: pointer; text-align: left;
-      transition: background 0.18s, border-color 0.18s, transform 0.12s;
-      font-family: 'Nunito', sans-serif;
-      display: flex; align-items: center; gap: 12px;
-    }
-    .volgorde-item:hover:not(:disabled):not(.vi-correct):not(.vi-wrong) {
-      background: rgba(244,196,48,0.1); border-color: rgba(244,196,48,0.45);
-      transform: translateX(4px);
-    }
-    .volgorde-item.vi-geselecteerd {
-      background: rgba(244,196,48,0.15); border-color: rgba(244,196,48,0.6);
-    }
-    .volgorde-item.vi-correct {
-      background: rgba(34,197,94,0.18); border-color: #22c55e; color: #86efac;
-      cursor: default; animation: correct-pop 0.35s ease;
-    }
-    .volgorde-item.vi-wrong {
-      animation: shake 0.4s ease;
-    }
-    .vi-num {
-      font-family: 'Fredoka One', cursive; font-size: 1.1rem;
-      color: rgba(244,196,48,0.5); min-width: 28px; text-align: center;
-    }
-    .volgorde-item.vi-correct .vi-num { color: #86efac; }
+    /* ── KANON SPEL ── */
+    .kanonspel-wrap { background: rgba(244,196,48,0.04); border: 1px solid rgba(244,196,48,0.22); border-radius: 18px; padding: 16px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+    .kanonspel-hud { display: flex; gap: 24px; font-family: 'Fredoka One', cursive; font-size: 1.05rem; color: #f0e6c8; }
+    .ks-canvas-wrap { width: 100%; max-width: 380px; border-radius: 12px; overflow: hidden; border: 2px solid rgba(244,196,48,0.25); background: #050e1a; }
+    #kanonCanvas { display: block; width: 100%; height: auto; touch-action: none; cursor: crosshair; }
+    .ks-start-btn { background: linear-gradient(135deg, #f4c430, #e0a800); border: none; border-radius: 12px; padding: 11px 30px; font-family: 'Fredoka One', cursive; font-size: 1.3rem; color: #0a1a0e; cursor: pointer; transition: opacity 0.2s, transform 0.1s; }
+    .ks-start-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+    .ks-start-btn:disabled { opacity: 0.55; cursor: default; transform: none; }
+    .kanonspel-klaar { display: none; text-align: center; padding: 6px 0; }
+    .ksk-score { font-family: 'Fredoka One', cursive; font-size: 1.6rem; color: var(--accent); }
+    .ksk-feit { font-size: 0.82rem; color: rgba(244,196,48,0.75); margin-top: 8px; font-weight: 700; line-height: 1.5; background: rgba(244,196,48,0.07); padding: 10px; border-radius: 10px; }
+    .ksk-replay { margin-top: 10px; background: none; border: 1.5px solid rgba(244,196,48,0.4); border-radius: 10px; padding: 8px 20px; font-family: 'Fredoka One', cursive; font-size: 1.05rem; color: var(--accent); cursor: pointer; }
+    .ksk-replay:hover { background: rgba(244,196,48,0.1); }
     @keyframes correct-pop { 0%{transform:scale(1)} 50%{transform:scale(1.03)} 100%{transform:scale(1)} }
     @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
-
-    .volgorde-score {
-      text-align: center; margin-top: 18px;
-      font-family: 'Fredoka One', cursive; font-size: 1.15rem;
-      min-height: 32px; transition: opacity 0.3s;
-    }
-    .spel-pogingen {
-      text-align: center; margin-top: 8px;
-      font-size: 0.8rem; font-weight: 700;
-      color: rgba(240,230,200,0.4);
-    }
 
     /* ── FIGUUR KAART ── */
     .figuur-card {
@@ -252,32 +208,24 @@
     <p class="description">Het oudste fort van Suriname — veroverd door Abraham Crijnssen in 1667. Ooit een verdedigingsfestung, later een gevangenis, en nu het trotse Surinaams Museum.</p>
   </div>
 
-  <!-- Volgorde spel -->
+  <!-- Mini-game: Kanon Spel -->
   <div class="section">
-    <h2 class="section-title">🎮 Tijdlijn Spel — Zet in volgorde!</h2>
-    <div class="volgorde-spel">
-      <div class="spel-instructie">Klik de gebeurtenissen in de JUISTE volgorde van oud naar nieuw!</div>
-      <div class="spel-sub">Begin met wat het EERST gebeurde. Je hebt 3 pogingen per beurt.</div>
-      <div class="volgorde-items" id="volgorde-items">
-        <button type="button" class="volgorde-item" data-order="3">
-          <span class="vi-num">?</span>
-          <span>🕊️ Vrede met Inheemsen — Van Sommelsdijck</span>
-        </button>
-        <button type="button" class="volgorde-item" data-order="1">
-          <span class="vi-num">?</span>
-          <span>🏴 Engelsen bouwen Fort Willoughby</span>
-        </button>
-        <button type="button" class="volgorde-item" data-order="4">
-          <span class="vi-num">?</span>
-          <span>🏛️ Fort Zeelandia wordt het Surinaams Museum</span>
-        </button>
-        <button type="button" class="volgorde-item" data-order="2">
-          <span class="vi-num">?</span>
-          <span>🏰 Abraham Crijnssen verovert Suriname</span>
-        </button>
+    <h2 class="section-title">🎮 Kanon Spel — Vernietig de schepen!</h2>
+    <div class="kanonspel-wrap">
+      <div class="kanonspel-hud">
+        <span id="ks-levens">❤️❤️❤️</span>
+        <span>⏱️ <span id="ks-timer">35</span>s</span>
+        <span>💥 <span id="ks-score">0</span></span>
       </div>
-      <div class="volgorde-score" id="volgorde-score"></div>
-      <div class="spel-pogingen" id="spel-pogingen">💡 Tip: klik wat het EERSTE is gebeurd!</div>
+      <div class="ks-canvas-wrap">
+        <canvas id="kanonCanvas"></canvas>
+      </div>
+      <button type="button" class="ks-start-btn" id="ks-start-btn" onclick="startKanonSpel()">▶ Speel!</button>
+      <div class="kanonspel-klaar" id="kanonspel-klaar">
+        <div class="ksk-score" id="ksk-score">💥 0 pts!</div>
+        <div class="ksk-feit">🏰 Wist je dat? In 1667 veroverde Abraham Crijnssen met de Zeeuwse vloot Fort Willoughby op de Engelsen. Het werd herdoopt tot Fort Zeelandia!</div>
+        <button type="button" class="ksk-replay" onclick="resetKanonSpel()">↺ Opnieuw</button>
+      </div>
     </div>
   </div>
 
@@ -398,46 +346,116 @@
     let beantwoord = 0
     let streak     = 0
 
-    /* ── VOLGORDE SPEL ── */
-    let verwachtVolgorde = 1
-    const VOLGORDE_TOTAAL = 4
-    let spelFouten = 0
-    const MAX_FOUTEN = 3
-
-    document.querySelectorAll('.volgorde-item').forEach(btn => {
-      btn.addEventListener('click', () => {
-        if (btn.classList.contains('vi-correct') || verwachtVolgorde > VOLGORDE_TOTAAL) return
-        const order = parseInt(btn.dataset.order)
-        if (order === verwachtVolgorde) {
-          btn.querySelector('.vi-num').textContent = verwachtVolgorde
-          btn.classList.add('vi-correct')
-          btn.disabled = true
-          verwachtVolgorde++
-          if (verwachtVolgorde > VOLGORDE_TOTAAL) {
-            const scoreEl = document.getElementById('volgorde-score')
-            if (spelFouten === 0) {
-              scoreEl.innerHTML = '🏆 <span style="color:#f4c430">Perfect! Geen fouten!</span>'
-            } else if (spelFouten <= 2) {
-              scoreEl.innerHTML = '🎉 <span style="color:#86efac">Goed gedaan! Tijdlijn klopt!</span>'
-            } else {
-              scoreEl.innerHTML = '✅ <span style="color:#fbbf24">Gelukt! Probeer volgende keer zonder fouten!</span>'
-            }
-            document.getElementById('spel-pogingen').textContent = `Je maakte ${spelFouten} fout${spelFouten === 1 ? '' : 'en'}.`
+    /* ── KANON SPEL ── */
+    ;(function(){
+      const CW=380,CH=300
+      let cv,cx,running=false,aid
+      let ksScore,ksLevens,ksTimer,ksIv,ships,balls,lastSpawn
+      function mkShip(){
+        const types=[{e:'⛵',w:50,h:40},{e:'🚢',w:60,h:44}]
+        const t=types[Math.floor(Math.random()*types.length)]
+        const y=50+Math.random()*120
+        const spd=1.5+Math.random()*1.5+(35-(ksTimer||35))*0.05
+        return{x:CW+t.w,y,vx:-spd,...t,hit:false,hitT:0}
+      }
+      function drawBg(){
+        const sky=cx.createLinearGradient(0,0,0,CH*0.65)
+        sky.addColorStop(0,'#0a1520');sky.addColorStop(1,'#1a3010')
+        cx.fillStyle=sky;cx.fillRect(0,0,CW,CH*0.65)
+        const sea=cx.createLinearGradient(0,CH*0.65,0,CH)
+        sea.addColorStop(0,'#0a2040');sea.addColorStop(1,'#061228')
+        cx.fillStyle=sea;cx.fillRect(0,CH*0.65,CW,CH*0.35)
+        cx.strokeStyle='rgba(72,120,220,0.1)';cx.lineWidth=1
+        for(let y=CH*0.68;y<CH;y+=18){cx.beginPath();cx.moveTo(0,y);cx.lineTo(CW,y);cx.stroke()}
+        cx.fillStyle='#3a2810';cx.fillRect(0,CH-52,CW,52)
+        cx.fillStyle='#4a3820'
+        for(let x=0;x<CW;x+=30){cx.fillRect(x,CH-64,22,12)}
+        cx.save();cx.translate(CW/2,CH-60)
+        cx.fillStyle='#7a6030';cx.beginPath();cx.ellipse(0,0,18,12,0,0,Math.PI*2);cx.fill()
+        cx.fillStyle='#4a4030';cx.fillRect(-6,-24,12,24);cx.restore()
+      }
+      function init(){
+        cv=document.getElementById('kanonCanvas')
+        cv.width=CW;cv.height=CH;cx=cv.getContext('2d')
+        drawBg()
+        cx.fillStyle='rgba(0,0,0,0.5)';cx.fillRect(0,0,CW,CH)
+        cx.fillStyle='#f0e6c8';cx.font='bold 15px Nunito,sans-serif';cx.textAlign='center'
+        cx.fillText('Klik ▶ Speel! om te starten',CW/2,CH/2-10)
+        cx.font='13px Nunito,sans-serif';cx.fillStyle='rgba(244,196,48,0.7)'
+        cx.fillText('Klik op vijandelijke schepen! ⛵',CW/2,CH/2+16)
+      }
+      window.startKanonSpel=function(){
+        ksScore=0;ksLevens=3;ksTimer=35;ships=[];balls=[];lastSpawn=0
+        document.getElementById('ks-score').textContent=ksScore
+        document.getElementById('ks-levens').textContent='❤️❤️❤️'
+        document.getElementById('ks-timer').textContent=ksTimer
+        document.getElementById('ks-start-btn').disabled=true
+        document.getElementById('kanonspel-klaar').style.display='none'
+        cv.addEventListener('pointerdown',onClick)
+        ksIv=setInterval(()=>{
+          ksTimer--;document.getElementById('ks-timer').textContent=ksTimer
+          if(ksTimer<=0)stopKanon()
+        },1000)
+        running=true;aid=requestAnimationFrame(loop)
+      }
+      function onClick(e){
+        if(!running)return
+        const r=cv.getBoundingClientRect()
+        const mx=(e.clientX-r.left)*(CW/r.width),my=(e.clientY-r.top)*(CH/r.height)
+        ships.forEach(s=>{
+          if(s.hit)return
+          if(mx>s.x-s.w/2&&mx<s.x+s.w/2&&my>s.y-s.h/2&&my<s.y+s.h/2){
+            s.hit=true;s.hitT=22;ksScore+=10
+            document.getElementById('ks-score').textContent=ksScore
           }
-        } else {
-          btn.classList.add('vi-wrong')
-          spelFouten++
-          const pogEl = document.getElementById('spel-pogingen')
-          pogEl.textContent = `❌ Dat is niet de eerste! Fouten: ${spelFouten}. Klik wat eerder gebeurde.`
-          setTimeout(() => {
-            btn.classList.remove('vi-wrong')
-            if (verwachtVolgorde <= VOLGORDE_TOTAAL) {
-              pogEl.textContent = `💡 Kies de ${verwachtVolgorde}e gebeurtenis in de tijd!`
-            }
-          }, 500)
+        })
+        balls.push({x:CW/2,y:CH-60,tx:mx,ty:my,done:false})
+      }
+      function loop(){
+        if(!running)return
+        const now=performance.now()
+        const gap=Math.max(1000,2800-(35-ksTimer)*55)
+        if(now-lastSpawn>gap){ships.push(mkShip());lastSpawn=now}
+        ships.forEach(s=>{if(!s.hit)s.x+=s.vx;if(s.hitT>0)s.hitT--})
+        const escaped=ships.filter(s=>s.x<-70&&!s.hit)
+        if(escaped.length){
+          escaped.forEach(s=>ships.splice(ships.indexOf(s),1))
+          ksLevens=Math.max(0,ksLevens-escaped.length)
+          document.getElementById('ks-levens').textContent='❤️'.repeat(ksLevens)+'🖤'.repeat(3-ksLevens)
+          if(ksLevens<=0){stopKanon();return}
         }
-      })
-    })
+        ships=ships.filter(s=>!(s.hit&&s.hitT<=0)&&s.x>-110)
+        balls.forEach(b=>{const dx=b.tx-b.x,dy=b.ty-b.y,d=Math.hypot(dx,dy);if(d<8)b.done=true;else{b.x+=dx/d*9;b.y+=dy/d*9}})
+        balls=balls.filter(b=>!b.done&&b.y>0)
+        drawBg()
+        cx.fillStyle='rgba(255,255,200,0.9)'
+        balls.forEach(b=>{cx.beginPath();cx.arc(b.x,b.y,5,0,Math.PI*2);cx.fill()})
+        ships.forEach(s=>{
+          cx.save();cx.font=s.h+'px serif';cx.textAlign='center';cx.textBaseline='middle'
+          if(s.hitT>0){
+            cx.globalAlpha=0.6+0.4*Math.sin(s.hitT);cx.fillText('💥',s.x,s.y)
+            if(s.hitT===18){cx.font='bold 16px Fredoka One,cursive';cx.globalAlpha=1;cx.fillStyle='rgba(244,196,48,0.95)';cx.fillText('+10',s.x,s.y-32)}
+          } else cx.fillText(s.e,s.x,s.y)
+          cx.restore()
+        })
+        cx.fillStyle='rgba(0,0,0,0.3)';cx.fillRect(0,0,CW,30)
+        cx.fillStyle='#f0e6c8';cx.font='bold 13px Fredoka One,cursive';cx.textAlign='center'
+        cx.fillText('⏱️ '+ksTimer+'s',CW/2-70,21)
+        cx.fillText('💥 '+ksScore,CW/2,21)
+        cx.fillText('❤️'.repeat(Math.max(0,ksLevens))+'🖤'.repeat(Math.max(0,3-ksLevens)),CW/2+65,21)
+        aid=requestAnimationFrame(loop)
+      }
+      function stopKanon(){
+        running=false;cancelAnimationFrame(aid);clearInterval(ksIv)
+        cv.removeEventListener('pointerdown',onClick)
+        const msg=ksScore>=80?`🏆 ${ksScore} pts — Fort verdedigd!`:ksScore>=40?`🎉 ${ksScore} pts — Goed gevochten!`:`⚔️ ${ksScore} pts — Oefenen maar!`
+        document.getElementById('ksk-score').textContent=msg
+        document.getElementById('kanonspel-klaar').style.display='block'
+        document.getElementById('ks-start-btn').disabled=false
+      }
+      window.resetKanonSpel=function(){document.getElementById('kanonspel-klaar').style.display='none';window.startKanonSpel()}
+      init()
+    })()
 
     /* ── QUIZ ── */
     function floatPunten(btn) {

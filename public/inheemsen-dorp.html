@@ -123,54 +123,21 @@
     .feit-kop { font-family: 'Fredoka One', cursive; font-size: 0.9rem; color: var(--accent); margin-bottom: 4px; }
     .feit-text { font-size: 0.88rem; color: rgba(240,230,200,0.85); line-height: 1.6; font-weight: 600; }
 
-    /* ── VERBIND SPEL (klik-koppel mini-game) ── */
-    .verbind-spel {
-      background: rgba(255,255,255,0.03);
-      border: 2px solid rgba(74,222,128,0.3);
-      border-radius: 22px; padding: 24px;
-    }
-    .verbind-instructie {
-      font-weight: 700; font-size: 0.92rem;
-      color: rgba(240,230,200,0.7); margin-bottom: 18px; text-align: center;
-    }
-    .verbind-rijen {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
-    }
-    .verbind-kolom { display: flex; flex-direction: column; gap: 10px; }
-    .verbind-kolom-label {
-      font-family: 'Fredoka One', cursive; font-size: 0.8rem;
-      color: rgba(74,222,128,0.6); text-align: center; margin-bottom: 4px;
-    }
-    .verbind-btn {
-      background: rgba(255,255,255,0.06);
-      border: 2px solid rgba(255,255,255,0.14);
-      border-radius: 12px; padding: 12px 10px;
-      font-size: 0.84rem; font-weight: 700;
-      color: #c8d8be; cursor: pointer; text-align: center;
-      transition: background 0.18s, border-color 0.18s, transform 0.12s;
-      font-family: 'Nunito', sans-serif; line-height: 1.4;
-    }
-    .verbind-btn:hover:not(:disabled):not(.goed):not(.fout) {
-      background: rgba(74,222,128,0.1); border-color: rgba(74,222,128,0.4); transform: scale(1.03);
-    }
-    .verbind-btn.geselecteerd {
-      background: rgba(74,222,128,0.18); border-color: rgba(74,222,128,0.7);
-      color: var(--accent); transform: scale(1.04);
-    }
-    .verbind-btn.goed {
-      background: rgba(34,197,94,0.2); border-color: #22c55e; color: #86efac; cursor: default;
-      animation: correct-pop 0.35s ease;
-    }
-    .verbind-btn.fout {
-      animation: shake 0.4s ease;
-    }
+    /* ── VIS SPEL ── */
+    .visspel-wrap { background: rgba(34,197,94,0.05); border: 1px solid rgba(34,197,94,0.22); border-radius: 18px; padding: 16px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+    .visspel-hud { display: flex; gap: 32px; font-family: 'Fredoka One', cursive; font-size: 1.1rem; color: #f0e6c8; }
+    .vs-canvas-wrap { width: 100%; max-width: 380px; border-radius: 12px; overflow: hidden; border: 2px solid rgba(34,197,94,0.3); background: #020c06; }
+    #visCanvas { display: block; width: 100%; height: auto; touch-action: none; cursor: crosshair; }
+    .vs-start-btn { background: linear-gradient(135deg, #22c55e, #16a34a); border: none; border-radius: 12px; padding: 11px 30px; font-family: 'Fredoka One', cursive; font-size: 1.3rem; color: #071a0a; cursor: pointer; transition: opacity 0.2s, transform 0.1s; }
+    .vs-start-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+    .vs-start-btn:disabled { opacity: 0.55; cursor: default; transform: none; }
+    .visspel-klaar { display: none; text-align: center; padding: 6px 0; }
+    .vsk-score { font-family: 'Fredoka One', cursive; font-size: 1.7rem; color: var(--accent); }
+    .vsk-feit { font-size: 0.82rem; color: rgba(74,222,128,0.75); margin-top: 8px; font-weight: 700; line-height: 1.5; background: rgba(74,222,128,0.07); padding: 10px; border-radius: 10px; }
+    .vsk-replay { margin-top: 10px; background: none; border: 1.5px solid rgba(74,222,128,0.4); border-radius: 10px; padding: 8px 20px; font-family: 'Fredoka One', cursive; font-size: 1.05rem; color: var(--accent); cursor: pointer; }
+    .vsk-replay:hover { background: rgba(74,222,128,0.1); }
     @keyframes correct-pop { 0%{transform:scale(1)} 50%{transform:scale(1.08)} 100%{transform:scale(1)} }
     @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} }
-    .verbind-resultaat {
-      text-align: center; margin-top: 18px;
-      font-family: 'Fredoka One', cursive; font-size: 1.1rem;
-      color: #86efac; min-height: 28px;
-    }
 
     /* ── QUIZ ── */
     .quiz-progress-wrap { margin-bottom: 20px; }
@@ -345,28 +312,23 @@
     </div>
   </div>
 
-  <!-- Mini-game: Verbind spel -->
+  <!-- Mini-game: Vis Spel -->
   <div class="section">
-    <h2 class="section-title">🎮 Verbind Spel — Klik het juiste paar!</h2>
-    <div class="verbind-spel">
-      <div class="verbind-instructie">Klik eerst een woord links, dan de bijpassende omschrijving rechts!</div>
-      <div class="verbind-rijen">
-        <div class="verbind-kolom">
-          <div class="verbind-kolom-label">🏷️ Woord</div>
-          <button type="button" class="verbind-btn" data-id="1" data-side="naam">🛶 Korjaal</button>
-          <button type="button" class="verbind-btn" data-id="2" data-side="naam">🧺 Matapi</button>
-          <button type="button" class="verbind-btn" data-id="3" data-side="naam">🌿 Nekoe</button>
-          <button type="button" class="verbind-btn" data-id="4" data-side="naam">🍺 Kasiri</button>
-        </div>
-        <div class="verbind-kolom">
-          <div class="verbind-kolom-label">📖 Betekenis</div>
-          <button type="button" class="verbind-btn" data-id="3" data-side="omschr">Lianensap dat vissen verdooft</button>
-          <button type="button" class="verbind-btn" data-id="1" data-side="omschr">Boot van uitgehakte boomstam</button>
-          <button type="button" class="verbind-btn" data-id="4" data-side="omschr">Alcoholische drank van de Inheemsen</button>
-          <button type="button" class="verbind-btn" data-id="2" data-side="omschr">Cassavepers voor het maken van brood</button>
-        </div>
+    <h2 class="section-title">🎮 Vis Spel — Vang de vissen!</h2>
+    <div class="visspel-wrap">
+      <div class="visspel-hud">
+        <span>⏱️ <span id="vs-timer">35</span>s</span>
+        <span>🎣 <span id="vs-score">0</span> pts</span>
       </div>
-      <div class="verbind-resultaat" id="verbind-resultaat"></div>
+      <div class="vs-canvas-wrap">
+        <canvas id="visCanvas"></canvas>
+      </div>
+      <button type="button" class="vs-start-btn" id="vs-start-btn" onclick="startVisSpel()">▶ Vissen!</button>
+      <div class="visspel-klaar" id="visspel-klaar">
+        <div class="vsk-score" id="vsk-score">🐟 0 punten!</div>
+        <div class="vsk-feit">🏹 Wist je dat? Inheemsen gebruikten nekoe-sap om vissen te verdoven — ze dreven dan vanzelf omhoog!</div>
+        <button type="button" class="vsk-replay" onclick="resetVisSpel()">↺ Opnieuw</button>
+      </div>
     </div>
   </div>
 
@@ -463,43 +425,107 @@
     let beantwoord = 0
     let streak     = 0
 
-    /* ── VERBIND MINI-GAME ── */
-    let geselecteerdNaam = null
-    let verbindScore = 0
-    const verbindTotaal = 4
-
-    document.querySelectorAll('.verbind-btn[data-side="naam"]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        if (btn.classList.contains('goed')) return
-        document.querySelectorAll('.verbind-btn[data-side="naam"]').forEach(b => b.classList.remove('geselecteerd'))
-        geselecteerdNaam = btn
-        btn.classList.add('geselecteerd')
-      })
-    })
-
-    document.querySelectorAll('.verbind-btn[data-side="omschr"]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        if (!geselecteerdNaam || btn.classList.contains('goed')) return
-        if (geselecteerdNaam.dataset.id === btn.dataset.id) {
-          geselecteerdNaam.classList.remove('geselecteerd')
-          geselecteerdNaam.classList.add('goed')
-          geselecteerdNaam.disabled = true
-          btn.classList.add('goed')
-          btn.disabled = true
-          geselecteerdNaam = null
-          verbindScore++
-          if (verbindScore === verbindTotaal) {
-            document.getElementById('verbind-resultaat').textContent = '🎉 Super! Je hebt alle paren gevonden!'
-          }
-        } else {
-          geselecteerdNaam.classList.add('fout')
-          btn.classList.add('fout')
-          const n = geselecteerdNaam
-          setTimeout(() => { n.classList.remove('fout', 'geselecteerd'); btn.classList.remove('fout') }, 500)
-          geselecteerdNaam = null
+    /* ── VIS SPEL ── */
+    ;(function(){
+      const CW=380,CH=300
+      const PADS=[{x:75,y:110},{x:190,y:95},{x:305,y:110},{x:75,y:210},{x:190,y:225},{x:305,y:210}]
+      const FISH=[{e:'🐟',pts:10,dur:1500},{e:'🐠',pts:15,dur:1100},{e:'🦐',pts:20,dur:900}]
+      let cv,cx,running=false,aid
+      let vsScore,vsTimer,vsIv,pads,lastSpawn
+      function mkP(p){return{...p,r:34,fish:null,t:0,maxT:0,pop:0,flash:0,fpts:0}}
+      function bg(){
+        const g=cx.createLinearGradient(0,0,0,CH)
+        g.addColorStop(0,'#04200b');g.addColorStop(1,'#07350f')
+        cx.fillStyle=g;cx.fillRect(0,0,CW,CH)
+        cx.strokeStyle='rgba(34,197,94,0.07)';cx.lineWidth=1
+        for(let y=22;y<CH;y+=28){cx.beginPath();cx.moveTo(0,y);cx.lineTo(CW,y);cx.stroke()}
+      }
+      function drawPad(p){
+        cx.save();cx.beginPath();cx.ellipse(p.x,p.y,p.r,p.r*0.55,0,0,Math.PI*2)
+        cx.fillStyle=p.fish?'rgba(22,163,74,0.45)':'rgba(10,80,30,0.55)'
+        cx.strokeStyle=p.fish?'rgba(74,222,128,0.65)':'rgba(20,100,50,0.5)'
+        cx.lineWidth=2;cx.fill();cx.stroke();cx.restore()
+        if(p.fish&&p.pop>0.05){
+          cx.save();cx.translate(p.x,p.y-p.r*0.25)
+          cx.scale(Math.min(1,p.pop),Math.min(1,p.pop))
+          cx.font='26px serif';cx.textAlign='center';cx.textBaseline='middle'
+          cx.fillText(p.fish.e,0,0);cx.restore()
         }
-      })
-    })
+        if(p.flash>0){
+          cx.save();cx.font='bold 15px sans-serif'
+          cx.fillStyle=`rgba(244,196,48,${p.flash/25})`
+          cx.textAlign='center';cx.fillText('+'+p.fpts,p.x,p.y-p.r-10);cx.restore()
+          p.flash--
+        }
+      }
+      function init(){
+        cv=document.getElementById('visCanvas')
+        cv.width=CW;cv.height=CH;cx=cv.getContext('2d')
+        bg()
+        cx.fillStyle='rgba(0,0,0,0.48)';cx.fillRect(0,0,CW,CH)
+        cx.fillStyle='#f0e6c8';cx.font='bold 15px Nunito,sans-serif';cx.textAlign='center'
+        cx.fillText('Klik ▶ Vissen! om te starten',CW/2,CH/2-10)
+        cx.font='13px Nunito,sans-serif';cx.fillStyle='rgba(74,222,128,0.7)'
+        cx.fillText('Klik op vissen om ze te vangen 🐟',CW/2,CH/2+16)
+      }
+      window.startVisSpel=function(){
+        vsScore=0;vsTimer=35;pads=PADS.map(mkP);lastSpawn=0
+        document.getElementById('vs-score').textContent=vsScore
+        document.getElementById('vs-timer').textContent=vsTimer
+        document.getElementById('vs-start-btn').disabled=true
+        document.getElementById('visspel-klaar').style.display='none'
+        cv.addEventListener('pointerdown',clickFish)
+        vsIv=setInterval(()=>{
+          vsTimer--;document.getElementById('vs-timer').textContent=vsTimer
+          if(vsTimer<=0)stopVis()
+        },1000)
+        running=true;aid=requestAnimationFrame(loop)
+      }
+      function clickFish(e){
+        if(!running)return
+        const r=cv.getBoundingClientRect()
+        const mx=(e.clientX-r.left)*(CW/r.width),my=(e.clientY-r.top)*(CH/r.height)
+        pads.forEach(p=>{
+          if(!p.fish||p.flash>0)return
+          if(Math.hypot(mx-p.x,my-p.y)<p.r+10){
+            p.fpts=p.fish.pts;p.flash=25;p.pop=0;p.fish=null
+            vsScore+=p.fpts;document.getElementById('vs-score').textContent=vsScore
+          }
+        })
+      }
+      function loop(){
+        if(!running)return
+        const now=performance.now()
+        const gap=Math.max(650,1600-(35-vsTimer)*22)
+        if(now-lastSpawn>gap){
+          const free=pads.filter(p=>!p.fish&&p.flash<=0)
+          if(free.length){
+            const p=free[Math.floor(Math.random()*free.length)]
+            const ft=FISH[Math.floor(Math.random()*FISH.length)]
+            p.fish=ft;p.t=0;p.maxT=ft.dur+Math.random()*400;p.pop=0;lastSpawn=now
+          }
+        }
+        pads.forEach(p=>{
+          if(p.fish){p.t+=16;p.pop=Math.min(1.1,p.pop+0.09);if(p.t>=p.maxT){p.fish=null;p.pop=0}}
+        })
+        bg();pads.forEach(drawPad)
+        cx.fillStyle='rgba(0,0,0,0.28)';cx.fillRect(0,0,CW,30)
+        cx.fillStyle='#f0e6c8';cx.font='bold 14px Fredoka One,cursive';cx.textAlign='center'
+        cx.fillText('⏱️ '+vsTimer+'s',CW/2-55,21);cx.fillText('🎣 '+vsScore,CW/2+55,21)
+        if(vsTimer<=8){cx.fillStyle=`rgba(239,68,68,${0.15+0.12*Math.sin(Date.now()/150)})`;cx.fillRect(0,0,CW,CH)}
+        aid=requestAnimationFrame(loop)
+      }
+      function stopVis(){
+        running=false;cancelAnimationFrame(aid);clearInterval(vsIv)
+        cv.removeEventListener('pointerdown',clickFish)
+        const msg=vsScore>=120?`🏆 ${vsScore} pts — Geweldig visser!`:vsScore>=70?`🎉 ${vsScore} pts — Goed gedaan!`:`🐟 ${vsScore} pts — Oefenen maar!`
+        document.getElementById('vsk-score').textContent=msg
+        document.getElementById('visspel-klaar').style.display='block'
+        document.getElementById('vs-start-btn').disabled=false
+      }
+      window.resetVisSpel=function(){document.getElementById('visspel-klaar').style.display='none';window.startVisSpel()}
+      init()
+    })()
 
     /* ── QUIZ ── */
     function floatPunten(btn) {

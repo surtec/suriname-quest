@@ -120,73 +120,21 @@
     .figuur-rol { font-size: 0.78rem; font-weight: 800; color: rgba(240,220,200,0.45); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; }
     .figuur-omschr { font-size: 0.86rem; color: rgba(240,220,200,0.8); line-height: 1.55; font-weight: 600; }
 
-    /* ── INVUL SPEL ── */
-    .invul-spel {
-      background: rgba(255,255,255,0.03);
-      border: 2px solid rgba(248,113,113,0.32);
-      border-radius: 24px; padding: 26px;
-    }
-    .invul-instructie {
-      font-weight: 700; font-size: 0.95rem;
-      color: rgba(240,220,200,0.75); margin-bottom: 6px; text-align: center;
-    }
-    .invul-sub {
-      font-size: 0.8rem; font-weight: 600; color: rgba(240,220,200,0.4);
-      text-align: center; margin-bottom: 24px;
-    }
-    .invul-voortgang {
-      display: flex; justify-content: space-between;
-      font-size: 0.78rem; font-weight: 800; color: rgba(240,220,200,0.4); margin-bottom: 8px;
-    }
-    .invul-progress-track { height: 6px; background: rgba(255,255,255,0.07); border-radius: 6px; overflow: hidden; margin-bottom: 24px; }
-    .invul-progress-fill {
-      height: 100%; width: 0%;
-      background: linear-gradient(90deg, #7a1010, #f87171);
-      border-radius: 6px; transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
-    }
-    .invul-zin {
-      font-size: 1.05rem; font-weight: 700; color: #f0e6c8;
-      text-align: center; margin-bottom: 22px; line-height: 1.7;
-      min-height: 60px;
-    }
-    .invul-blank {
-      display: inline-block;
-      border-bottom: 3px solid var(--accent); min-width: 100px;
-      padding: 0 8px; color: var(--accent); font-family: 'Fredoka One', cursive;
-      font-size: 1.1rem; vertical-align: middle; text-align: center;
-    }
-    .invul-opties { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .invul-optie {
-      background: rgba(255,255,255,0.06); border: 2px solid rgba(255,255,255,0.12);
-      border-radius: 12px; padding: 12px 14px;
-      font-size: 0.92rem; font-weight: 700; color: #c8d0be; cursor: pointer;
-      transition: background 0.18s, border-color 0.18s, transform 0.12s;
-      font-family: 'Nunito', sans-serif; text-align: center;
-    }
-    .invul-optie:hover:not(:disabled):not(.io-goed):not(.io-fout) {
-      background: rgba(248,113,113,0.12); border-color: rgba(248,113,113,0.4); transform: translateY(-2px);
-    }
-    .invul-optie.io-goed {
-      background: rgba(34,197,94,0.2); border-color: rgba(34,197,94,0.6); color: #86efac;
-      animation: correct-pop 0.35s ease; cursor: default;
-    }
-    .invul-optie.io-fout {
-      background: rgba(239,68,68,0.15); border-color: rgba(239,68,68,0.5); color: #fca5a5;
-      animation: shake 0.4s ease; cursor: default;
-    }
+    /* ── MARRON LOOP SPEL ── */
+    .marronspel-wrap { background: rgba(248,113,113,0.04); border: 1px solid rgba(248,113,113,0.2); border-radius: 18px; padding: 16px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+    .marronspel-hud { display: flex; gap: 24px; font-family: 'Fredoka One', cursive; font-size: 1.05rem; color: #f0e6c8; }
+    .ml-canvas-wrap { width: 100%; max-width: 380px; border-radius: 12px; overflow: hidden; border: 2px solid rgba(248,113,113,0.25); background: #1a0c00; }
+    #marronCanvas { display: block; width: 100%; height: auto; touch-action: none; cursor: pointer; }
+    .ml-start-btn { background: linear-gradient(135deg, #f87171, #dc2626); border: none; border-radius: 12px; padding: 11px 30px; font-family: 'Fredoka One', cursive; font-size: 1.3rem; color: #fff; cursor: pointer; transition: opacity 0.2s, transform 0.1s; }
+    .ml-start-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+    .ml-start-btn:disabled { opacity: 0.55; cursor: default; transform: none; }
+    .marronspel-klaar { display: none; text-align: center; padding: 6px 0; }
+    .mlk-score { font-family: 'Fredoka One', cursive; font-size: 1.6rem; color: var(--accent); }
+    .mlk-feit { font-size: 0.82rem; color: rgba(248,113,113,0.8); margin-top: 8px; font-weight: 700; line-height: 1.5; background: rgba(248,113,113,0.07); padding: 10px; border-radius: 10px; }
+    .mlk-replay { margin-top: 10px; background: none; border: 1.5px solid rgba(248,113,113,0.4); border-radius: 10px; padding: 8px 20px; font-family: 'Fredoka One', cursive; font-size: 1.05rem; color: var(--accent); cursor: pointer; }
+    .mlk-replay:hover { background: rgba(248,113,113,0.1); }
     @keyframes correct-pop { 0%{transform:scale(1)} 50%{transform:scale(1.06)} 100%{transform:scale(1)} }
     @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
-    .invul-feedback {
-      text-align: center; margin-top: 16px; min-height: 28px;
-      font-family: 'Fredoka One', cursive; font-size: 1.05rem;
-    }
-    .invul-eindresultaat {
-      display: none; text-align: center; padding-top: 6px;
-    }
-    .invul-eindresultaat-score {
-      font-family: 'Fredoka One', cursive; font-size: 1.6rem; color: var(--accent); margin-bottom: 6px;
-    }
-    .invul-eindresultaat-tekst { font-size: 0.9rem; font-weight: 700; color: rgba(240,220,200,0.6); }
 
     /* ── QUIZ ── */
     .quiz-progress-wrap { margin-bottom: 20px; }
@@ -333,28 +281,23 @@
     </div>
   </div>
 
-  <!-- Mini-game: Vul het ontbrekende woord in -->
+  <!-- Mini-game: Marron Loop Spel -->
   <div class="section">
-    <h2 class="section-title">🎮 Invulspel — Kies het juiste woord!</h2>
-    <div class="invul-spel">
-      <div class="invul-instructie">Lees de zin en kies het woord dat op de stippellijn hoort!</div>
-      <div class="invul-sub">5 zinnen · kies elke keer het beste antwoord</div>
-
-      <div class="invul-voortgang">
-        <span id="invul-vraag-label">Zin 1 van 5</span>
-        <span id="invul-score-label">0 goed</span>
+    <h2 class="section-title">🎮 Marron Spel — Ontsnap naar vrijheid!</h2>
+    <div class="marronspel-wrap">
+      <div class="marronspel-hud">
+        <span id="ml-levens">❤️❤️❤️</span>
+        <span>⏱️ <span id="ml-timer">40</span>s</span>
+        <span>🏃 <span id="ml-score">0</span></span>
       </div>
-      <div class="invul-progress-track">
-        <div class="invul-progress-fill" id="invul-progress-fill"></div>
+      <div class="ml-canvas-wrap">
+        <canvas id="marronCanvas"></canvas>
       </div>
-
-      <div class="invul-zin" id="invul-zin">Laden…</div>
-      <div class="invul-opties" id="invul-opties"></div>
-      <div class="invul-feedback" id="invul-feedback"></div>
-
-      <div class="invul-eindresultaat" id="invul-eindresultaat">
-        <div class="invul-eindresultaat-score" id="invul-eindresultaat-score"></div>
-        <div class="invul-eindresultaat-tekst" id="invul-eindresultaat-tekst"></div>
+      <button type="button" class="ml-start-btn" id="ml-start-btn" onclick="startMarronSpel()">▶ Loop!</button>
+      <div class="marronspel-klaar" id="marronspel-klaar">
+        <div class="mlk-score" id="mlk-score">🏃 0 pts!</div>
+        <div class="mlk-feit">🌳 Wist je dat? Marrons waren weggelopen slaven die eigen vrije gemeenschappen bouwden diep in het Surinaamse oerwoud!</div>
+        <button type="button" class="mlk-replay" onclick="resetMarronSpel()">↺ Opnieuw</button>
       </div>
     </div>
   </div>
@@ -463,131 +406,102 @@
     let beantwoord = 0
     let streak     = 0
 
-    /* ── INVUL SPEL ── */
-    const invulVragen = [
-      {
-        voor: 'Afrikaanse slaven die wegvluchtten naar het oerwoud en eigen gemeenschappen stichtten noemde men',
-        blank: '___',
-        na: '.',
-        opties: ['Marrons', 'Basja\'s', 'Dresimans', 'Stadsslaven'],
-        goed: 'Marrons',
-        uitleg: '✅ Marrons! Ze plunderden ook plantages voor wapens en gereedschap, en bevrijdden soms andere slaven.'
-      },
-      {
-        voor: 'Op 1 juli',
-        blank: '___',
-        na: 'werd de slavernij in Suriname officieel afgeschaft — dit heet Keti Koti.',
-        opties: ['1863', '1834', '1873', '1808'],
-        goed: '1863',
-        uitleg: '✅ 1863! Op die dag werden zo\'n 33.000 slaven bevrijd. Keti Koti betekent "de ketenen zijn gebroken".'
-      },
-      {
-        voor: 'Bij aankomst in Paramaribo werden slaven op de markt verkocht en daarna',
-        blank: '___',
-        na: 'met de initialen van hun nieuwe eigenaar.',
-        opties: ['gebrandmerkt', 'vrijgelaten', 'beloond', 'getatoeëerd'],
-        goed: 'gebrandmerkt',
-        uitleg: '✅ Gebrandmerkt — met een heet ijzer op de rug. Dit was een wrede manier om aan te geven wie de eigenaar was.'
-      },
-      {
-        voor: 'De eerste Hindostaanse contractarbeiders kwamen in 1873 naar Suriname op het zeilschip',
-        blank: '___',
-        na: '.',
-        opties: ['Lalla Rookh', 'Willem II', 'Santa María', 'Goslar'],
-        goed: 'Lalla Rookh',
-        uitleg: '✅ Lalla Rookh! De Hindostanen kwamen uit Brits-Indië. De Javanen kwamen later in 1890 op de Willem II.'
-      },
-      {
-        voor: 'Na de afschaffing van de slavernij moesten vrijgelaten slaven tijdens het staatstoezicht nog',
-        blank: '___',
-        na: 'jaar doorwerken voor hun vroegere meesters.',
-        opties: ['10', '5', '20', '3'],
-        goed: '10',
-        uitleg: '✅ 10 jaar! Van 1863 tot 1873 duurde het staatstoezicht. Pas daarna waren ze echt vrij.'
+    /* ── MARRON LOOP SPEL ── */
+    ;(function(){
+      const CW=380,CH=260,GY=215,PX=75
+      let cv,cx,running=false,aid
+      let mlScore,mlLevens,mlTimer,mlIv,obstacles,ply,lastObs,gameSpd
+      function mkObs(){
+        const types=[{e:'⛓️',h:36},{e:'🌾',h:40},{e:'🪓',h:32}]
+        const t=types[Math.floor(Math.random()*types.length)]
+        return{x:CW+30,y:GY-t.h+12,w:28,...t,passed:false}
       }
-    ]
-
-    let invulIdx   = 0
-    let invulScore = 0
-    let invulBezig = false
-
-    function laadInvulVraag() {
-      if (invulIdx >= invulVragen.length) {
-        toonInvulEinde()
-        return
+      function drawBg(){
+        const sky=cx.createLinearGradient(0,0,0,GY)
+        sky.addColorStop(0,'#1a0c00');sky.addColorStop(1,'#3a1a05')
+        cx.fillStyle=sky;cx.fillRect(0,0,CW,GY)
+        cx.fillStyle='#3a2010';cx.fillRect(0,GY,CW,CH-GY)
+        cx.fillStyle='#4a2a18';cx.fillRect(0,GY,CW,5)
+        cx.fillStyle='rgba(20,8,0,0.7)'
+        for(let i=0;i<6;i++){cx.fillRect(30+i*65,GY-80,10,80);cx.beginPath();cx.arc(35+i*65,GY-84,20,0,Math.PI*2);cx.fill()}
       }
-      invulBezig = false
-      const v = invulVragen[invulIdx]
-      const pct = Math.round(invulIdx / invulVragen.length * 100)
-      document.getElementById('invul-progress-fill').style.width = pct + '%'
-      document.getElementById('invul-vraag-label').textContent = `Zin ${invulIdx + 1} van ${invulVragen.length}`
-      document.getElementById('invul-score-label').textContent = `${invulScore} goed`
-      document.getElementById('invul-feedback').textContent = ''
-      document.getElementById('invul-feedback').style.color = ''
-      document.getElementById('invul-zin').innerHTML =
-        `${v.voor} <span class="invul-blank">${v.blank}</span> ${v.na}`
-
-      const optiesEl = document.getElementById('invul-opties')
-      optiesEl.innerHTML = ''
-      v.opties.forEach(opt => {
-        const btn = document.createElement('button')
-        btn.type = 'button'
-        btn.className = 'invul-optie'
-        btn.textContent = opt
-        btn.addEventListener('click', () => kiesInvulOptie(btn, opt, v))
-        optiesEl.appendChild(btn)
-      })
-    }
-
-    function kiesInvulOptie(btn, gekozen, v) {
-      if (invulBezig) return
-      invulBezig = true
-
-      document.querySelectorAll('.invul-optie').forEach(b => b.disabled = true)
-      const isGoed = gekozen === v.goed
-      btn.classList.add(isGoed ? 'io-goed' : 'io-fout')
-
-      if (!isGoed) {
-        document.querySelectorAll('.invul-optie').forEach(b => {
-          if (b.textContent === v.goed) b.classList.add('io-goed')
+      function init(){
+        cv=document.getElementById('marronCanvas')
+        cv.width=CW;cv.height=CH;cx=cv.getContext('2d')
+        drawBg()
+        cx.fillStyle='rgba(0,0,0,0.5)';cx.fillRect(0,0,CW,CH)
+        cx.fillStyle='#f0e6c8';cx.font='bold 15px Nunito,sans-serif';cx.textAlign='center'
+        cx.fillText('Klik ▶ Loop! om te starten',CW/2,CH/2-10)
+        cx.font='13px Nunito,sans-serif';cx.fillStyle='rgba(248,113,113,0.8)'
+        cx.fillText('SPATIE of tik het scherm om te springen!',CW/2,CH/2+16)
+      }
+      function doJump(){if(ply&&ply.onGround){ply.vy=-12;ply.onGround=false}}
+      window.startMarronSpel=function(){
+        mlScore=0;mlLevens=3;mlTimer=40;obstacles=[];lastObs=0;gameSpd=3.5
+        ply={y:GY,vy:0,onGround:true,flash:0}
+        document.getElementById('ml-score').textContent=mlScore
+        document.getElementById('ml-levens').textContent='❤️❤️❤️'
+        document.getElementById('ml-timer').textContent=mlTimer
+        document.getElementById('ml-start-btn').disabled=true
+        document.getElementById('marronspel-klaar').style.display='none'
+        cv.addEventListener('pointerdown',doJump)
+        document.addEventListener('keydown',onKey)
+        mlIv=setInterval(()=>{
+          mlTimer--;document.getElementById('ml-timer').textContent=mlTimer
+          mlScore+=5;document.getElementById('ml-score').textContent=mlScore
+          gameSpd=3.5+(40-mlTimer)*0.1
+          if(mlTimer<=0)stopMarron()
+        },1000)
+        running=true;aid=requestAnimationFrame(loop)
+      }
+      function onKey(e){if((e.code==='Space'||e.key===' ')&&running){e.preventDefault();doJump()}}
+      function loop(){
+        if(!running)return
+        const now=performance.now()
+        const gap=Math.max(900,2200-(40-mlTimer)*28)
+        if(now-lastObs>gap){obstacles.push(mkObs());lastObs=now}
+        ply.vy+=0.65;ply.y+=ply.vy
+        if(ply.y>=GY){ply.y=GY;ply.vy=0;ply.onGround=true}
+        if(ply.flash>0)ply.flash--
+        obstacles.forEach(o=>o.x-=gameSpd)
+        obstacles=obstacles.filter(o=>o.x>-60)
+        obstacles.forEach(o=>{
+          if(o.passed)return
+          const py=ply.y-30
+          if(PX+14>o.x-o.w/2&&PX-14<o.x+o.w/2&&py+30>o.y&&py<o.y+o.h){
+            o.passed=true;mlLevens=Math.max(0,mlLevens-1)
+            document.getElementById('ml-levens').textContent='❤️'.repeat(mlLevens)+'🖤'.repeat(3-mlLevens)
+            ply.flash=30;ply.vy=-7
+            if(mlLevens<=0){stopMarron();return}
+          }
+          if(o.x+o.w/2<PX-20)o.passed=true
         })
-      } else {
-        invulScore++
+        drawBg()
+        cx.font='30px serif';cx.textAlign='center';cx.textBaseline='bottom'
+        obstacles.forEach(o=>cx.fillText(o.e,o.x,o.y+o.h))
+        cx.save();cx.translate(PX,ply.y)
+        if(ply.flash>0)cx.globalAlpha=0.5+0.5*Math.sin(ply.flash*0.6)
+        cx.font='32px serif';cx.textAlign='center';cx.textBaseline='bottom'
+        cx.fillText('🏃',0,0);cx.restore()
+        cx.fillStyle='rgba(0,0,0,0.3)';cx.fillRect(0,0,CW,30)
+        cx.fillStyle='#f0e6c8';cx.font='bold 13px Fredoka One,cursive';cx.textAlign='center'
+        cx.fillText('⏱️ '+mlTimer+'s',CW/2-70,21)
+        cx.fillText('🏃 '+mlScore,CW/2,21)
+        cx.fillText('❤️'.repeat(Math.max(0,mlLevens))+'🖤'.repeat(Math.max(0,3-mlLevens)),CW/2+68,21)
+        aid=requestAnimationFrame(loop)
       }
-
-      document.getElementById('invul-zin').innerHTML =
-        `${v.voor} <span class="invul-blank" style="color:${isGoed ? '#86efac' : '#fca5a5'}">${v.goed}</span> ${v.na}`
-
-      const fb = document.getElementById('invul-feedback')
-      fb.textContent = v.uitleg
-      fb.style.color = isGoed ? '#86efac' : '#fca5a5'
-
-      setTimeout(() => {
-        invulIdx++
-        laadInvulVraag()
-      }, 1800)
-    }
-
-    function toonInvulEinde() {
-      document.getElementById('invul-progress-fill').style.width = '100%'
-      document.getElementById('invul-vraag-label').textContent = 'Klaar!'
-      document.getElementById('invul-score-label').textContent = `${invulScore} / ${invulVragen.length} goed`
-      document.getElementById('invul-zin').style.display = 'none'
-      document.getElementById('invul-opties').style.display = 'none'
-      document.getElementById('invul-feedback').style.display = 'none'
-
-      const einde = document.getElementById('invul-eindresultaat')
-      einde.style.display = 'block'
-      let tekst
-      if (invulScore === invulVragen.length) tekst = '🏆 Perfect! Je kent alle antwoorden!'
-      else if (invulScore >= 4) tekst = '🎉 Heel goed gedaan!'
-      else if (invulScore >= 3) tekst = '👍 Aardig! Lees de uitleg nog eens door.'
-      else tekst = '💪 Oefenen maar! Lees de informatie hierboven.'
-      document.getElementById('invul-eindresultaat-score').textContent = `${invulScore} / ${invulVragen.length} goed!`
-      document.getElementById('invul-eindresultaat-tekst').textContent = tekst
-    }
-
-    laadInvulVraag()
+      function stopMarron(){
+        running=false;cancelAnimationFrame(aid);clearInterval(mlIv)
+        cv.removeEventListener('pointerdown',doJump)
+        document.removeEventListener('keydown',onKey)
+        const msg=mlScore>=200?`🏆 ${mlScore} pts — Vrijheid gewonnen!`:mlScore>=120?`🎉 ${mlScore} pts — Goed gevlucht!`:`🏃 ${mlScore} pts — Ren harder!`
+        document.getElementById('mlk-score').textContent=msg
+        document.getElementById('marronspel-klaar').style.display='block'
+        document.getElementById('ml-start-btn').disabled=false
+      }
+      window.resetMarronSpel=function(){document.getElementById('marronspel-klaar').style.display='none';window.startMarronSpel()}
+      init()
+    })()
 
     /* ── QUIZ ── */
     function floatPunten(btn) {

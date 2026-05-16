@@ -219,31 +219,19 @@
     .feit-kop { font-family: 'Fredoka One', cursive; font-size: 0.85rem; color: var(--accent); margin-bottom: 4px; }
     .feit-text { font-size: 0.88rem; color: rgba(240,230,200,0.85); line-height: 1.6; font-weight: 600; }
 
-    /* ── WAAR OF NIET WAAR SPEL ── */
-    .wnw-spel { background: rgba(234,88,12,0.06); border: 1px solid rgba(234,88,12,0.22); border-radius: 18px; padding: 22px 20px; }
-    .wnw-teller { text-align: center; font-family: 'Fredoka One', cursive; font-size: 0.9rem; color: rgba(234,88,12,0.6); margin-bottom: 16px; letter-spacing: 1px; }
-    .wnw-kaart { display: none; }
-    .wnw-kaart.actief { display: block; }
-    .wnw-stelling { font-weight: 800; font-size: 1.05rem; color: #f0e6c8; text-align: center; margin-bottom: 22px; line-height: 1.6; padding: 16px; background: rgba(255,255,255,0.04); border-radius: 12px; }
-    .wnw-knoppen { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
-    .wnw-btn {
-      padding: 16px 12px;
-      border: 2px solid transparent;
-      border-radius: 14px;
-      font-family: 'Fredoka One', cursive;
-      font-size: 1.3rem;
-      cursor: pointer;
-      transition: transform 0.15s, opacity 0.2s;
-    }
-    .wnw-btn:hover:not(:disabled) { transform: translateY(-3px); }
-    .wnw-waar { background: rgba(34,197,94,0.14); border-color: rgba(34,197,94,0.4); color: #86efac; }
-    .wnw-niet  { background: rgba(239,68,68,0.12); border-color: rgba(239,68,68,0.35); color: #fca5a5; }
-    .wnw-btn.goed   { background: rgba(34,197,94,0.3); border-color: #22c55e; }
-    .wnw-btn.fout   { background: rgba(239,68,68,0.25); border-color: #ef4444; }
-    .wnw-feedback { text-align: center; font-size: 0.88rem; font-weight: 700; min-height: 22px; }
-    .wnw-klaar { display: none; text-align: center; padding: 10px 0; }
-    .wnw-klaar-icon { font-size: 48px; margin-bottom: 10px; }
-    .wnw-klaar-tekst { font-family: 'Fredoka One', cursive; font-size: 1.1rem; color: var(--accent); }
+    /* ── VUURWERK SPEL ── */
+    .vuurwerkspel-wrap { background: rgba(244,196,48,0.04); border: 1px solid rgba(244,196,48,0.2); border-radius: 18px; padding: 16px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+    .vuurwerkspel-hud { display: flex; gap: 24px; font-family: 'Fredoka One', cursive; font-size: 1.05rem; color: #f0e6c8; }
+    .vw-canvas-wrap { width: 100%; max-width: 380px; border-radius: 12px; overflow: hidden; border: 2px solid rgba(244,196,48,0.2); background: #050a1a; }
+    #vuurwerkCanvas { display: block; width: 100%; height: auto; touch-action: none; cursor: crosshair; }
+    .vw-start-btn { background: linear-gradient(135deg, #fb923c, #ea580c); border: none; border-radius: 12px; padding: 11px 30px; font-family: 'Fredoka One', cursive; font-size: 1.3rem; color: #fff; cursor: pointer; transition: opacity 0.2s, transform 0.1s; }
+    .vw-start-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+    .vw-start-btn:disabled { opacity: 0.55; cursor: default; transform: none; }
+    .vuurwerkspel-klaar { display: none; text-align: center; padding: 6px 0; }
+    .vwk-score { font-family: 'Fredoka One', cursive; font-size: 1.6rem; color: var(--accent2); }
+    .vwk-feit { font-size: 0.82rem; color: rgba(251,146,60,0.8); margin-top: 8px; font-weight: 700; line-height: 1.5; background: rgba(251,146,60,0.07); padding: 10px; border-radius: 10px; }
+    .vwk-replay { margin-top: 10px; background: none; border: 1.5px solid rgba(244,196,48,0.4); border-radius: 10px; padding: 8px 20px; font-family: 'Fredoka One', cursive; font-size: 1.05rem; color: var(--accent2); cursor: pointer; }
+    .vwk-replay:hover { background: rgba(244,196,48,0.1); }
 
     /* ── QUIZ ── */
     .quiz-progress-wrap { margin-bottom: 20px; }
@@ -429,53 +417,23 @@
     </div>
   </div>
 
-  <!-- Mini-game: Waar of Niet Waar -->
+  <!-- Mini-game: Vuurwerk Spel -->
   <div class="section">
-    <h2 class="section-title">🎮 Waar of Niet Waar?</h2>
-    <div class="wnw-spel">
-      <div class="wnw-teller">Stelling <span id="wnw-huidig">1</span> van 4</div>
-      <div id="wnw-kaarten">
-
-        <div class="wnw-kaart actief" id="wnw-ronde-1">
-          <div class="wnw-stelling">Anton de Kom schreef het boek <em>"Wij slaven van Suriname"</em> in 1934.</div>
-          <div class="wnw-knoppen">
-            <button type="button" class="wnw-btn wnw-waar" data-correct="true"  onclick="wnwAntwoord(this,1)">✅ Waar</button>
-            <button type="button" class="wnw-btn wnw-niet" data-correct="false" onclick="wnwAntwoord(this,1)">❌ Niet Waar</button>
-          </div>
-          <div class="wnw-feedback" id="wnw-feedback-1"></div>
-        </div>
-
-        <div class="wnw-kaart" id="wnw-ronde-2">
-          <div class="wnw-stelling">Suriname werd onafhankelijk op <strong>25 november 1974</strong>.</div>
-          <div class="wnw-knoppen">
-            <button type="button" class="wnw-btn wnw-waar" data-correct="false" onclick="wnwAntwoord(this,2)">✅ Waar</button>
-            <button type="button" class="wnw-btn wnw-niet" data-correct="true"  onclick="wnwAntwoord(this,2)">❌ Niet Waar</button>
-          </div>
-          <div class="wnw-feedback" id="wnw-feedback-2"></div>
-        </div>
-
-        <div class="wnw-kaart" id="wnw-ronde-3">
-          <div class="wnw-stelling">De eerste president van Suriname was <strong>Desiré Delano Bouterse</strong>.</div>
-          <div class="wnw-knoppen">
-            <button type="button" class="wnw-btn wnw-waar" data-correct="false" onclick="wnwAntwoord(this,3)">✅ Waar</button>
-            <button type="button" class="wnw-btn wnw-niet" data-correct="true"  onclick="wnwAntwoord(this,3)">❌ Niet Waar</button>
-          </div>
-          <div class="wnw-feedback" id="wnw-feedback-3"></div>
-        </div>
-
-        <div class="wnw-kaart" id="wnw-ronde-4">
-          <div class="wnw-stelling">De Surinaamse vlag werd ontworpen door <strong>Jacques Herman Pinas</strong>.</div>
-          <div class="wnw-knoppen">
-            <button type="button" class="wnw-btn wnw-waar" data-correct="true"  onclick="wnwAntwoord(this,4)">✅ Waar</button>
-            <button type="button" class="wnw-btn wnw-niet" data-correct="false" onclick="wnwAntwoord(this,4)">❌ Niet Waar</button>
-          </div>
-          <div class="wnw-feedback" id="wnw-feedback-4"></div>
-        </div>
-
+    <h2 class="section-title">🎮 Vuurwerk Spel — Vier de vrijheid!</h2>
+    <div class="vuurwerkspel-wrap">
+      <div class="vuurwerkspel-hud">
+        <span id="vw-levens">❤️❤️❤️</span>
+        <span>⏱️ <span id="vw-timer">35</span>s</span>
+        <span>🎆 <span id="vw-score">0</span></span>
       </div>
-      <div class="wnw-klaar" id="wnw-klaar">
-        <div class="wnw-klaar-icon">🇸🇷</div>
-        <div class="wnw-klaar-tekst">Goed gedaan! Je kent de feiten over onze onafhankelijkheid. Nu naar de quiz!</div>
+      <div class="vw-canvas-wrap">
+        <canvas id="vuurwerkCanvas"></canvas>
+      </div>
+      <button type="button" class="vw-start-btn" id="vw-start-btn" onclick="startVuurwerkSpel()">▶ Vieren!</button>
+      <div class="vuurwerkspel-klaar" id="vuurwerkspel-klaar">
+        <div class="vwk-score" id="vwk-score">🎆 0 pts!</div>
+        <div class="vwk-feit">🇸🇷 Wist je dat? Op 25 november 1975 werd de Surinaamse vlag voor het eerst gehesen op dit plein. Kinderen vormden samen de vlag op het plein!</div>
+        <button type="button" class="vwk-replay" onclick="resetVuurwerkSpel()">↺ Opnieuw</button>
       </div>
     </div>
   </div>
@@ -669,40 +627,115 @@
       } catch (e) { console.error(e) }
     }
 
-    // ── WAAR OF NIET WAAR SPEL ──
-    let wnwRonde = 1
-
-    function wnwAntwoord(btn, ronde) {
-      const kaart = document.getElementById('wnw-ronde-' + ronde)
-      const alleKnoppen = kaart.querySelectorAll('.wnw-btn')
-      if (alleKnoppen[0].disabled) return
-
-      alleKnoppen.forEach(b => b.disabled = true)
-      const isCorrect = btn.dataset.correct === 'true'
-      btn.classList.add(isCorrect ? 'goed' : 'fout')
-
-      const feedback = document.getElementById('wnw-feedback-' + ronde)
-      if (isCorrect) {
-        feedback.textContent = '✅ Correct!'
-        feedback.style.color = '#86efac'
-      } else {
-        alleKnoppen.forEach(b => { if (b.dataset.correct === 'true') b.classList.add('goed') })
-        feedback.textContent = '❌ Niet goed — kijk naar het juiste antwoord.'
-        feedback.style.color = '#fca5a5'
+    // ── VUURWERK SPEL ──
+    ;(function(){
+      const CW=380,CH=320
+      const COLORS=['#B40A2D','#377E22','#f4c430','#ffffff','#fb923c','#a855f7']
+      let cv,cx,running=false,aid
+      let vwScore,vwLevens,vwTimer,vwIv,fireworks,particles,lastSpawn
+      function mkFw(){
+        return{x:40+Math.random()*(CW-80),y:CH+20,vy:-(2+Math.random()*2.5),r:14+Math.random()*8,color:COLORS[Math.floor(Math.random()*COLORS.length)],burst:false,burstT:0}
       }
-
-      setTimeout(() => {
-        if (wnwRonde < 4) {
-          kaart.classList.remove('actief')
-          wnwRonde++
-          document.getElementById('wnw-huidig').textContent = wnwRonde
-          document.getElementById('wnw-ronde-' + wnwRonde).classList.add('actief')
-        } else {
-          document.getElementById('wnw-kaarten').style.display = 'none'
-          document.getElementById('wnw-klaar').style.display = 'block'
+      function mkParts(fw){
+        const arr=[]
+        for(let i=0;i<16;i++){
+          const a=Math.random()*Math.PI*2,s=2+Math.random()*4
+          arr.push({x:fw.x,y:fw.y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,color:fw.color,life:1,r:3+Math.random()*2})
         }
-      }, isCorrect ? 1400 : 2200)
-    }
+        return arr
+      }
+      function drawBg(){
+        cx.fillStyle='#050a1a';cx.fillRect(0,0,CW,CH)
+        cx.fillStyle='rgba(255,255,255,0.7)'
+        [[30,40],[80,20],[150,60],[220,30],[290,50],[340,25],[60,80],[180,15],[310,70]].forEach(([sx,sy])=>{cx.beginPath();cx.arc(sx,sy,1.2,0,Math.PI*2);cx.fill()})
+        cx.fillStyle='#070f1a';cx.fillRect(0,CH-55,CW,55)
+        cx.fillStyle='#0c1825'
+        [[20,30,40],[70,50,30],[110,35,35],[160,60,25],[200,40,40],[250,30,35],[295,55,30],[335,38,40]].forEach(([bx,bh,bw])=>cx.fillRect(bx,CH-55-bh,bw,bh+2))
+      }
+      function init(){
+        cv=document.getElementById('vuurwerkCanvas')
+        cv.width=CW;cv.height=CH;cx=cv.getContext('2d')
+        drawBg()
+        cx.fillStyle='rgba(0,0,0,0.5)';cx.fillRect(0,0,CW,CH)
+        cx.fillStyle='#f0e6c8';cx.font='bold 15px Nunito,sans-serif';cx.textAlign='center'
+        cx.fillText('Klik ▶ Vieren! om te starten',CW/2,CH/2-10)
+        cx.font='13px Nunito,sans-serif';cx.fillStyle='rgba(244,196,48,0.8)'
+        cx.fillText('Klik op vuurpijlen voor ze verdwijnen! 🎆',CW/2,CH/2+16)
+      }
+      window.startVuurwerkSpel=function(){
+        vwScore=0;vwLevens=3;vwTimer=35;fireworks=[];particles=[];lastSpawn=0
+        document.getElementById('vw-score').textContent=vwScore
+        document.getElementById('vw-levens').textContent='❤️❤️❤️'
+        document.getElementById('vw-timer').textContent=vwTimer
+        document.getElementById('vw-start-btn').disabled=true
+        document.getElementById('vuurwerkspel-klaar').style.display='none'
+        cv.addEventListener('pointerdown',onClick)
+        vwIv=setInterval(()=>{
+          vwTimer--;document.getElementById('vw-timer').textContent=vwTimer
+          if(vwTimer<=0)stopVuurwerk()
+        },1000)
+        running=true;aid=requestAnimationFrame(loop)
+      }
+      function onClick(e){
+        if(!running)return
+        const r=cv.getBoundingClientRect()
+        const mx=(e.clientX-r.left)*(CW/r.width),my=(e.clientY-r.top)*(CH/r.height)
+        fireworks.forEach(fw=>{
+          if(fw.burst)return
+          if(Math.hypot(mx-fw.x,my-fw.y)<fw.r+14){
+            fw.burst=true;fw.burstT=28
+            particles.push(...mkParts(fw))
+            vwScore+=10;document.getElementById('vw-score').textContent=vwScore
+          }
+        })
+      }
+      function loop(){
+        if(!running)return
+        const now=performance.now()
+        const gap=Math.max(550,1800-(35-vwTimer)*32)
+        if(now-lastSpawn>gap){fireworks.push(mkFw());lastSpawn=now}
+        fireworks.forEach(fw=>{if(!fw.burst)fw.y+=fw.vy;else fw.burstT--})
+        const escaped=fireworks.filter(fw=>!fw.burst&&fw.y<-30)
+        if(escaped.length){
+          escaped.forEach(fw=>fireworks.splice(fireworks.indexOf(fw),1))
+          vwLevens=Math.max(0,vwLevens-escaped.length)
+          document.getElementById('vw-levens').textContent='❤️'.repeat(vwLevens)+'🖤'.repeat(3-vwLevens)
+          if(vwLevens<=0){stopVuurwerk();return}
+        }
+        fireworks=fireworks.filter(fw=>!fw.burst||fw.burstT>0)
+        particles.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=0.1;p.life-=0.04;p.vx*=0.97;p.vy*=0.97})
+        particles=particles.filter(p=>p.life>0)
+        drawBg()
+        fireworks.forEach(fw=>{
+          if(fw.burst)return
+          const grd=cx.createRadialGradient(fw.x,fw.y,0,fw.x,fw.y,fw.r)
+          grd.addColorStop(0,fw.color);grd.addColorStop(1,'rgba(0,0,0,0)')
+          cx.fillStyle=grd;cx.beginPath();cx.arc(fw.x,fw.y,fw.r,0,Math.PI*2);cx.fill()
+          cx.fillStyle='rgba(255,255,255,0.6)';cx.beginPath();cx.arc(fw.x,fw.y+fw.r*0.5,2,0,Math.PI*2);cx.fill()
+        })
+        particles.forEach(p=>{
+          cx.save();cx.globalAlpha=p.life
+          cx.fillStyle=p.color;cx.beginPath();cx.arc(p.x,p.y,p.r*p.life,0,Math.PI*2);cx.fill()
+          cx.restore()
+        })
+        cx.fillStyle='rgba(0,0,0,0.35)';cx.fillRect(0,0,CW,30)
+        cx.fillStyle='#f0e6c8';cx.font='bold 13px Fredoka One,cursive';cx.textAlign='center'
+        cx.fillText('⏱️ '+vwTimer+'s',CW/2-70,21)
+        cx.fillText('🎆 '+vwScore,CW/2,21)
+        cx.fillText('❤️'.repeat(Math.max(0,vwLevens))+'🖤'.repeat(Math.max(0,3-vwLevens)),CW/2+65,21)
+        aid=requestAnimationFrame(loop)
+      }
+      function stopVuurwerk(){
+        running=false;cancelAnimationFrame(aid);clearInterval(vwIv)
+        cv.removeEventListener('pointerdown',onClick)
+        const msg=vwScore>=100?`🏆 ${vwScore} pts — Geweldig vuurwerk!`:vwScore>=60?`🎉 ${vwScore} pts — Mooi gevangen!`:`🎆 ${vwScore} pts — Oefenen maar!`
+        document.getElementById('vwk-score').textContent=msg
+        document.getElementById('vuurwerkspel-klaar').style.display='block'
+        document.getElementById('vw-start-btn').disabled=false
+      }
+      window.resetVuurwerkSpel=function(){document.getElementById('vuurwerkspel-klaar').style.display='none';window.startVuurwerkSpel()}
+      init()
+    })()
   </script>
 
 </body>
