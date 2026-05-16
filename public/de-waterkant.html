@@ -190,7 +190,7 @@
     .volk-jaar { font-size: 0.75rem; font-weight: 700; color: rgba(240,230,200,0.45); }
     .volk-schip { font-size: 0.78rem; font-weight: 700; color: rgba(168,204,224,0.7); margin-top: 4px; }
 
-    /* ── SCHIP SPEL ── */
+    /* ── RAAD HET VOLK SPEL ── */
     .schip-spel { background: rgba(72,180,220,0.05); border: 1px solid rgba(72,180,220,0.2); border-radius: 18px; padding: 22px 20px; }
     .schip-teller { text-align: center; font-family: 'Fredoka One', cursive; font-size: 0.9rem; color: rgba(72,180,220,0.6); margin-bottom: 16px; letter-spacing: 1px; }
     .schip-kaart { display: none; }
@@ -399,61 +399,61 @@
     </div>
   </div>
 
-  <!-- Mini-game: Schip Spel -->
+  <!-- Mini-game: Raad het Volk -->
   <div class="section">
-    <h2 class="section-title">🎮 Schip Spel — Kies het juiste antwoord!</h2>
+    <h2 class="section-title">🎮 Raad het Volk — Wie zijn zij?</h2>
     <div class="schip-spel">
       <div class="schip-teller">Ronde <span id="schip-huidig">1</span> van 4</div>
       <div id="schip-kaarten">
 
         <div class="schip-kaart actief" id="schip-ronde-1">
-          <div class="schip-vraag">🚢 De eerste Hindostanen kwamen in 1873 naar Suriname. Op welk schip?</div>
+          <div class="schip-vraag">🌍 Dit volk werd in overvolle schepen vanuit West-Afrika vervoerd. Bij aankomst in Paramaribo werden zij op de markt verkocht en gebrandmerkt met de initialen van hun eigenaar. Welk volk?</div>
           <div class="schip-opties">
-            <button type="button" class="schip-btn" data-correct="true"  onclick="schipAntwoord(this,1)">Lalla Rookh</button>
-            <button type="button" class="schip-btn" data-correct="false" onclick="schipAntwoord(this,1)">Willem II</button>
-            <button type="button" class="schip-btn" data-correct="false" onclick="schipAntwoord(this,1)">Goslar</button>
-            <button type="button" class="schip-btn" data-correct="false" onclick="schipAntwoord(this,1)">Santa María</button>
+            <button type="button" class="schip-btn" data-correct="true"  onclick="schipAntwoord(this,1)">Afrikanen</button>
+            <button type="button" class="schip-btn" data-correct="false" onclick="schipAntwoord(this,1)">Hindostanen</button>
+            <button type="button" class="schip-btn" data-correct="false" onclick="schipAntwoord(this,1)">Javanen</button>
+            <button type="button" class="schip-btn" data-correct="false" onclick="schipAntwoord(this,1)">Chinezen</button>
           </div>
           <div class="schip-feedback" id="schip-feedback-1"></div>
         </div>
 
         <div class="schip-kaart" id="schip-ronde-2">
-          <div class="schip-vraag">⚓ De eerste Javanen kwamen in 1890 naar Suriname. Op welk schip?</div>
+          <div class="schip-vraag">🥢 Dit volk was de allereerste groep contractarbeiders in Suriname (1853). Zij kwamen via China, Hong Kong, Macao en Madeira en gingen werken op plantage Catharina Sophia. Welk volk?</div>
           <div class="schip-opties">
-            <button type="button" class="schip-btn" data-correct="false" onclick="schipAntwoord(this,2)">Lalla Rookh</button>
-            <button type="button" class="schip-btn" data-correct="true"  onclick="schipAntwoord(this,2)">Willem II</button>
-            <button type="button" class="schip-btn" data-correct="false" onclick="schipAntwoord(this,2)">Goslar</button>
-            <button type="button" class="schip-btn" data-correct="false" onclick="schipAntwoord(this,2)">Niña</button>
+            <button type="button" class="schip-btn" data-correct="false" onclick="schipAntwoord(this,2)">Afrikanen</button>
+            <button type="button" class="schip-btn" data-correct="false" onclick="schipAntwoord(this,2)">Hindostanen</button>
+            <button type="button" class="schip-btn" data-correct="false" onclick="schipAntwoord(this,2)">Javanen</button>
+            <button type="button" class="schip-btn" data-correct="true"  onclick="schipAntwoord(this,2)">Chinezen</button>
           </div>
           <div class="schip-feedback" id="schip-feedback-2"></div>
         </div>
 
         <div class="schip-kaart" id="schip-ronde-3">
-          <div class="schip-vraag">💣 Welk Duits schip zonk in de Surinamerivier tijdens de Tweede Wereldoorlog?</div>
+          <div class="schip-vraag">🪔 Dit volk vierde Diwali, sprak Hindi en werd herdacht met het monument "Baba en Mai" op de Kleine Combéweg in Paramaribo. Welk volk?</div>
           <div class="schip-opties">
-            <button type="button" class="schip-btn" data-correct="false" onclick="schipAntwoord(this,3)">Lalla Rookh</button>
-            <button type="button" class="schip-btn" data-correct="false" onclick="schipAntwoord(this,3)">Willem II</button>
-            <button type="button" class="schip-btn" data-correct="true"  onclick="schipAntwoord(this,3)">Goslar</button>
-            <button type="button" class="schip-btn" data-correct="false" onclick="schipAntwoord(this,3)">Santa María</button>
+            <button type="button" class="schip-btn" data-correct="false" onclick="schipAntwoord(this,3)">Afrikanen</button>
+            <button type="button" class="schip-btn" data-correct="true"  onclick="schipAntwoord(this,3)">Hindostanen</button>
+            <button type="button" class="schip-btn" data-correct="false" onclick="schipAntwoord(this,3)">Javanen</button>
+            <button type="button" class="schip-btn" data-correct="false" onclick="schipAntwoord(this,3)">Chinezen</button>
           </div>
           <div class="schip-feedback" id="schip-feedback-3"></div>
         </div>
 
         <div class="schip-kaart" id="schip-ronde-4">
-          <div class="schip-vraag">🌾 Op welke suikerplantage werden de eerste Javanen te werk gesteld?</div>
+          <div class="schip-vraag">🎭 Dit volk bracht de wayang kulit-poppentheater traditie mee naar Suriname. Ze kwamen uit Nederlands-Indië en verbleven eerst in district Commewijne. Welk volk?</div>
           <div class="schip-opties">
-            <button type="button" class="schip-btn" data-correct="true"  onclick="schipAntwoord(this,4)">Mariënburg</button>
-            <button type="button" class="schip-btn" data-correct="false" onclick="schipAntwoord(this,4)">Catharina Sophia</button>
-            <button type="button" class="schip-btn" data-correct="false" onclick="schipAntwoord(this,4)">Voorzorg</button>
-            <button type="button" class="schip-btn" data-correct="false" onclick="schipAntwoord(this,4)">Alliance</button>
+            <button type="button" class="schip-btn" data-correct="false" onclick="schipAntwoord(this,4)">Afrikanen</button>
+            <button type="button" class="schip-btn" data-correct="false" onclick="schipAntwoord(this,4)">Hindostanen</button>
+            <button type="button" class="schip-btn" data-correct="true"  onclick="schipAntwoord(this,4)">Javanen</button>
+            <button type="button" class="schip-btn" data-correct="false" onclick="schipAntwoord(this,4)">Chinezen</button>
           </div>
           <div class="schip-feedback" id="schip-feedback-4"></div>
         </div>
 
       </div>
       <div class="schip-klaar" id="schip-klaar">
-        <div class="schip-klaar-icon">⚓</div>
-        <div class="schip-klaar-tekst">Goed gedaan! Je kent de schepen van Suriname. Nu naar de quiz!</div>
+        <div class="schip-klaar-icon">🌍</div>
+        <div class="schip-klaar-tekst">Goed gedaan! Je kent de volkeren van de Waterkant. Nu naar de quiz!</div>
       </div>
     </div>
   </div>
