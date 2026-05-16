@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>De Plantage — SuriQuest</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --accent: #f87171; --accent-dim: rgba(248,113,113,0.18); --bg: #120606; }
+    body { background: var(--bg); color: #f0e6c8; font-family: 'Nunito', sans-serif; min-height: 100vh; padding-bottom: 80px; }
+
+    /* ── HUD ── */
+    .player-balk {
+      background: rgba(0,0,0,0.6); padding: 9px 20px;
+      display: flex; justify-content: space-between; align-items: center;
+      border-bottom: 2px solid rgba(248,113,113,0.25);
+      position: sticky; top: 0; z-index: 100;
+      -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+    }
+    .balk-links { display: flex; align-items: center; gap: 10px; }
+    .balk-links a { color: var(--accent); text-decoration: none; font-size: 0.85rem; font-weight: 700; }
+    #player-name { font-weight: 800; color: #f0e6c8; font-size: 0.9rem; }
+    .balk-rechts { display: flex; align-items: center; gap: 12px; }
+    #player-points { color: var(--accent); font-family: 'Fredoka One', cursive; font-size: 1rem; }
+    .uitloggen-knop { background: none; border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; color: rgba(255,255,255,0.5); padding: 4px 10px; font-size: 12px; cursor: pointer; }
+
+    /* ── HERO ── */
+    .hero {
+      background: linear-gradient(160deg, #2a0808 0%, #1a0606 60%, #120404 100%);
+      padding: 40px 24px 36px; text-align: center;
+      border-bottom: 3px solid rgba(248,113,113,0.3); position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: ''; position: absolute; inset: 0;
+      background:
+        radial-gradient(circle at 70% 30%, rgba(248,113,113,0.12) 0%, transparent 55%),
+        radial-gradient(circle at 20% 75%, rgba(220,80,80,0.08) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    .hero-deco {
+      position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+      font-size: 44px; opacity: 0.05; letter-spacing: 4px;
+      white-space: nowrap; pointer-events: none;
+    }
+    .back-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      color: var(--accent); text-decoration: none; font-weight: 700; font-size: 0.88rem;
+      margin-bottom: 20px; padding: 6px 14px;
+      border: 1px solid rgba(248,113,113,0.35); border-radius: 20px; transition: background 0.2s;
+    }
+    .back-btn:hover { background: rgba(248,113,113,0.1); }
+    .level-chip {
+      display: inline-block; background: var(--accent); color: #120000;
+      font-family: 'Fredoka One', cursive; font-size: 0.88rem;
+      padding: 4px 18px; border-radius: 20px; margin-bottom: 14px;
+    }
+    .location-icon {
+      font-size: 80px; display: block; margin: 0 auto 14px;
+      filter: drop-shadow(0 0 20px rgba(248,113,113,0.4));
+      animation: icon-float 4s ease-in-out infinite;
+    }
+    @keyframes icon-float { 0%,100%{transform:translateY(0) rotate(-2deg)} 50%{transform:translateY(-8px) rotate(2deg)} }
+    h1 {
+      font-family: 'Fredoka One', cursive; font-size: clamp(2rem,6vw,3.2rem);
+      color: var(--accent); text-shadow: 0 2px 16px rgba(248,113,113,0.4);
+      margin-bottom: 12px; position: relative;
+    }
+    .description {
+      max-width: 640px; margin: 0 auto; font-size: 1rem; line-height: 1.75;
+      color: #d8b8b8; font-weight: 600; position: relative;
+    }
+
+    /* ── SECTIONS ── */
+    .section { max-width: 760px; margin: 36px auto 0; padding: 0 20px; }
+    .section-title {
+      font-family: 'Fredoka One', cursive; font-size: 1.4rem;
+      color: var(--accent); margin-bottom: 18px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .section-title::after {
+      content: ''; flex: 1; height: 2px;
+      background: linear-gradient(90deg, rgba(248,113,113,0.5), transparent); border-radius: 2px;
+    }
+
+    /* ── INFO CARDS ── */
+    .info-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; }
+    .info-card {
+      background: rgba(248,113,113,0.05);
+      border: 1.5px solid rgba(248,113,113,0.22);
+      border-radius: 18px; padding: 18px 16px; text-align: center;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .info-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(248,113,113,0.1); }
+    .info-card-icon { font-size: 36px; margin-bottom: 10px; }
+    .info-card-naam { font-family: 'Fredoka One', cursive; font-size: 1rem; color: var(--accent); margin-bottom: 6px; }
+    .info-card-tekst { font-size: 0.82rem; color: rgba(240,220,200,0.7); line-height: 1.5; font-weight: 600; }
+
+    /* ── FEIT CARD ── */
+    .feit-card {
+      background: linear-gradient(135deg, rgba(248,113,113,0.1), rgba(248,113,113,0.04));
+      border: 1.5px solid rgba(248,113,113,0.35); border-radius: 18px;
+      padding: 18px 20px; display: flex; gap: 14px; align-items: flex-start;
+    }
+    .feit-icon { font-size: 30px; flex-shrink: 0; }
+    .feit-kop { font-family: 'Fredoka One', cursive; font-size: 0.9rem; color: var(--accent); margin-bottom: 4px; }
+    .feit-text { font-size: 0.88rem; color: rgba(240,220,200,0.85); line-height: 1.6; font-weight: 600; }
+
+    /* ── FIGUUR KAART ── */
+    .figuur-card {
+      background: rgba(255,255,255,0.04); border: 1.5px solid rgba(248,113,113,0.2);
+      border-radius: 18px; padding: 20px; display: flex; gap: 18px; align-items: center;
+    }
+    .figuur-avatar {
+      font-size: 48px; width: 72px; height: 72px; border-radius: 50%;
+      background: rgba(248,113,113,0.1); border: 2px solid rgba(248,113,113,0.3);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .figuur-naam { font-family: 'Fredoka One', cursive; font-size: 1.1rem; color: var(--accent); margin-bottom: 2px; }
+    .figuur-rol { font-size: 0.78rem; font-weight: 800; color: rgba(240,220,200,0.45); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; }
+    .figuur-omschr { font-size: 0.86rem; color: rgba(240,220,200,0.8); line-height: 1.55; font-weight: 600; }
+
+    /* ── INVUL SPEL ── */
+    .invul-spel {
+      background: rgba(255,255,255,0.03);
+      border: 2px solid rgba(248,113,113,0.32);
+      border-radius: 24px; padding: 26px;
+    }
+    .invul-instructie {
+      font-weight: 700; font-size: 0.95rem;
+      color: rgba(240,220,200,0.75); margin-bottom: 6px; text-align: center;
+    }
+    .invul-sub {
+      font-size: 0.8rem; font-weight: 600; color: rgba(240,220,200,0.4);
+      text-align: center; margin-bottom: 24px;
+    }
+    .invul-voortgang {
+      display: flex; justify-content: space-between;
+      font-size: 0.78rem; font-weight: 800; color: rgba(240,220,200,0.4); margin-bottom: 8px;
+    }
+    .invul-progress-track { height: 6px; background: rgba(255,255,255,0.07); border-radius: 6px; overflow: hidden; margin-bottom: 24px; }
+    .invul-progress-fill {
+      height: 100%; width: 0%;
+      background: linear-gradient(90deg, #7a1010, #f87171);
+      border-radius: 6px; transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+    }
+    .invul-zin {
+      font-size: 1.05rem; font-weight: 700; color: #f0e6c8;
+      text-align: center; margin-bottom: 22px; line-height: 1.7;
+      min-height: 60px;
+    }
+    .invul-blank {
+      display: inline-block;
+      border-bottom: 3px solid var(--accent); min-width: 100px;
+      padding: 0 8px; color: var(--accent); font-family: 'Fredoka One', cursive;
+      font-size: 1.1rem; vertical-align: middle; text-align: center;
+    }
+    .invul-opties { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .invul-optie {
+      background: rgba(255,255,255,0.06); border: 2px solid rgba(255,255,255,0.12);
+      border-radius: 12px; padding: 12px 14px;
+      font-size: 0.92rem; font-weight: 700; color: #c8d0be; cursor: pointer;
+      transition: background 0.18s, border-color 0.18s, transform 0.12s;
+      font-family: 'Nunito', sans-serif; text-align: center;
+    }
+    .invul-optie:hover:not(:disabled):not(.io-goed):not(.io-fout) {
+      background: rgba(248,113,113,0.12); border-color: rgba(248,113,113,0.4); transform: translateY(-2px);
+    }
+    .invul-optie.io-goed {
+      background: rgba(34,197,94,0.2); border-color: rgba(34,197,94,0.6); color: #86efac;
+      animation: correct-pop 0.35s ease; cursor: default;
+    }
+    .invul-optie.io-fout {
+      background: rgba(239,68,68,0.15); border-color: rgba(239,68,68,0.5); color: #fca5a5;
+      animation: shake 0.4s ease; cursor: default;
+    }
+    @keyframes correct-pop { 0%{transform:scale(1)} 50%{transform:scale(1.06)} 100%{transform:scale(1)} }
+    @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
+    .invul-feedback {
+      text-align: center; margin-top: 16px; min-height: 28px;
+      font-family: 'Fredoka One', cursive; font-size: 1.05rem;
+    }
+    .invul-eindresultaat {
+      display: none; text-align: center; padding-top: 6px;
+    }
+    .invul-eindresultaat-score {
+      font-family: 'Fredoka One', cursive; font-size: 1.6rem; color: var(--accent); margin-bottom: 6px;
+    }
+    .invul-eindresultaat-tekst { font-size: 0.9rem; font-weight: 700; color: rgba(240,220,200,0.6); }
+
+    /* ── QUIZ ── */
+    .quiz-progress-wrap { margin-bottom: 20px; }
+    .quiz-progress-label { display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 700; color: rgba(240,220,200,0.45); margin-bottom: 8px; }
+    .quiz-progress-track { height: 8px; background: rgba(255,255,255,0.08); border-radius: 8px; overflow: hidden; }
+    .quiz-progress-fill { height: 100%; background: linear-gradient(90deg, #7a1010, #f87171); border-radius: 8px; transition: width 0.5s cubic-bezier(0.4,0,0.2,1); width: 0%; }
+    .quiz-list { display: flex; flex-direction: column; gap: 20px; }
+    .quiz-card {
+      background: rgba(255,255,255,0.04); border: 1.5px solid rgba(255,255,255,0.1);
+      border-radius: 20px; padding: 22px 20px; transition: border-color 0.3s;
+    }
+    .quiz-card.answered-correct { border-color: rgba(34,197,94,0.5); }
+    .quiz-card.answered-wrong   { border-color: rgba(239,68,68,0.4); }
+    .quiz-num { font-size: 0.72rem; font-weight: 800; color: rgba(240,220,200,0.35); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
+    .quiz-question { font-weight: 800; font-size: 1.05rem; color: #f0e6c8; margin-bottom: 14px; line-height: 1.55; }
+    .quiz-options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .quiz-option {
+      background: rgba(255,255,255,0.06); border: 2px solid rgba(255,255,255,0.12);
+      border-radius: 12px; padding: 12px 14px;
+      font-size: 0.9rem; font-weight: 700; color: #c8d0be; cursor: pointer;
+      transition: background 0.18s, border-color 0.18s, transform 0.12s;
+      text-align: left; font-family: 'Nunito', sans-serif;
+    }
+    .quiz-option:hover:not(:disabled) { background: rgba(248,113,113,0.12); border-color: rgba(248,113,113,0.4); transform: translateY(-2px); }
+    .quiz-option.correct { background: rgba(34,197,94,0.2); border-color: rgba(34,197,94,0.6); color: #86efac; animation: correct-pop 0.35s ease; }
+    .quiz-option.wrong   { background: rgba(239,68,68,0.15); border-color: rgba(239,68,68,0.5); color: #fca5a5; animation: shake 0.4s ease; }
+    .quiz-answer-reveal { margin-top: 10px; font-size: 0.84rem; color: #86efac; font-weight: 700; display: none; padding: 8px 12px; background: rgba(34,197,94,0.08); border-radius: 8px; }
+
+    /* ── STREAK TOAST ── */
+    .streak-toast {
+      position: fixed; top: 70px; left: 50%;
+      transform: translateX(-50%) translateY(-20px);
+      background: linear-gradient(135deg, #f87171, #dc2626);
+      color: #12000000; color: #fff; font-family: 'Fredoka One', cursive; font-size: 1.1rem;
+      padding: 10px 24px; border-radius: 30px; z-index: 500;
+      opacity: 0; transition: opacity 0.3s, transform 0.3s; pointer-events: none; white-space: nowrap;
+    }
+    .streak-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* ── RESULT ── */
+    .resultaat {
+      display: none; background: rgba(255,255,255,0.05); border: 1.5px solid rgba(255,255,255,0.1);
+      border-radius: 22px; padding: 32px 24px; text-align: center; margin-top: 28px;
+    }
+    .resultaat-icon { font-size: 60px; margin-bottom: 12px; }
+    .resultaat-titel { font-family: 'Fredoka One', cursive; font-size: 2rem; margin-bottom: 8px; }
+    .resultaat-tekst { color: rgba(240,220,200,0.65); margin-bottom: 10px; font-weight: 700; }
+    .resultaat-punten { font-family: 'Fredoka One', cursive; color: var(--accent); font-size: 1.5rem; }
+    .result-sterren { font-size: 30px; margin: 12px 0; }
+
+    /* ── CONFETTI ── */
+    .confetti-piece { position: fixed; top: -10px; border-radius: 3px; pointer-events: none; z-index: 9999; animation: confetti-fall linear forwards; }
+    @keyframes confetti-fall { 0%{transform:translateY(0) rotate(0deg);opacity:1} 100%{transform:translateY(110vh) rotate(720deg);opacity:0} }
+    .punten-float { position: fixed; color: var(--accent); font-family: 'Fredoka One', cursive; font-size: 1.5rem; pointer-events: none; z-index: 9998; animation: float-up 1.1s ease-out forwards; transform: translateX(-50%); text-shadow: 0 2px 8px rgba(0,0,0,0.5); }
+    @keyframes float-up { 0%{opacity:1;transform:translateX(-50%) translateY(0)} 100%{opacity:0;transform:translateX(-50%) translateY(-70px)} }
+
+    /* ── NAV ── */
+    .nav-bar { max-width: 760px; margin: 48px auto 0; padding: 0 20px; display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; }
+    .nav-link { flex: 1; min-width: 150px; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 20px; border-radius: 14px; font-family: 'Fredoka One', cursive; font-size: 1rem; text-decoration: none; transition: transform 0.18s, box-shadow 0.18s; }
+    .nav-link:hover { transform: translateY(-2px); }
+    .nav-link.home { background: rgba(248,113,113,0.12); border: 1px solid rgba(248,113,113,0.3); color: var(--accent); }
+  </style>
+</head>
+<body>
+
+  <div class="player-balk">
+    <div class="balk-links">
+      <a href="map.html">← Kaart</a>
+      <span id="player-name">...</span>
+    </div>
+    <div class="balk-rechts">
+      <span id="player-points">...</span>
+      <button type="button" class="uitloggen-knop" onclick="logUit()">Uitloggen</button>
+    </div>
+  </div>
+
+  <div class="hero">
+    <div class="hero-deco">🌾🌾🌾🌾🌾🌾🌾🌾🌾🌾🌾🌾</div>
+    <a href="map.html" class="back-btn">← Terug naar kaart</a>
+    <div class="level-chip">⭐⭐⭐⭐⭐ LEVEL 5 — Expert!</div>
+    <span class="location-icon">🌾</span>
+    <h1>De Plantage</h1>
+    <p class="description">Het zware leven op de plantages en de lange strijd voor vrijheid. Van slavernij tot <strong>Keti Koti</strong> — 1 juli 1863. Leer deze donkere maar belangrijke geschiedenis.</p>
+  </div>
+
+  <!-- Info cards -->
+  <div class="section">
+    <h2 class="section-title">🌾 Het leven op de plantage</h2>
+    <div class="info-grid">
+      <div class="info-card">
+        <div class="info-card-icon">🔗</div>
+        <div class="info-card-naam">Slavernij</div>
+        <div class="info-card-tekst">Een slaaf was het <strong>eigendom</strong> van een ander. Ze werden uit Afrika geroofd of van stamhoofden gekocht en op overvolle schepen vervoerd.</div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-icon">🌿</div>
+        <div class="info-card-naam">Plantaggewassen</div>
+        <div class="info-card-tekst">Tabak, suiker, katoen, koffie en cacao. Vooral <strong>suikerplantages</strong> waren groot — het leverde veel geld op voor de eigenaren.</div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-icon">🏠</div>
+        <div class="info-card-naam">Huisvesting</div>
+        <div class="info-card-tekst">Slaven leefden in kleine <strong>eenkamerkazernes</strong>. Vrouwen droegen een <strong>pangi</strong>, mannen een katoenen broek. Slippers hadden ze niet.</div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-icon">🐟</div>
+        <div class="info-card-naam">Voedsel</div>
+        <div class="info-card-tekst">Bananen of knollen met gezouten vis, vaak <strong>bakkeljauw</strong>. Één keer per week kregen ze een beetje rum.</div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-icon">🌲</div>
+        <div class="info-card-naam">Marrons</div>
+        <div class="info-card-tekst">Slaven die wegvluchtten naar het bos noemde men <strong>Marrons</strong>. Zij bouwden eigen vrije gemeenschappen diep in het oerwoud.</div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-icon">🕊️</div>
+        <div class="info-card-naam">Keti Koti</div>
+        <div class="info-card-tekst">Op <strong>1 juli 1863</strong> werd slavernij in Suriname afgeschaft. <em>Keti Koti</em> betekent in het Surinaams: "de ketenen zijn gebroken"!</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fun fact -->
+  <div class="section">
+    <div class="feit-card">
+      <span class="feit-icon">⛓️</span>
+      <div>
+        <div class="feit-kop">Wist je dat? — Keti Koti!</div>
+        <div class="feit-text">Op <strong>1 juli 1863</strong> werden zo'n <strong>33.000 slaven</strong> vrijgelaten in Suriname. Maar ze waren nog niet echt vrij! Tijdens het zogenaamde <em>staatstoezicht</em> moesten ze nog <strong>10 jaar</strong> doorwerken voor hun vroegere meesters — zij het nu voor een klein loon. Pas in 1873 waren ze werkelijk vrij om te gaan waar ze wilden.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Historical figure -->
+  <div class="section">
+    <h2 class="section-title">👤 Historische figuur</h2>
+    <div class="figuur-card">
+      <div class="figuur-avatar">🌿</div>
+      <div>
+        <div class="figuur-naam">Quassi (Kwasimukamba)</div>
+        <div class="figuur-rol">Slaafgemaakte genezer · 18e eeuw</div>
+        <div class="figuur-omschr">Quassi was een slaafgemaakte die bekend werd door zijn kennis van medicinale planten uit het Surinaamse oerwoud. Hij ontdekte de geneeskrachtige werking van de <em>Quassia amara</em>-plant — die naar hem vernoemd werd. Zijn kennis was zo waardevol dat hij als vrij man leefde en zelfs naar Europa reisde.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mini-game: Vul het ontbrekende woord in -->
+  <div class="section">
+    <h2 class="section-title">🎮 Invulspel — Kies het juiste woord!</h2>
+    <div class="invul-spel">
+      <div class="invul-instructie">Lees de zin en kies het woord dat op de stippellijn hoort!</div>
+      <div class="invul-sub">5 zinnen · kies elke keer het beste antwoord</div>
+
+      <div class="invul-voortgang">
+        <span id="invul-vraag-label">Zin 1 van 5</span>
+        <span id="invul-score-label">0 goed</span>
+      </div>
+      <div class="invul-progress-track">
+        <div class="invul-progress-fill" id="invul-progress-fill"></div>
+      </div>
+
+      <div class="invul-zin" id="invul-zin">Laden…</div>
+      <div class="invul-opties" id="invul-opties"></div>
+      <div class="invul-feedback" id="invul-feedback"></div>
+
+      <div class="invul-eindresultaat" id="invul-eindresultaat">
+        <div class="invul-eindresultaat-score" id="invul-eindresultaat-score"></div>
+        <div class="invul-eindresultaat-tekst" id="invul-eindresultaat-tekst"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quiz -->
+  <div class="section">
+    <h2 class="section-title">🧠 Quiz — De Plantage</h2>
+
+    <div class="quiz-progress-wrap">
+      <div class="quiz-progress-label">
+        <span>Voortgang</span>
+        <span><span id="quiz-progress-count">0</span> / 5 beantwoord</span>
+      </div>
+      <div class="quiz-progress-track">
+        <div class="quiz-progress-fill" id="quiz-progress-fill"></div>
+      </div>
+    </div>
+
+    <div class="quiz-list">
+
+      <div class="quiz-card">
+        <div class="quiz-num">Vraag 1 van 5</div>
+        <div class="quiz-question">🗓️ Op welke datum werd de slavernij in Suriname afgeschaft?</div>
+        <div class="quiz-options">
+          <button type="button" class="quiz-option" onclick="answer(this, false)">1 januari 1834</button>
+          <button type="button" class="quiz-option" onclick="answer(this, true)">1 juli 1863</button>
+          <button type="button" class="quiz-option" onclick="answer(this, false)">25 november 1875</button>
+          <button type="button" class="quiz-option" onclick="answer(this, false)">1 juli 1873</button>
+        </div>
+        <div class="quiz-answer-reveal">✅ Op 1 juli 1863 werd de slavernij in Suriname afgeschaft. Dit heet ook <em>Keti Koti</em> — "de ketenen zijn gebroken"!</div>
+      </div>
+
+      <div class="quiz-card">
+        <div class="quiz-num">Vraag 2 van 5</div>
+        <div class="quiz-question">🌲 Hoe noemden wij de slaven die ontsnapten en diep in het bos gingen wonen?</div>
+        <div class="quiz-options">
+          <button type="button" class="quiz-option" onclick="answer(this, false)">Basja's</button>
+          <button type="button" class="quiz-option" onclick="answer(this, false)">Stadsslaven</button>
+          <button type="button" class="quiz-option" onclick="answer(this, true)">Marrons</button>
+          <button type="button" class="quiz-option" onclick="answer(this, false)">Dresimans</button>
+        </div>
+        <div class="quiz-answer-reveal">✅ Marrons waren weggelopen slaven die vrije gemeenschappen bouwden in het oerwoud. Bekende groepen zijn de Saramaccaners en de Aucaners (Djuka's).</div>
+      </div>
+
+      <div class="quiz-card">
+        <div class="quiz-num">Vraag 3 van 5</div>
+        <div class="quiz-question">⚓ Op welk schip kwamen de eerste Javanen als contractarbeiders naar Suriname?</div>
+        <div class="quiz-options">
+          <button type="button" class="quiz-option" onclick="answer(this, false)">Lalla Rookh</button>
+          <button type="button" class="quiz-option" onclick="answer(this, true)">Willem II</button>
+          <button type="button" class="quiz-option" onclick="answer(this, false)">Santa María</button>
+          <button type="button" class="quiz-option" onclick="answer(this, false)">Goslar</button>
+        </div>
+        <div class="quiz-answer-reveal">✅ De eerste Javanen kwamen in 1890 aan op het schip <em>Willem II</em>, uit Nederlands-Indië. Ze werden eerst te werk gesteld op suikerplantage Mariënburg.</div>
+      </div>
+
+      <div class="quiz-card">
+        <div class="quiz-num">Vraag 4 van 5</div>
+        <div class="quiz-question">🌿 Naar welke beroemde slaafgemaakte genezer is een medicinale plant vernoemd?</div>
+        <div class="quiz-options">
+          <button type="button" class="quiz-option" onclick="answer(this, false)">Baron</button>
+          <button type="button" class="quiz-option" onclick="answer(this, false)">Boni</button>
+          <button type="button" class="quiz-option" onclick="answer(this, true)">Quassi</button>
+          <button type="button" class="quiz-option" onclick="answer(this, false)">Kaikoesie</button>
+        </div>
+        <div class="quiz-answer-reveal">✅ De plant <em>Quassia amara</em> is vernoemd naar Quassi (Kwasimukamba), een slaafgemaakte genezer die beroemd werd door zijn kennis van geneeskrachtige planten.</div>
+      </div>
+
+      <div class="quiz-card">
+        <div class="quiz-num">Vraag 5 van 5</div>
+        <div class="quiz-question">🔢 Hoeveel slaven werden er vrijgelaten bij de afschaffing van de slavernij in 1863?</div>
+        <div class="quiz-options">
+          <button type="button" class="quiz-option" onclick="answer(this, false)">Ongeveer 10.000</button>
+          <button type="button" class="quiz-option" onclick="answer(this, false)">Ongeveer 50.000</button>
+          <button type="button" class="quiz-option" onclick="answer(this, true)">Ongeveer 33.000</button>
+          <button type="button" class="quiz-option" onclick="answer(this, false)">Ongeveer 5.000</button>
+        </div>
+        <div class="quiz-answer-reveal">✅ Ongeveer 33.000 slaven werden vrijgelaten! De plantage-eigenaren kregen van de koloniale overheid 300 gulden per vrijgelaten slaaf als vergoeding.</div>
+      </div>
+
+    </div>
+
+    <div class="resultaat" id="resultaat">
+      <div class="resultaat-icon" id="resultaat-icon">🎉</div>
+      <div class="resultaat-titel" id="resultaat-titel"></div>
+      <div class="result-sterren" id="result-sterren"></div>
+      <div class="resultaat-tekst" id="resultaat-tekst"></div>
+      <div class="resultaat-punten" id="resultaat-punten"></div>
+    </div>
+  </div>
+
+  <div class="nav-bar">
+    <a href="map.html" class="nav-link home">🏠 Terug naar kaart</a>
+  </div>
+
+  <div class="streak-toast" id="streak-toast"></div>
+
+  <script src="js/api.js"></script>
+  <script>
+    checkAuth()
+    toonSpelerBalk()
+
+    const LOCATIE_ID = 'plantage'
+    const TOTAAL     = 5
+    let score      = 0
+    let beantwoord = 0
+    let streak     = 0
+
+    /* ── INVUL SPEL ── */
+    const invulVragen = [
+      {
+        voor: 'Afrikaanse slaven die wegvluchtten naar het oerwoud en eigen gemeenschappen stichtten noemde men',
+        blank: '___',
+        na: '.',
+        opties: ['Marrons', 'Basja\'s', 'Dresimans', 'Stadsslaven'],
+        goed: 'Marrons',
+        uitleg: '✅ Marrons! Ze plunderden ook plantages voor wapens en gereedschap, en bevrijdden soms andere slaven.'
+      },
+      {
+        voor: 'Op 1 juli',
+        blank: '___',
+        na: 'werd de slavernij in Suriname officieel afgeschaft — dit heet Keti Koti.',
+        opties: ['1863', '1834', '1873', '1808'],
+        goed: '1863',
+        uitleg: '✅ 1863! Op die dag werden zo\'n 33.000 slaven bevrijd. Keti Koti betekent "de ketenen zijn gebroken".'
+      },
+      {
+        voor: 'Bij aankomst in Paramaribo werden slaven op de markt verkocht en daarna',
+        blank: '___',
+        na: 'met de initialen van hun nieuwe eigenaar.',
+        opties: ['gebrandmerkt', 'vrijgelaten', 'beloond', 'getatoeëerd'],
+        goed: 'gebrandmerkt',
+        uitleg: '✅ Gebrandmerkt — met een heet ijzer op de rug. Dit was een wrede manier om aan te geven wie de eigenaar was.'
+      },
+      {
+        voor: 'De eerste Hindostaanse contractarbeiders kwamen in 1873 naar Suriname op het zeilschip',
+        blank: '___',
+        na: '.',
+        opties: ['Lalla Rookh', 'Willem II', 'Santa María', 'Goslar'],
+        goed: 'Lalla Rookh',
+        uitleg: '✅ Lalla Rookh! De Hindostanen kwamen uit Brits-Indië. De Javanen kwamen later in 1890 op de Willem II.'
+      },
+      {
+        voor: 'Na de afschaffing van de slavernij moesten vrijgelaten slaven tijdens het staatstoezicht nog',
+        blank: '___',
+        na: 'jaar doorwerken voor hun vroegere meesters.',
+        opties: ['10', '5', '20', '3'],
+        goed: '10',
+        uitleg: '✅ 10 jaar! Van 1863 tot 1873 duurde het staatstoezicht. Pas daarna waren ze echt vrij.'
+      }
+    ]
+
+    let invulIdx   = 0
+    let invulScore = 0
+    let invulBezig = false
+
+    function laadInvulVraag() {
+      if (invulIdx >= invulVragen.length) {
+        toonInvulEinde()
+        return
+      }
+      invulBezig = false
+      const v = invulVragen[invulIdx]
+      const pct = Math.round(invulIdx / invulVragen.length * 100)
+      document.getElementById('invul-progress-fill').style.width = pct + '%'
+      document.getElementById('invul-vraag-label').textContent = `Zin ${invulIdx + 1} van ${invulVragen.length}`
+      document.getElementById('invul-score-label').textContent = `${invulScore} goed`
+      document.getElementById('invul-feedback').textContent = ''
+      document.getElementById('invul-feedback').style.color = ''
+      document.getElementById('invul-zin').innerHTML =
+        `${v.voor} <span class="invul-blank">${v.blank}</span> ${v.na}`
+
+      const optiesEl = document.getElementById('invul-opties')
+      optiesEl.innerHTML = ''
+      v.opties.forEach(opt => {
+        const btn = document.createElement('button')
+        btn.type = 'button'
+        btn.className = 'invul-optie'
+        btn.textContent = opt
+        btn.addEventListener('click', () => kiesInvulOptie(btn, opt, v))
+        optiesEl.appendChild(btn)
+      })
+    }
+
+    function kiesInvulOptie(btn, gekozen, v) {
+      if (invulBezig) return
+      invulBezig = true
+
+      document.querySelectorAll('.invul-optie').forEach(b => b.disabled = true)
+      const isGoed = gekozen === v.goed
+      btn.classList.add(isGoed ? 'io-goed' : 'io-fout')
+
+      if (!isGoed) {
+        document.querySelectorAll('.invul-optie').forEach(b => {
+          if (b.textContent === v.goed) b.classList.add('io-goed')
+        })
+      } else {
+        invulScore++
+      }
+
+      document.getElementById('invul-zin').innerHTML =
+        `${v.voor} <span class="invul-blank" style="color:${isGoed ? '#86efac' : '#fca5a5'}">${v.goed}</span> ${v.na}`
+
+      const fb = document.getElementById('invul-feedback')
+      fb.textContent = v.uitleg
+      fb.style.color = isGoed ? '#86efac' : '#fca5a5'
+
+      setTimeout(() => {
+        invulIdx++
+        laadInvulVraag()
+      }, 1800)
+    }
+
+    function toonInvulEinde() {
+      document.getElementById('invul-progress-fill').style.width = '100%'
+      document.getElementById('invul-vraag-label').textContent = 'Klaar!'
+      document.getElementById('invul-score-label').textContent = `${invulScore} / ${invulVragen.length} goed`
+      document.getElementById('invul-zin').style.display = 'none'
+      document.getElementById('invul-opties').style.display = 'none'
+      document.getElementById('invul-feedback').style.display = 'none'
+
+      const einde = document.getElementById('invul-eindresultaat')
+      einde.style.display = 'block'
+      let tekst
+      if (invulScore === invulVragen.length) tekst = '🏆 Perfect! Je kent alle antwoorden!'
+      else if (invulScore >= 4) tekst = '🎉 Heel goed gedaan!'
+      else if (invulScore >= 3) tekst = '👍 Aardig! Lees de uitleg nog eens door.'
+      else tekst = '💪 Oefenen maar! Lees de informatie hierboven.'
+      document.getElementById('invul-eindresultaat-score').textContent = `${invulScore} / ${invulVragen.length} goed!`
+      document.getElementById('invul-eindresultaat-tekst').textContent = tekst
+    }
+
+    laadInvulVraag()
+
+    /* ── QUIZ ── */
+    function floatPunten(btn) {
+      const rect = btn.getBoundingClientRect()
+      const el = document.createElement('div')
+      el.className = 'punten-float'
+      el.textContent = '+100'
+      el.style.left = (rect.left + rect.width / 2) + 'px'
+      el.style.top  = rect.top + 'px'
+      document.body.appendChild(el)
+      setTimeout(() => el.remove(), 1200)
+    }
+
+    function showStreak(n) {
+      const toast = document.getElementById('streak-toast')
+      toast.textContent = n >= 5 ? '🔥 Perfecte reeks!' : `🔥 ${n} op rij goed!`
+      toast.classList.add('show')
+      setTimeout(() => toast.classList.remove('show'), 2000)
+    }
+
+    function launchConfetti() {
+      const colors = ['#f87171', '#22c55e', '#f4c430', '#fca5a5', '#86efac', '#fbbf24']
+      for (let i = 0; i < 65; i++) {
+        const el = document.createElement('div')
+        el.className = 'confetti-piece'
+        const size = 6 + Math.random() * 9
+        el.style.left = Math.random() * 100 + 'vw'
+        el.style.width = size + 'px'
+        el.style.height = size + 'px'
+        el.style.background = colors[i % colors.length]
+        el.style.animationDelay = Math.random() * 1.5 + 's'
+        el.style.animationDuration = (2 + Math.random() * 2) + 's'
+        document.body.appendChild(el)
+        setTimeout(() => el.remove(), 4500)
+      }
+    }
+
+    function answer(btn, isCorrect) {
+      const card    = btn.closest('.quiz-card')
+      const allBtns = card.querySelectorAll('.quiz-option')
+      if (allBtns[0].disabled) return
+
+      allBtns.forEach(b => b.disabled = true)
+      btn.classList.add(isCorrect ? 'correct' : 'wrong')
+
+      if (!isCorrect) {
+        allBtns.forEach(b => { if (b.onclick.toString().includes('true')) b.classList.add('correct') })
+        streak = 0
+        card.classList.add('answered-wrong')
+      } else {
+        score++; streak++
+        card.classList.add('answered-correct')
+        floatPunten(btn)
+        if (streak >= 2) showStreak(streak)
+      }
+      card.querySelector('.quiz-answer-reveal').style.display = 'block'
+
+      beantwoord++
+      const pct = Math.round(beantwoord / TOTAAL * 100)
+      document.getElementById('quiz-progress-fill').style.width = pct + '%'
+      document.getElementById('quiz-progress-count').textContent = beantwoord
+
+      if (beantwoord === TOTAAL) setTimeout(toonResultaat, 700)
+    }
+
+    async function toonResultaat() {
+      const el = document.getElementById('resultaat')
+      el.style.display = 'block'
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+
+      let icon, titel, kleur, sterren
+      if (score === TOTAAL) {
+        icon = '🏆'; titel = 'Meester historicus!'; kleur = '#86efac'; sterren = '⭐⭐⭐⭐⭐'; launchConfetti()
+      } else if (score >= 4) {
+        icon = '🎉'; titel = 'Uitstekend!'; kleur = '#fbbf24'; sterren = '⭐⭐⭐⭐'
+      } else if (score >= 3) {
+        icon = '👍'; titel = 'Goed gedaan!'; kleur = '#fb923c'; sterren = '⭐⭐⭐'
+      } else if (score >= 2) {
+        icon = '💪'; titel = 'Bijna!'; kleur = '#fca5a5'; sterren = '⭐⭐'
+      } else {
+        icon = '📚'; titel = 'Lees het nog eens!'; kleur = '#f87171'; sterren = '⭐'
+      }
+
+      document.getElementById('resultaat-icon').textContent   = icon
+      document.getElementById('resultaat-titel').style.color  = kleur
+      document.getElementById('resultaat-titel').textContent  = titel
+      document.getElementById('result-sterren').textContent   = sterren
+      document.getElementById('resultaat-tekst').textContent  = `${score} van de ${TOTAAL} vragen goed`
+      document.getElementById('resultaat-punten').textContent = `+${score * 100} punten!`
+
+      try {
+        const speler = await laadSpeler()
+        if (!speler) return
+        const quizResultaten = speler.quizResultaten || {}
+        quizResultaten[LOCATIE_ID] = { score, totaal: TOTAAL, gespeeldOp: new Date().toISOString() }
+        const voltooid = [...new Set([...(speler.completedLocations || []), LOCATIE_ID])]
+        await slaVoortgangOp({
+          quizResultaten,
+          punten:             (speler.punten || 0) + score * 100,
+          completedLocations: voltooid,
+        })
+        document.getElementById('player-points').textContent = ((speler.punten || 0) + score * 100) + ' punten'
+      } catch (e) { console.error(e) }
+    }
+  </script>
+
+</body>
+</html>

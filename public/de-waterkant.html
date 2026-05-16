@@ -3,126 +3,445 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>De Waterkant — Suriname Quest</title>
+  <title>De Waterkant — SuriQuest</title>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background: #0d1b12; color: #f0e6c8; font-family: 'Nunito', sans-serif; min-height: 100vh; padding: 0 0 60px; }
+    :root { --accent: #48b4dc; --accent-dim: rgba(72,180,220,0.18); --bg: #071520; }
+    body { background: var(--bg); color: #f0e6c8; font-family: 'Nunito', sans-serif; min-height: 100vh; padding-bottom: 80px; }
 
-    .player-balk { background: rgba(0,0,0,0.4); padding: 8px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(72,180,220,0.15); }
-    .player-balk span { font-weight: 700; font-size: 0.9rem; }
-    #player-name   { color: #f0e6c8; }
-    #player-points { color: #48b4dc; font-family: 'Fredoka One', cursive; }
+    /* ── HUD ── */
+    .player-balk {
+      background: rgba(0,0,0,0.5);
+      padding: 9px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(72,180,220,0.18);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      -webkit-backdrop-filter: blur(8px);
+      backdrop-filter: blur(8px);
+    }
+    .balk-links { display: flex; align-items: center; gap: 10px; }
+    .balk-links a { color: rgba(72,180,220,0.7); text-decoration: none; font-size: 0.85rem; font-weight: 700; }
+    #player-name { font-weight: 800; color: #f0e6c8; font-size: 0.9rem; }
+    .balk-rechts { display: flex; align-items: center; gap: 12px; }
+    #player-points { color: var(--accent); font-family: 'Fredoka One', cursive; font-size: 1rem; }
     .uitloggen-knop { background: none; border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; color: rgba(255,255,255,0.5); padding: 4px 10px; font-size: 12px; cursor: pointer; }
 
-    .hero { background: linear-gradient(160deg, #0d2a38 0%, #0d1e2a 60%, #0d1b12 100%); padding: 48px 24px 36px; text-align: center; border-bottom: 2px solid rgba(72,180,220,0.25); position: relative; overflow: hidden; }
-    .hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 40% 60%, rgba(72,180,220,0.07) 0%, transparent 70%); pointer-events: none; }
-    .back-btn { display: inline-flex; align-items: center; gap: 6px; color: #48b4dc; text-decoration: none; font-weight: 700; font-size: 0.9rem; margin-bottom: 24px; padding: 6px 14px; border: 1px solid rgba(72,180,220,0.3); border-radius: 20px; transition: background 0.2s; }
+    /* ── HERO ── */
+    .hero {
+      background: linear-gradient(160deg, #082030 0%, #050e1c 60%, var(--bg) 100%);
+      padding: 40px 24px 32px;
+      text-align: center;
+      border-bottom: 2px solid rgba(72,180,220,0.22);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 40% 60%, rgba(72,180,220,0.09) 0%, transparent 60%),
+        radial-gradient(circle at 80% 20%, rgba(34,197,94,0.04) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    /* Water wave decoration */
+    .wave-deco {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 24px;
+      background: repeating-linear-gradient(
+        90deg,
+        transparent 0px, transparent 20px,
+        rgba(72,180,220,0.08) 20px, rgba(72,180,220,0.08) 40px
+      );
+      pointer-events: none;
+    }
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.88rem;
+      margin-bottom: 22px;
+      padding: 6px 14px;
+      border: 1px solid rgba(72,180,220,0.32);
+      border-radius: 20px;
+      transition: background 0.2s;
+    }
     .back-btn:hover { background: rgba(72,180,220,0.1); }
-    .year-badge { display: inline-block; background: #48b4dc; color: #0d1b12; font-family: 'Fredoka One', cursive; font-size: 0.95rem; padding: 4px 14px; border-radius: 20px; margin-bottom: 14px; }
-    .location-icon { font-size: 72px; display: block; margin: 0 auto 16px; filter: drop-shadow(0 0 18px rgba(72,180,220,0.4)); }
-    h1 { font-family: 'Fredoka One', cursive; font-size: clamp(2rem, 6vw, 3.2rem); color: #48b4dc; text-shadow: 0 2px 12px rgba(72,180,220,0.3); margin-bottom: 14px; }
-    .description { max-width: 620px; margin: 0 auto; font-size: 1.05rem; line-height: 1.7; color: #b8d8e8; font-weight: 600; }
+    .year-badge {
+      display: inline-block;
+      background: var(--accent);
+      color: #071520;
+      font-family: 'Fredoka One', cursive;
+      font-size: 0.9rem;
+      padding: 4px 16px;
+      border-radius: 20px;
+      margin-bottom: 16px;
+    }
+    .location-icon {
+      font-size: 76px;
+      display: block;
+      margin: 0 auto 14px;
+      filter: drop-shadow(0 0 20px rgba(72,180,220,0.4));
+      animation: icon-rock 5s ease-in-out infinite;
+    }
+    @keyframes icon-rock {
+      0%, 100% { transform: rotate(-4deg); }
+      50% { transform: rotate(4deg); }
+    }
+    h1 {
+      font-family: 'Fredoka One', cursive;
+      font-size: clamp(2rem, 6vw, 3.2rem);
+      color: var(--accent);
+      text-shadow: 0 2px 16px rgba(72,180,220,0.35);
+      margin-bottom: 12px;
+      position: relative;
+    }
+    .description {
+      max-width: 620px;
+      margin: 0 auto;
+      font-size: 1rem;
+      line-height: 1.75;
+      color: #a8cce0;
+      font-weight: 600;
+      position: relative;
+    }
 
-    .section { max-width: 760px; margin: 40px auto 0; padding: 0 20px; }
-    .section-title { font-family: 'Fredoka One', cursive; font-size: 1.5rem; color: #48b4dc; margin-bottom: 18px; display: flex; align-items: center; gap: 10px; }
-    .section-title::after { content: ''; flex: 1; height: 2px; background: linear-gradient(90deg, rgba(72,180,220,0.4), transparent); border-radius: 2px; }
+    /* ── SECTIONS ── */
+    .section { max-width: 760px; margin: 36px auto 0; padding: 0 20px; }
+    .section-title {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.4rem;
+      color: var(--accent);
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 2px;
+      background: linear-gradient(90deg, rgba(72,180,220,0.4), transparent);
+      border-radius: 2px;
+    }
 
-    .collectibles-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
-    .collectible-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(72,180,220,0.2); border-radius: 16px; padding: 22px 18px; text-align: center; transition: transform 0.2s, border-color 0.2s; }
-    .collectible-card:hover { transform: translateY(-3px); border-color: rgba(72,180,220,0.5); }
-    .collectible-emoji { font-size: 40px; display: block; margin-bottom: 10px; }
-    .collectible-name { font-weight: 800; font-size: 0.95rem; }
+    /* ── MINI TIJDLIJN ── */
+    .mini-tijdlijn { display: flex; flex-direction: column; gap: 0; position: relative; }
+    .mini-tijdlijn::before {
+      content: '';
+      position: absolute;
+      left: 19px;
+      top: 22px;
+      bottom: 22px;
+      width: 2px;
+      background: linear-gradient(180deg, rgba(72,180,220,0.5), rgba(72,180,220,0.1));
+    }
+    .mtl-item { display: flex; align-items: flex-start; gap: 16px; padding: 0 0 22px 0; position: relative; }
+    .mtl-dot {
+      width: 38px; height: 38px; border-radius: 50%;
+      background: rgba(72,180,220,0.12);
+      border: 2px solid rgba(72,180,220,0.4);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; flex-shrink: 0; position: relative; z-index: 1;
+    }
+    .mtl-content { padding-top: 6px; }
+    .mtl-jaar { font-family: 'Fredoka One', cursive; font-size: 0.9rem; color: var(--accent); margin-bottom: 2px; }
+    .mtl-tekst { font-size: 0.88rem; color: rgba(240,230,200,0.8); line-height: 1.5; font-weight: 600; }
+
+    /* ── WIST JE DAT ── */
+    .feit-card {
+      background: linear-gradient(135deg, rgba(72,180,220,0.1), rgba(72,180,220,0.04));
+      border: 1px solid rgba(72,180,220,0.35);
+      border-radius: 16px;
+      padding: 18px 20px;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      margin-bottom: 18px;
+    }
+    .feit-icon { font-size: 28px; flex-shrink: 0; }
+    .feit-kop { font-family: 'Fredoka One', cursive; font-size: 0.85rem; color: var(--accent); margin-bottom: 4px; }
+    .feit-text { font-size: 0.88rem; color: rgba(240,230,200,0.85); line-height: 1.6; font-weight: 600; }
+
+    /* ── VOLK KAARTEN ── */
+    .volken-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
+    .volk-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(72,180,220,0.18);
+      border-radius: 14px;
+      padding: 16px 14px;
+      text-align: center;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .volk-card:hover { transform: translateY(-3px); border-color: rgba(72,180,220,0.4); }
+    .volk-emoji { font-size: 32px; display: block; margin-bottom: 8px; }
+    .volk-naam { font-family: 'Fredoka One', cursive; font-size: 0.95rem; color: var(--accent); margin-bottom: 2px; }
+    .volk-jaar { font-size: 0.75rem; font-weight: 700; color: rgba(240,230,200,0.45); }
+    .volk-schip { font-size: 0.78rem; font-weight: 700; color: rgba(168,204,224,0.7); margin-top: 4px; }
+
+    /* ── QUIZ ── */
+    .quiz-progress-wrap { margin-bottom: 20px; }
+    .quiz-progress-label { display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 700; color: rgba(240,230,200,0.45); margin-bottom: 8px; }
+    .quiz-progress-track { height: 8px; background: rgba(255,255,255,0.08); border-radius: 8px; overflow: hidden; }
+    .quiz-progress-fill { height: 100%; background: linear-gradient(90deg, #0e6080, #48b4dc); border-radius: 8px; transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1); width: 0%; }
 
     .quiz-list { display: flex; flex-direction: column; gap: 20px; }
-    .quiz-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 22px 20px; }
-    .quiz-question { font-weight: 800; font-size: 1rem; color: #f0e6c8; margin-bottom: 14px; line-height: 1.5; }
+    .quiz-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 18px; padding: 22px 20px; transition: border-color 0.3s; }
+    .quiz-card.answered-correct { border-color: rgba(34,197,94,0.4); }
+    .quiz-card.answered-wrong   { border-color: rgba(239,68,68,0.35); }
+    .quiz-num { font-size: 0.72rem; font-weight: 800; color: rgba(240,230,200,0.35); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
+    .quiz-question { font-weight: 800; font-size: 1rem; color: #f0e6c8; margin-bottom: 14px; line-height: 1.55; }
     .quiz-options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .quiz-option { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: 10px; padding: 10px 14px; font-size: 0.9rem; font-weight: 600; color: #b8d8e8; cursor: pointer; transition: background 0.18s; text-align: left; }
-    .quiz-option:hover:not(:disabled) { background: rgba(72,180,220,0.1); border-color: rgba(72,180,220,0.4); }
-    .quiz-option.correct { background: rgba(34,197,94,0.15); border-color: rgba(34,197,94,0.5); color: #86efac; }
-    .quiz-option.wrong   { background: rgba(239,68,68,0.12);  border-color: rgba(239,68,68,0.4);  color: #fca5a5; }
-    .quiz-answer-reveal { margin-top: 12px; font-size: 0.88rem; color: #86efac; font-weight: 700; display: none; }
+    .quiz-option {
+      background: rgba(255,255,255,0.06);
+      border: 1.5px solid rgba(255,255,255,0.12);
+      border-radius: 12px;
+      padding: 11px 14px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #a8cce0;
+      cursor: pointer;
+      transition: background 0.18s, border-color 0.18s, transform 0.12s;
+      text-align: left;
+      font-family: 'Nunito', sans-serif;
+    }
+    .quiz-option:hover:not(:disabled) { background: rgba(72,180,220,0.1); border-color: rgba(72,180,220,0.4); transform: translateY(-1px); }
+    .quiz-option.correct { background: rgba(34,197,94,0.18); border-color: rgba(34,197,94,0.55); color: #86efac; }
+    .quiz-option.wrong   { background: rgba(239,68,68,0.14); border-color: rgba(239,68,68,0.45); color: #fca5a5; animation: shake 0.4s ease; }
+    @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+    .quiz-answer-reveal { margin-top: 12px; font-size: 0.84rem; color: #86efac; font-weight: 700; display: none; padding: 8px 12px; background: rgba(34,197,94,0.08); border-radius: 8px; }
 
-    .resultaat { display: none; background: rgba(255,255,255,0.05); border-radius: 16px; padding: 24px; text-align: center; margin-top: 24px; }
-    .resultaat-titel { font-family: 'Fredoka One', cursive; font-size: 1.8rem; margin-bottom: 8px; }
-    .resultaat-tekst { color: rgba(240,230,200,0.7); margin-bottom: 8px; }
-    .resultaat-punten { font-family: 'Fredoka One', cursive; color: #f4c430; font-size: 1.2rem; }
+    /* ── STREAK TOAST ── */
+    .streak-toast {
+      position: fixed; top: 70px; left: 50%;
+      transform: translateX(-50%) translateY(-20px);
+      background: linear-gradient(135deg, #48b4dc, #0e9fd8);
+      color: #071520;
+      font-family: 'Fredoka One', cursive; font-size: 1.1rem;
+      padding: 10px 24px; border-radius: 30px;
+      z-index: 500; opacity: 0;
+      transition: opacity 0.3s, transform 0.3s;
+      pointer-events: none; white-space: nowrap;
+    }
+    .streak-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
+    /* ── RESULT ── */
+    .resultaat { display: none; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 32px 24px; text-align: center; margin-top: 28px; }
+    .resultaat-icon { font-size: 56px; margin-bottom: 12px; }
+    .resultaat-titel { font-family: 'Fredoka One', cursive; font-size: 2rem; margin-bottom: 8px; }
+    .resultaat-tekst { color: rgba(240,230,200,0.65); margin-bottom: 10px; font-weight: 700; }
+    .resultaat-punten { font-family: 'Fredoka One', cursive; color: #f4c430; font-size: 1.4rem; }
+    .result-sterren { font-size: 28px; margin: 12px 0; }
+
+    /* ── CONFETTI / FLOAT ── */
+    .confetti-piece { position: fixed; top: -10px; border-radius: 3px; pointer-events: none; z-index: 9999; animation: confetti-fall linear forwards; }
+    @keyframes confetti-fall { 0% { transform: translateY(0) rotate(0deg); opacity: 1; } 100% { transform: translateY(110vh) rotate(720deg); opacity: 0; } }
+    .punten-float { position: fixed; color: #f4c430; font-family: 'Fredoka One', cursive; font-size: 1.5rem; pointer-events: none; z-index: 9998; animation: float-up 1.1s ease-out forwards; transform: translateX(-50%); text-shadow: 0 2px 8px rgba(0,0,0,0.5); }
+    @keyframes float-up { 0% { opacity: 1; transform: translateX(-50%) translateY(0); } 100% { opacity: 0; transform: translateX(-50%) translateY(-70px); } }
+
+    /* ── NAV ── */
     .nav-bar { max-width: 760px; margin: 48px auto 0; padding: 0 20px; display: flex; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
-    .nav-link { flex: 1; min-width: 160px; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 20px; border-radius: 14px; font-family: 'Fredoka One', cursive; font-size: 1rem; text-decoration: none; transition: transform 0.18s; }
+    .nav-link { flex: 1; min-width: 140px; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 20px; border-radius: 14px; font-family: 'Fredoka One', cursive; font-size: 1rem; text-decoration: none; transition: transform 0.18s; }
     .nav-link:hover { transform: translateY(-2px); }
-    .nav-link.prev { background: rgba(72,180,220,0.15); border: 1px solid rgba(72,180,220,0.3); color: #48b4dc; }
-    .nav-link.home { background: rgba(244,196,48,0.12); border: 1px solid rgba(244,196,48,0.25); color: #f4c430; }
-    .nav-link.next { background: linear-gradient(135deg, #1a7a4a, #0f5c34); color: #f0e6c8; }
+    .nav-link.prev { background: rgba(244,196,48,0.12); border: 1px solid rgba(244,196,48,0.28); color: #f4c430; }
+    .nav-link.home { background: rgba(72,180,220,0.1); border: 1px solid rgba(72,180,220,0.28); color: var(--accent); }
+    .nav-link.next { background: linear-gradient(135deg, #1a7a4a, #0f5c34); color: #f0e6c8; box-shadow: 0 4px 16px rgba(0,0,0,0.3); }
   </style>
 </head>
 <body>
 
   <div class="player-balk">
-    <span id="player-name">...</span>
-    <span id="player-points">...</span>
-    <button class="uitloggen-knop" onclick="logUit()">Uitloggen</button>
-  </div>
-
-  <div class="hero">
-    <a href="map.html" class="back-btn">← Terug naar kaart</a>
-    <div class="year-badge">1700s</div>
-    <span class="location-icon">⚓</span>
-    <h1>De Waterkant</h1>
-    <p class="description">De historische waterfront van Paramaribo, waar schepen uit Europa en Afrika aanmeerden. Een levendige plek die de handelsgeschiedenis en de aankomst van verschillende volkeren herinnert.</p>
-  </div>
-
-  <div class="section">
-    <h2 class="section-title">🎒 Verzamelobjecten</h2>
-    <div class="collectibles-grid">
-      <div class="collectible-card"><span class="collectible-emoji">🪨</span><div class="collectible-name">Riviersteen</div></div>
-      <div class="collectible-card"><span class="collectible-emoji">🚢</span><div class="collectible-name">Scheepstekening</div></div>
-      <div class="collectible-card"><span class="collectible-emoji">🌺</span><div class="collectible-name">Rode Hibiscus</div></div>
+    <div class="balk-links">
+      <a href="map.html">← Kaart</a>
+      <span id="player-name">...</span>
+    </div>
+    <div class="balk-rechts">
+      <span id="player-points">...</span>
+      <button type="button" class="uitloggen-knop" onclick="logUit()">Uitloggen</button>
     </div>
   </div>
 
+  <div class="hero">
+    <div class="wave-deco"></div>
+    <a href="map.html" class="back-btn">← Terug naar kaart</a>
+    <div class="year-badge">1600s – 1900s</div>
+    <span class="location-icon">⚓</span>
+    <h1>De Waterkant</h1>
+    <p class="description">De historische haven van Paramaribo waar eeuwenlang schepen uit Europa en Afrika aanmeerden. Hier werden slaven verkocht, en hier stapten ook de Hindostanen en Javanen aan wal — elk met hun eigen verhaal.</p>
+  </div>
+
+  <!-- Mini timeline -->
   <div class="section">
-    <h2 class="section-title">🧠 Quizvragen</h2>
+    <h2 class="section-title">📅 Tijdlijn van aankomsten</h2>
+    <div class="mini-tijdlijn">
+      <div class="mtl-item">
+        <div class="mtl-dot">⛓️</div>
+        <div class="mtl-content">
+          <div class="mtl-jaar">1600s–1808 — Slavenhandel</div>
+          <div class="mtl-tekst">Schepen vol tot slaaf gemaakte Afrikanen meerden aan de Waterkant aan. Bij aankomst werden zij op de markt verkocht en gebrandmerkt met de initialen van hun nieuwe eigenaar.</div>
+        </div>
+      </div>
+      <div class="mtl-item">
+        <div class="mtl-dot">🇨🇳</div>
+        <div class="mtl-content">
+          <div class="mtl-jaar">1853 — Eerste Chinese contractarbeiders</div>
+          <div class="mtl-tekst">De eerste groep contractarbeiders kwam uit China, Hong Kong, Macao en Madeira. Zij gingen aan het werk op suikerplantage <strong>Catharina Sophia</strong> in Saramacca.</div>
+        </div>
+      </div>
+      <div class="mtl-item">
+        <div class="mtl-dot">🚢</div>
+        <div class="mtl-content">
+          <div class="mtl-jaar">1873 — Lalla Rookh (Hindostanen)</div>
+          <div class="mtl-tekst">Op <strong>1 mei 1873</strong> meerde het zeilschip de <strong>Lalla Rookh</strong> aan. Aan boord: de eerste Hindostanen uit Brits-Indië. Zij kwamen op een vijfjarig contract als plantagearbeiders.</div>
+        </div>
+      </div>
+      <div class="mtl-item">
+        <div class="mtl-dot">🚢</div>
+        <div class="mtl-content">
+          <div class="mtl-jaar">1890 — Willem II (Javanen)</div>
+          <div class="mtl-tekst">Het schip de <strong>Willem II</strong> bracht de eerste Javanen uit Nederlands-Indië. Zij vertrokken vanuit armoede en landgebrek, en werden eerst ingezet bij suikerplantage <strong>Mariënburg</strong>.</div>
+        </div>
+      </div>
+      <div class="mtl-item">
+        <div class="mtl-dot">💣</div>
+        <div class="mtl-content">
+          <div class="mtl-jaar">10 mei 1940 — De Goslar</div>
+          <div class="mtl-tekst">Het Duitse koopvaardijschip de <strong>Goslar</strong> lag in de Surinamerivier. Toen de gouverneur het schip wilde innemen, lieten de Duitsers het zelf zinken. Het wrak is nog altijd zichtbaar.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- People cards -->
+  <div class="section">
+    <h2 class="section-title">🌍 Volkeren aan de Waterkant</h2>
+    <div class="volken-grid">
+      <div class="volk-card">
+        <span class="volk-emoji">⛓️</span>
+        <div class="volk-naam">Afrikanen</div>
+        <div class="volk-jaar">1600s – 1808</div>
+        <div class="volk-schip">Slavenhandel</div>
+      </div>
+      <div class="volk-card">
+        <span class="volk-emoji">🥢</span>
+        <div class="volk-naam">Chinezen</div>
+        <div class="volk-jaar">Vanaf 1853</div>
+        <div class="volk-schip">Catharina Sophia</div>
+      </div>
+      <div class="volk-card">
+        <span class="volk-emoji">🪔</span>
+        <div class="volk-naam">Hindostanen</div>
+        <div class="volk-jaar">Vanaf 1873</div>
+        <div class="volk-schip">Lalla Rookh</div>
+      </div>
+      <div class="volk-card">
+        <span class="volk-emoji">🎭</span>
+        <div class="volk-naam">Javanen</div>
+        <div class="volk-jaar">Vanaf 1890</div>
+        <div class="volk-schip">Willem II</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fun facts -->
+  <div class="section">
+    <div class="feit-card">
+      <span class="feit-icon">💡</span>
+      <div>
+        <div class="feit-kop">Wist je dat?</div>
+        <div class="feit-text">Slaven werden bij aankomst in Paramaribo op de markt <strong>gebrandmerkt</strong> met een gloeiend ijzer. De initialen van de eigenaar werden letterlijk op hun huid gebrand. Zo was voor iedereen zichtbaar wie de "eigenaar" was.</div>
+      </div>
+    </div>
+    <div class="feit-card">
+      <span class="feit-icon">🛳️</span>
+      <div>
+        <div class="feit-kop">Monument Baba en Mai</div>
+        <div class="feit-text">Het <strong>Baba en Mai</strong>-monument (1994) op de Kleine Combéweg in Paramaribo herdenkt de eerste Hindostaanse immigranten. "Baba en Mai" betekent vader en moeder — symbool voor alle voorouders die kwamen.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quiz -->
+  <div class="section">
+    <h2 class="section-title">🧠 Quiz — De Waterkant</h2>
+
+    <div class="quiz-progress-wrap">
+      <div class="quiz-progress-label">
+        <span>Voortgang</span>
+        <span><span id="quiz-progress-count">0</span> / 4 beantwoord</span>
+      </div>
+      <div class="quiz-progress-track">
+        <div class="quiz-progress-fill" id="quiz-progress-fill"></div>
+      </div>
+    </div>
+
     <div class="quiz-list">
 
       <div class="quiz-card">
-        <div class="quiz-question">🌊 Welke rivier stroomt langs De Waterkant in Paramaribo?</div>
+        <div class="quiz-num">Vraag 1 van 4</div>
+        <div class="quiz-question">🚢 Op welk schip kwamen de eerste Hindostanen in 1873 naar Suriname?</div>
         <div class="quiz-options">
-          <button class="quiz-option" onclick="answer(this, false)">Commewijne</button>
-          <button class="quiz-option" onclick="answer(this, true)">Surinamerivier</button>
-          <button class="quiz-option" onclick="answer(this, false)">Amazone</button>
-          <button class="quiz-option" onclick="answer(this, false)">Marowijne</button>
+          <button type="button" class="quiz-option" onclick="answer(this, false)">Willem II</button>
+          <button type="button" class="quiz-option" onclick="answer(this, false)">Goslar</button>
+          <button type="button" class="quiz-option" onclick="answer(this, false)">Santa María</button>
+          <button type="button" class="quiz-option" onclick="answer(this, true)">Lalla Rookh</button>
         </div>
-        <div class="quiz-answer-reveal">✅ Juist antwoord: Surinamerivier</div>
+        <div class="quiz-answer-reveal">✅ De Lalla Rookh meerde aan op 1 mei 1873 — de eerste Hindostanen uit Brits-Indië kwamen aan boord.</div>
       </div>
 
       <div class="quiz-card">
-        <div class="quiz-question">🌺 Wat is de nationale bloem van Suriname?</div>
+        <div class="quiz-num">Vraag 2 van 4</div>
+        <div class="quiz-question">🏭 Naar welke suikerplantage gingen de eerste Javanen in 1890?</div>
         <div class="quiz-options">
-          <button class="quiz-option" onclick="answer(this, false)">Orchidee</button>
-          <button class="quiz-option" onclick="answer(this, false)">Heliconia</button>
-          <button class="quiz-option" onclick="answer(this, true)">Rode Hibiscus</button>
-          <button class="quiz-option" onclick="answer(this, false)">Anthurium</button>
+          <button type="button" class="quiz-option" onclick="answer(this, false)">Catharina Sophia</button>
+          <button type="button" class="quiz-option" onclick="answer(this, true)">Mariënburg</button>
+          <button type="button" class="quiz-option" onclick="answer(this, false)">Voorzorg</button>
+          <button type="button" class="quiz-option" onclick="answer(this, false)">Alliance</button>
         </div>
-        <div class="quiz-answer-reveal">✅ Juist antwoord: Rode Hibiscus</div>
+        <div class="quiz-answer-reveal">✅ De eerste Javanen, aangekomen op het schip Willem II, werden ingezet op suikerplantage Mariënburg in district Commewijne.</div>
       </div>
 
       <div class="quiz-card">
-        <div class="quiz-question">⚓ Waarvandaan kwamen de schepen die aanmeerden aan De Waterkant?</div>
+        <div class="quiz-num">Vraag 3 van 4</div>
+        <div class="quiz-question">⛓️ Wat overkwam slaven direct na aankomst op de markt in Paramaribo?</div>
         <div class="quiz-options">
-          <button class="quiz-option" onclick="answer(this, false)">Azië en Amerika</button>
-          <button class="quiz-option" onclick="answer(this, true)">Europa en Afrika</button>
-          <button class="quiz-option" onclick="answer(this, false)">Alleen Europa</button>
-          <button class="quiz-option" onclick="answer(this, false)">Alleen Afrika</button>
+          <button type="button" class="quiz-option" onclick="answer(this, false)">Ze kregen een huis toegewezen</button>
+          <button type="button" class="quiz-option" onclick="answer(this, false)">Ze werden direct vrijgelaten</button>
+          <button type="button" class="quiz-option" onclick="answer(this, true)">Ze werden gebrandmerkt</button>
+          <button type="button" class="quiz-option" onclick="answer(this, false)">Ze kregen loon uitbetaald</button>
         </div>
-        <div class="quiz-answer-reveal">✅ Juist antwoord: Europa en Afrika</div>
+        <div class="quiz-answer-reveal">✅ Na verkoop op de markt werden slaven gebrandmerkt met een gloeiend ijzer: de initialen van de eigenaar op hun rug.</div>
+      </div>
+
+      <div class="quiz-card">
+        <div class="quiz-num">Vraag 4 van 4</div>
+        <div class="quiz-question">📅 In welk jaar kwamen de eerste Chinese contractarbeiders naar Suriname?</div>
+        <div class="quiz-options">
+          <button type="button" class="quiz-option" onclick="answer(this, false)">1863</button>
+          <button type="button" class="quiz-option" onclick="answer(this, false)">1873</button>
+          <button type="button" class="quiz-option" onclick="answer(this, true)">1853</button>
+          <button type="button" class="quiz-option" onclick="answer(this, false)">1890</button>
+        </div>
+        <div class="quiz-answer-reveal">✅ In 1853 kwamen de eerste Chinese contractarbeiders — zij gingen werken op suikerplantage Catharina Sophia in Saramacca.</div>
       </div>
 
     </div>
 
     <div class="resultaat" id="resultaat">
+      <div class="resultaat-icon" id="resultaat-icon">🎉</div>
       <div class="resultaat-titel" id="resultaat-titel"></div>
+      <div class="result-sterren" id="result-sterren"></div>
       <div class="resultaat-tekst" id="resultaat-tekst"></div>
       <div class="resultaat-punten" id="resultaat-punten"></div>
     </div>
@@ -134,15 +453,53 @@
     <a href="onafhankelijkheidsplein.html" class="nav-link next">Onafhankelijkheidsplein →</a>
   </div>
 
+  <div class="streak-toast" id="streak-toast"></div>
+
   <script src="js/api.js"></script>
   <script>
     checkAuth()
     toonSpelerBalk()
 
     const LOCATIE_ID = 'waterkant'
-    const TOTAAL     = 3
+    const TOTAAL     = 4
     let score      = 0
     let beantwoord = 0
+    let streak     = 0
+
+    function floatPunten(btn) {
+      const rect = btn.getBoundingClientRect()
+      const el = document.createElement('div')
+      el.className = 'punten-float'
+      el.textContent = '+100'
+      el.style.left = (rect.left + rect.width / 2) + 'px'
+      el.style.top  = rect.top + 'px'
+      document.body.appendChild(el)
+      setTimeout(() => el.remove(), 1200)
+    }
+
+    function showStreak(n) {
+      const toast = document.getElementById('streak-toast')
+      toast.textContent = n >= 4 ? '🔥 Perfecte reeks!' : `🔥 ${n} op rij goed!`
+      toast.classList.add('show')
+      setTimeout(() => toast.classList.remove('show'), 2000)
+    }
+
+    function launchConfetti() {
+      const colors = ['#48b4dc', '#22c55e', '#f4c430', '#ef4444', '#a855f7', '#fb923c']
+      for (let i = 0; i < 50; i++) {
+        const el = document.createElement('div')
+        el.className = 'confetti-piece'
+        const size = 6 + Math.random() * 8
+        el.style.left = Math.random() * 100 + 'vw'
+        el.style.width = size + 'px'
+        el.style.height = size + 'px'
+        el.style.background = colors[i % colors.length]
+        el.style.animationDelay = Math.random() * 1.5 + 's'
+        el.style.animationDuration = (2 + Math.random() * 2) + 's'
+        document.body.appendChild(el)
+        setTimeout(() => el.remove(), 4000)
+      }
+    }
 
     function answer(btn, isCorrect) {
       const card    = btn.closest('.quiz-card')
@@ -151,14 +508,24 @@
 
       allBtns.forEach(b => b.disabled = true)
       btn.classList.add(isCorrect ? 'correct' : 'wrong')
+
       if (!isCorrect) {
         allBtns.forEach(b => { if (b.onclick.toString().includes('true')) b.classList.add('correct') })
+        streak = 0
+        card.classList.add('answered-wrong')
       } else {
         score++
+        streak++
+        card.classList.add('answered-correct')
+        floatPunten(btn)
+        if (streak >= 2) showStreak(streak)
       }
       card.querySelector('.quiz-answer-reveal').style.display = 'block'
 
       beantwoord++
+      document.getElementById('quiz-progress-fill').style.width = Math.round(beantwoord / TOTAAL * 100) + '%'
+      document.getElementById('quiz-progress-count').textContent = beantwoord
+
       if (beantwoord === TOTAAL) setTimeout(toonResultaat, 700)
     }
 
@@ -167,14 +534,17 @@
       el.style.display = 'block'
       el.scrollIntoView({ behavior: 'smooth', block: 'center' })
 
-      let titel, kleur
-      if (score === TOTAAL)      { titel = 'Goed gedaan! 🎉';  kleur = '#86efac' }
-      else if (score >= 2)       { titel = 'Kan beter! 👍';    kleur = '#fbbf24' }
-      else                       { titel = 'Oefenen maar! 💪'; kleur = '#fca5a5' }
+      let icon, titel, kleur, sterren
+      if (score === TOTAAL)      { icon = '🏆'; titel = 'Uitstekend!';    kleur = '#86efac'; sterren = '⭐⭐⭐⭐'; launchConfetti() }
+      else if (score >= 3)       { icon = '🎉'; titel = 'Goed gedaan!';   kleur = '#fbbf24'; sterren = '⭐⭐⭐' }
+      else if (score >= 2)       { icon = '👍'; titel = 'Kan beter!';     kleur = '#fb923c'; sterren = '⭐⭐' }
+      else                       { icon = '💪'; titel = 'Oefenen maar!';  kleur = '#fca5a5'; sterren = '⭐' }
 
-      document.getElementById('resultaat-titel').style.color  = kleur
-      document.getElementById('resultaat-titel').textContent  = titel
-      document.getElementById('resultaat-tekst').textContent  = `${score} van de ${TOTAAL} vragen goed`
+      document.getElementById('resultaat-icon').textContent   = icon
+      document.getElementById('resultaat-titel').style.color = kleur
+      document.getElementById('resultaat-titel').textContent = titel
+      document.getElementById('result-sterren').textContent  = sterren
+      document.getElementById('resultaat-tekst').textContent = `${score} van de ${TOTAAL} vragen goed`
       document.getElementById('resultaat-punten').textContent = `+${score * 100} punten!`
 
       try {

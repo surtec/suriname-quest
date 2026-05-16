@@ -3,132 +3,378 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Fort Zeelandia — Suriname Quest</title>
+  <title>Fort Zeelandia — SuriQuest</title>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background: #0d1b12; color: #f0e6c8; font-family: 'Nunito', sans-serif; min-height: 100vh; padding: 0 0 60px; }
+    :root { --accent: #f4c430; --bg: #0a1a0e; }
+    body { background: var(--bg); color: #f0e6c8; font-family: 'Nunito', sans-serif; min-height: 100vh; padding-bottom: 80px; }
 
+    /* ── HUD ── */
     .player-balk {
-      background: rgba(0,0,0,0.4);
-      padding: 8px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid rgba(244,196,48,0.15);
+      background: rgba(0,0,0,0.55); padding: 9px 20px;
+      display: flex; justify-content: space-between; align-items: center;
+      border-bottom: 2px solid rgba(244,196,48,0.25);
+      position: sticky; top: 0; z-index: 100;
+      -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
     }
-    .player-balk span { font-weight: 700; font-size: 0.9rem; }
-    #player-name   { color: #f0e6c8; }
-    #player-points { color: #f4c430; font-family: 'Fredoka One', cursive; }
+    .balk-links { display: flex; align-items: center; gap: 10px; }
+    .balk-links a { color: var(--accent); text-decoration: none; font-size: 0.85rem; font-weight: 700; }
+    #player-name { font-weight: 800; color: #f0e6c8; font-size: 0.9rem; }
+    .balk-rechts { display: flex; align-items: center; gap: 12px; }
+    #player-points { color: var(--accent); font-family: 'Fredoka One', cursive; font-size: 1rem; }
     .uitloggen-knop { background: none; border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; color: rgba(255,255,255,0.5); padding: 4px 10px; font-size: 12px; cursor: pointer; }
 
-    .hero { background: linear-gradient(160deg, #1a3a2a 0%, #0d2218 60%, #0d1b12 100%); padding: 48px 24px 36px; text-align: center; border-bottom: 2px solid rgba(244,196,48,0.25); position: relative; overflow: hidden; }
-    .hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 60% 40%, rgba(244,196,48,0.07) 0%, transparent 70%); pointer-events: none; }
-    .back-btn { display: inline-flex; align-items: center; gap: 6px; color: #f4c430; text-decoration: none; font-weight: 700; font-size: 0.9rem; margin-bottom: 24px; padding: 6px 14px; border: 1px solid rgba(244,196,48,0.3); border-radius: 20px; transition: background 0.2s; }
+    /* ── HERO ── */
+    .hero {
+      background: linear-gradient(160deg, #1e3a20 0%, #0f2418 60%, #0a1a0e 100%);
+      padding: 40px 24px 36px; text-align: center;
+      border-bottom: 3px solid rgba(244,196,48,0.3); position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: ''; position: absolute; inset: 0;
+      background:
+        radial-gradient(circle at 70% 30%, rgba(244,196,48,0.1) 0%, transparent 60%),
+        radial-gradient(circle at 20% 80%, rgba(34,197,94,0.06) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    .hero-deco {
+      position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+      font-size: 48px; opacity: 0.05; letter-spacing: 4px;
+      white-space: nowrap; pointer-events: none;
+    }
+    .back-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      color: var(--accent); text-decoration: none; font-weight: 700; font-size: 0.88rem;
+      margin-bottom: 20px; padding: 6px 14px;
+      border: 1px solid rgba(244,196,48,0.35); border-radius: 20px; transition: background 0.2s;
+    }
     .back-btn:hover { background: rgba(244,196,48,0.1); }
-    .year-badge { display: inline-block; background: #f4c430; color: #0d1b12; font-family: 'Fredoka One', cursive; font-size: 0.95rem; padding: 4px 14px; border-radius: 20px; margin-bottom: 14px; }
-    .location-icon { font-size: 72px; display: block; margin: 0 auto 16px; filter: drop-shadow(0 0 18px rgba(244,196,48,0.4)); }
-    h1 { font-family: 'Fredoka One', cursive; font-size: clamp(2rem, 6vw, 3.2rem); color: #f4c430; text-shadow: 0 2px 12px rgba(244,196,48,0.3); margin-bottom: 14px; }
-    .description { max-width: 620px; margin: 0 auto; font-size: 1.05rem; line-height: 1.7; color: #c8d8be; font-weight: 600; }
+    .level-chip {
+      display: inline-block; background: var(--accent); color: #0a1a0e;
+      font-family: 'Fredoka One', cursive; font-size: 0.88rem;
+      padding: 4px 18px; border-radius: 20px; margin-bottom: 14px;
+    }
+    .location-icon {
+      font-size: 80px; display: block; margin: 0 auto 14px;
+      filter: drop-shadow(0 0 20px rgba(244,196,48,0.4));
+      animation: icon-float 4s ease-in-out infinite;
+    }
+    @keyframes icon-float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+    h1 {
+      font-family: 'Fredoka One', cursive; font-size: clamp(2rem,6vw,3.2rem);
+      color: var(--accent); text-shadow: 0 2px 16px rgba(244,196,48,0.4);
+      margin-bottom: 12px; position: relative;
+    }
+    .description {
+      max-width: 620px; margin: 0 auto; font-size: 1rem; line-height: 1.75;
+      color: #b8d0a8; font-weight: 600; position: relative;
+    }
 
-    .section { max-width: 760px; margin: 40px auto 0; padding: 0 20px; }
-    .section-title { font-family: 'Fredoka One', cursive; font-size: 1.5rem; color: #f4c430; margin-bottom: 18px; display: flex; align-items: center; gap: 10px; }
-    .section-title::after { content: ''; flex: 1; height: 2px; background: linear-gradient(90deg, rgba(244,196,48,0.4), transparent); border-radius: 2px; }
+    /* ── SECTIONS ── */
+    .section { max-width: 760px; margin: 36px auto 0; padding: 0 20px; }
+    .section-title {
+      font-family: 'Fredoka One', cursive; font-size: 1.4rem;
+      color: var(--accent); margin-bottom: 18px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .section-title::after {
+      content: ''; flex: 1; height: 2px;
+      background: linear-gradient(90deg, rgba(244,196,48,0.5), transparent); border-radius: 2px;
+    }
 
-    .collectibles-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
-    .collectible-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(244,196,48,0.2); border-radius: 16px; padding: 22px 18px; text-align: center; transition: transform 0.2s, border-color 0.2s; }
-    .collectible-card:hover { transform: translateY(-3px); border-color: rgba(244,196,48,0.5); }
-    .collectible-emoji { font-size: 40px; display: block; margin-bottom: 10px; }
-    .collectible-name { font-weight: 800; font-size: 0.95rem; }
+    /* ── VOLGORDE SPEL ── */
+    .volgorde-spel {
+      background: rgba(255,255,255,0.03);
+      border: 2px solid rgba(244,196,48,0.35);
+      border-radius: 24px; padding: 26px;
+    }
+    .spel-instructie {
+      font-weight: 700; font-size: 0.95rem;
+      color: rgba(240,230,200,0.75); margin-bottom: 6px; text-align: center;
+    }
+    .spel-sub {
+      font-size: 0.8rem; font-weight: 600; color: rgba(240,230,200,0.4);
+      text-align: center; margin-bottom: 20px;
+    }
+    .volgorde-items {
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .volgorde-item {
+      background: rgba(255,255,255,0.06);
+      border: 2px solid rgba(255,255,255,0.14);
+      border-radius: 14px; padding: 14px 18px;
+      font-size: 0.92rem; font-weight: 700; color: #d8e8c8;
+      cursor: pointer; text-align: left;
+      transition: background 0.18s, border-color 0.18s, transform 0.12s;
+      font-family: 'Nunito', sans-serif;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .volgorde-item:hover:not(:disabled):not(.vi-correct):not(.vi-wrong) {
+      background: rgba(244,196,48,0.1); border-color: rgba(244,196,48,0.45);
+      transform: translateX(4px);
+    }
+    .volgorde-item.vi-geselecteerd {
+      background: rgba(244,196,48,0.15); border-color: rgba(244,196,48,0.6);
+    }
+    .volgorde-item.vi-correct {
+      background: rgba(34,197,94,0.18); border-color: #22c55e; color: #86efac;
+      cursor: default; animation: correct-pop 0.35s ease;
+    }
+    .volgorde-item.vi-wrong {
+      animation: shake 0.4s ease;
+    }
+    .vi-num {
+      font-family: 'Fredoka One', cursive; font-size: 1.1rem;
+      color: rgba(244,196,48,0.5); min-width: 28px; text-align: center;
+    }
+    .volgorde-item.vi-correct .vi-num { color: #86efac; }
+    @keyframes correct-pop { 0%{transform:scale(1)} 50%{transform:scale(1.03)} 100%{transform:scale(1)} }
+    @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
 
+    .volgorde-score {
+      text-align: center; margin-top: 18px;
+      font-family: 'Fredoka One', cursive; font-size: 1.15rem;
+      min-height: 32px; transition: opacity 0.3s;
+    }
+    .spel-pogingen {
+      text-align: center; margin-top: 8px;
+      font-size: 0.8rem; font-weight: 700;
+      color: rgba(240,230,200,0.4);
+    }
+
+    /* ── FIGUUR KAART ── */
+    .figuur-card {
+      background: rgba(255,255,255,0.04); border: 1.5px solid rgba(244,196,48,0.2);
+      border-radius: 18px; padding: 20px; display: flex; gap: 18px; align-items: center;
+    }
+    .figuur-avatar {
+      font-size: 48px; width: 72px; height: 72px; border-radius: 50%;
+      background: rgba(244,196,48,0.1); border: 2px solid rgba(244,196,48,0.3);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .figuur-naam { font-family: 'Fredoka One', cursive; font-size: 1.1rem; color: var(--accent); margin-bottom: 2px; }
+    .figuur-rol { font-size: 0.78rem; font-weight: 800; color: rgba(240,230,200,0.45); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; }
+    .figuur-omschr { font-size: 0.86rem; color: rgba(240,230,200,0.8); line-height: 1.55; font-weight: 600; }
+
+    /* ── FEIT CARD ── */
+    .feit-card {
+      background: linear-gradient(135deg, rgba(244,196,48,0.1), rgba(244,196,48,0.04));
+      border: 1.5px solid rgba(244,196,48,0.35); border-radius: 18px;
+      padding: 18px 20px; display: flex; gap: 14px; align-items: flex-start;
+    }
+    .feit-icon { font-size: 28px; flex-shrink: 0; }
+    .feit-kop { font-family: 'Fredoka One', cursive; font-size: 0.9rem; color: var(--accent); margin-bottom: 4px; }
+    .feit-text { font-size: 0.88rem; color: rgba(240,230,200,0.85); line-height: 1.6; font-weight: 600; }
+
+    /* ── QUIZ ── */
+    .quiz-progress-wrap { margin-bottom: 20px; }
+    .quiz-progress-label { display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 700; color: rgba(240,230,200,0.45); margin-bottom: 8px; }
+    .quiz-progress-track { height: 8px; background: rgba(255,255,255,0.08); border-radius: 8px; overflow: hidden; }
+    .quiz-progress-fill { height: 100%; background: linear-gradient(90deg, #1a7a4a, #22c55e); border-radius: 8px; transition: width 0.5s cubic-bezier(0.4,0,0.2,1); width: 0%; }
     .quiz-list { display: flex; flex-direction: column; gap: 20px; }
-    .quiz-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 22px 20px; }
-    .quiz-question { font-weight: 800; font-size: 1rem; color: #f0e6c8; margin-bottom: 14px; line-height: 1.5; }
+    .quiz-card {
+      background: rgba(255,255,255,0.04); border: 1.5px solid rgba(255,255,255,0.1);
+      border-radius: 20px; padding: 22px 20px; transition: border-color 0.3s;
+    }
+    .quiz-card.answered-correct { border-color: rgba(34,197,94,0.5); }
+    .quiz-card.answered-wrong   { border-color: rgba(239,68,68,0.4); }
+    .quiz-num { font-size: 0.72rem; font-weight: 800; color: rgba(240,230,200,0.35); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
+    .quiz-question { font-weight: 800; font-size: 1.05rem; color: #f0e6c8; margin-bottom: 14px; line-height: 1.55; }
     .quiz-options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .quiz-option { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: 10px; padding: 10px 14px; font-size: 0.9rem; font-weight: 600; color: #c8d8be; cursor: pointer; transition: background 0.18s; text-align: left; }
-    .quiz-option:hover:not(:disabled) { background: rgba(244,196,48,0.1); border-color: rgba(244,196,48,0.4); }
-    .quiz-option.correct { background: rgba(34,197,94,0.15); border-color: rgba(34,197,94,0.5); color: #86efac; }
-    .quiz-option.wrong   { background: rgba(239,68,68,0.12);  border-color: rgba(239,68,68,0.4);  color: #fca5a5; }
-    .quiz-answer-reveal { margin-top: 12px; font-size: 0.88rem; color: #86efac; font-weight: 700; display: none; }
+    .quiz-option {
+      background: rgba(255,255,255,0.06); border: 2px solid rgba(255,255,255,0.12);
+      border-radius: 12px; padding: 12px 14px;
+      font-size: 0.9rem; font-weight: 700; color: #c8d8be; cursor: pointer;
+      transition: background 0.18s, border-color 0.18s, transform 0.12s;
+      text-align: left; font-family: 'Nunito', sans-serif;
+    }
+    .quiz-option:hover:not(:disabled) { background: rgba(244,196,48,0.1); border-color: rgba(244,196,48,0.4); transform: translateY(-2px); }
+    .quiz-option.correct { background: rgba(34,197,94,0.2); border-color: rgba(34,197,94,0.6); color: #86efac; animation: correct-pop 0.35s ease; }
+    .quiz-option.wrong   { background: rgba(239,68,68,0.15); border-color: rgba(239,68,68,0.5); color: #fca5a5; animation: shake 0.4s ease; }
+    .quiz-answer-reveal { margin-top: 10px; font-size: 0.84rem; color: #86efac; font-weight: 700; display: none; padding: 8px 12px; background: rgba(34,197,94,0.08); border-radius: 8px; }
 
-    .resultaat { display: none; background: rgba(255,255,255,0.05); border-radius: 16px; padding: 24px; text-align: center; margin-top: 24px; }
-    .resultaat-titel { font-family: 'Fredoka One', cursive; font-size: 1.8rem; margin-bottom: 8px; }
-    .resultaat-tekst { color: rgba(240,230,200,0.7); margin-bottom: 8px; }
-    .resultaat-punten { font-family: 'Fredoka One', cursive; color: #f4c430; font-size: 1.2rem; }
+    /* ── STREAK TOAST ── */
+    .streak-toast {
+      position: fixed; top: 70px; left: 50%;
+      transform: translateX(-50%) translateY(-20px);
+      background: linear-gradient(135deg, #f4c430, #fb923c);
+      color: #0a1a0e; font-family: 'Fredoka One', cursive; font-size: 1.1rem;
+      padding: 10px 24px; border-radius: 30px; z-index: 500;
+      opacity: 0; transition: opacity 0.3s, transform 0.3s; pointer-events: none; white-space: nowrap;
+    }
+    .streak-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
+    /* ── RESULT ── */
+    .resultaat {
+      display: none; background: rgba(255,255,255,0.05); border: 1.5px solid rgba(255,255,255,0.1);
+      border-radius: 22px; padding: 32px 24px; text-align: center; margin-top: 28px;
+    }
+    .resultaat-icon { font-size: 60px; margin-bottom: 12px; }
+    .resultaat-titel { font-family: 'Fredoka One', cursive; font-size: 2rem; margin-bottom: 8px; }
+    .resultaat-tekst { color: rgba(240,230,200,0.65); margin-bottom: 10px; font-weight: 700; }
+    .resultaat-punten { font-family: 'Fredoka One', cursive; color: var(--accent); font-size: 1.5rem; }
+    .result-sterren { font-size: 30px; margin: 12px 0; }
+
+    /* ── CONFETTI ── */
+    .confetti-piece { position: fixed; top: -10px; border-radius: 3px; pointer-events: none; z-index: 9999; animation: confetti-fall linear forwards; }
+    @keyframes confetti-fall { 0%{transform:translateY(0) rotate(0deg);opacity:1} 100%{transform:translateY(110vh) rotate(720deg);opacity:0} }
+    .punten-float { position: fixed; color: var(--accent); font-family: 'Fredoka One', cursive; font-size: 1.5rem; pointer-events: none; z-index: 9998; animation: float-up 1.1s ease-out forwards; transform: translateX(-50%); text-shadow: 0 2px 8px rgba(0,0,0,0.5); }
+    @keyframes float-up { 0%{opacity:1;transform:translateX(-50%) translateY(0)} 100%{opacity:0;transform:translateX(-50%) translateY(-70px)} }
+
+    /* ── NAV ── */
     .nav-bar { max-width: 760px; margin: 48px auto 0; padding: 0 20px; display: flex; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
-    .nav-link { flex: 1; min-width: 160px; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 20px; border-radius: 14px; font-family: 'Fredoka One', cursive; font-size: 1rem; text-decoration: none; transition: transform 0.18s; }
+    .nav-link { flex: 1; min-width: 150px; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 20px; border-radius: 14px; font-family: 'Fredoka One', cursive; font-size: 1rem; text-decoration: none; transition: transform 0.18s, box-shadow 0.18s; }
     .nav-link:hover { transform: translateY(-2px); }
-    .nav-link.home { background: rgba(244,196,48,0.15); border: 1px solid rgba(244,196,48,0.3); color: #f4c430; }
-    .nav-link.next { background: linear-gradient(135deg, #1a7a4a, #0f5c34); color: #f0e6c8; }
+    .nav-link.home { background: rgba(244,196,48,0.12); border: 1px solid rgba(244,196,48,0.3); color: var(--accent); }
+    .nav-link.next { background: linear-gradient(135deg, #1a4a2a, #0f3020); color: #f0e6c8; box-shadow: 0 4px 16px rgba(0,0,0,0.3); }
   </style>
 </head>
 <body>
 
   <div class="player-balk">
-    <span id="player-name">...</span>
-    <span id="player-points">...</span>
-    <button class="uitloggen-knop" onclick="logUit()">Uitloggen</button>
-  </div>
-
-  <div class="hero">
-    <a href="map.html" class="back-btn">← Terug naar kaart</a>
-    <div class="year-badge">1667</div>
-    <span class="location-icon">🏰</span>
-    <h1>Fort Zeelandia</h1>
-    <p class="description">Het oudste fort van Suriname, gebouwd door de Nederlanders in 1667 aan de oever van de Surinamerivier. Nu een beroemd museum dat de geschiedenis van het land bewaart.</p>
-  </div>
-
-  <div class="section">
-    <h2 class="section-title">🎒 Verzamelobjecten</h2>
-    <div class="collectibles-grid">
-      <div class="collectible-card"><span class="collectible-emoji">🗺️</span><div class="collectible-name">Oude Zeekaart</div></div>
-      <div class="collectible-card"><span class="collectible-emoji">📜</span><div class="collectible-name">Koloniale Brief</div></div>
-      <div class="collectible-card"><span class="collectible-emoji">💣</span><div class="collectible-name">Oud Kanonkogel</div></div>
+    <div class="balk-links">
+      <a href="map.html">← Kaart</a>
+      <span id="player-name">...</span>
+    </div>
+    <div class="balk-rechts">
+      <span id="player-points">...</span>
+      <button type="button" class="uitloggen-knop" onclick="logUit()">Uitloggen</button>
     </div>
   </div>
 
+  <div class="hero">
+    <div class="hero-deco">🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱</div>
+    <a href="map.html" class="back-btn">← Terug naar kaart</a>
+    <div class="level-chip">⭐⭐ LEVEL 2 — Gemiddeld</div>
+    <span class="location-icon">🏰</span>
+    <h1>Fort Zeelandia</h1>
+    <p class="description">Het oudste fort van Suriname — veroverd door Abraham Crijnssen in 1667. Ooit een verdedigingsfestung, later een gevangenis, en nu het trotse Surinaams Museum.</p>
+  </div>
+
+  <!-- Volgorde spel -->
   <div class="section">
-    <h2 class="section-title">🧠 Quizvragen</h2>
+    <h2 class="section-title">🎮 Tijdlijn Spel — Zet in volgorde!</h2>
+    <div class="volgorde-spel">
+      <div class="spel-instructie">Klik de gebeurtenissen in de JUISTE volgorde van oud naar nieuw!</div>
+      <div class="spel-sub">Begin met wat het EERST gebeurde. Je hebt 3 pogingen per beurt.</div>
+      <div class="volgorde-items" id="volgorde-items">
+        <button type="button" class="volgorde-item" data-order="3">
+          <span class="vi-num">?</span>
+          <span>🕊️ Vrede met Inheemsen — Van Sommelsdijck</span>
+        </button>
+        <button type="button" class="volgorde-item" data-order="1">
+          <span class="vi-num">?</span>
+          <span>🏴 Engelsen bouwen Fort Willoughby</span>
+        </button>
+        <button type="button" class="volgorde-item" data-order="4">
+          <span class="vi-num">?</span>
+          <span>🏛️ Fort Zeelandia wordt het Surinaams Museum</span>
+        </button>
+        <button type="button" class="volgorde-item" data-order="2">
+          <span class="vi-num">?</span>
+          <span>🏰 Abraham Crijnssen verovert Suriname</span>
+        </button>
+      </div>
+      <div class="volgorde-score" id="volgorde-score"></div>
+      <div class="spel-pogingen" id="spel-pogingen">💡 Tip: klik wat het EERSTE is gebeurd!</div>
+    </div>
+  </div>
+
+  <!-- Historical figure -->
+  <div class="section">
+    <h2 class="section-title">👤 Historische figuur</h2>
+    <div class="figuur-card">
+      <div class="figuur-avatar">⚔️</div>
+      <div>
+        <div class="figuur-naam">Abraham Crijnssen</div>
+        <div class="figuur-rol">Zeeuws zeeofficier · 1667</div>
+        <div class="figuur-omschr">Crijnssen leidde de Zeeuwse vloot die op 26 februari 1667 Suriname veroverde op de Engelsen. Fort Willoughby werd hernoemd tot Fort Zeelandia. Zijn overwinning maakte Suriname tot een Nederlandse kolonie die ruim 300 jaar zou duren.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fun fact -->
+  <div class="section">
+    <div class="feit-card">
+      <span class="feit-icon">💡</span>
+      <div>
+        <div class="feit-kop">Wist je dat? — Barbecue!</div>
+        <div class="feit-text">Het woord <strong>"barbecue"</strong> stamt van de Inheemse bevolking van Suriname! Zij rookten vlees op een houten rek boven laag vuur — dit noemden zij <em>barbacotten</em>. Europese ontdekkingsreizigers namen dit woord mee terug naar Europa.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quiz -->
+  <div class="section">
+    <h2 class="section-title">🧠 Quiz — Fort Zeelandia</h2>
+
+    <div class="quiz-progress-wrap">
+      <div class="quiz-progress-label">
+        <span>Voortgang</span>
+        <span><span id="quiz-progress-count">0</span> / 4 beantwoord</span>
+      </div>
+      <div class="quiz-progress-track">
+        <div class="quiz-progress-fill" id="quiz-progress-fill"></div>
+      </div>
+    </div>
+
     <div class="quiz-list">
 
       <div class="quiz-card">
-        <div class="quiz-question">🏰 In welk jaar werd Fort Zeelandia gebouwd?</div>
+        <div class="quiz-num">Vraag 1 van 4</div>
+        <div class="quiz-question">🏴 Wie veroverde Suriname voor Nederland in 1667?</div>
         <div class="quiz-options">
-          <button class="quiz-option" onclick="answer(this, false)">1492</button>
-          <button class="quiz-option" onclick="answer(this, true)">1667</button>
-          <button class="quiz-option" onclick="answer(this, false)">1750</button>
-          <button class="quiz-option" onclick="answer(this, false)">1800</button>
+          <button type="button" class="quiz-option" onclick="answer(this, false)">Francis Willoughby</button>
+          <button type="button" class="quiz-option" onclick="answer(this, true)">Abraham Crijnssen</button>
+          <button type="button" class="quiz-option" onclick="answer(this, false)">Columbus</button>
+          <button type="button" class="quiz-option" onclick="answer(this, false)">Van Sommelsdijck</button>
         </div>
-        <div class="quiz-answer-reveal">✅ Juist antwoord: 1667</div>
+        <div class="quiz-answer-reveal">✅ Abraham Crijnssen leidde de Zeeuwse vloot die Suriname veroverde op 26 februari 1667.</div>
       </div>
 
       <div class="quiz-card">
-        <div class="quiz-question">🌊 Aan welke rivier ligt Fort Zeelandia?</div>
+        <div class="quiz-num">Vraag 2 van 4</div>
+        <div class="quiz-question">🏰 Hoe heette Fort Zeelandia vóór de Nederlandse verovering?</div>
         <div class="quiz-options">
-          <button class="quiz-option" onclick="answer(this, false)">Commewijne</button>
-          <button class="quiz-option" onclick="answer(this, false)">Marowijne</button>
-          <button class="quiz-option" onclick="answer(this, true)">Surinamerivier</button>
-          <button class="quiz-option" onclick="answer(this, false)">Saramacca</button>
+          <button type="button" class="quiz-option" onclick="answer(this, false)">Fort Nassau</button>
+          <button type="button" class="quiz-option" onclick="answer(this, false)">Fort Amsterdam</button>
+          <button type="button" class="quiz-option" onclick="answer(this, true)">Fort Willoughby</button>
+          <button type="button" class="quiz-option" onclick="answer(this, false)">Fort Oranje</button>
         </div>
-        <div class="quiz-answer-reveal">✅ Juist antwoord: Surinamerivier</div>
+        <div class="quiz-answer-reveal">✅ De Engelsen bouwden Fort Willoughby — vernoemd naar hun leider Francis Willoughby.</div>
       </div>
 
       <div class="quiz-card">
-        <div class="quiz-question">🏛️ Wat is Fort Zeelandia tegenwoordig?</div>
+        <div class="quiz-num">Vraag 3 van 4</div>
+        <div class="quiz-question">🌾 Welke gewassen plantten de Engelsen op hun plantages in Suriname?</div>
         <div class="quiz-options">
-          <button class="quiz-option" onclick="answer(this, false)">Een gevangenis</button>
-          <button class="quiz-option" onclick="answer(this, true)">Een museum</button>
-          <button class="quiz-option" onclick="answer(this, false)">Een hotel</button>
-          <button class="quiz-option" onclick="answer(this, false)">Een school</button>
+          <button type="button" class="quiz-option" onclick="answer(this, false)">Koffie en cacao</button>
+          <button type="button" class="quiz-option" onclick="answer(this, false)">Rijst en katoen</button>
+          <button type="button" class="quiz-option" onclick="answer(this, true)">Tabak en suiker</button>
+          <button type="button" class="quiz-option" onclick="answer(this, false)">Nootmuskaat en peper</button>
         </div>
-        <div class="quiz-answer-reveal">✅ Juist antwoord: Een museum</div>
+        <div class="quiz-answer-reveal">✅ De Engelsen begonnen rond 1650 met tabak- en suikerplantages in Suriname.</div>
+      </div>
+
+      <div class="quiz-card">
+        <div class="quiz-num">Vraag 4 van 4</div>
+        <div class="quiz-question">📚 Op welk adres bevindt zich de bibliotheek van het Surinaams Museum?</div>
+        <div class="quiz-options">
+          <button type="button" class="quiz-option" onclick="answer(this, false)">Waterkantstraat 5</button>
+          <button type="button" class="quiz-option" onclick="answer(this, true)">Commewijnestraat 18</button>
+          <button type="button" class="quiz-option" onclick="answer(this, false)">Zwartenhovenbrugstraat 12</button>
+          <button type="button" class="quiz-option" onclick="answer(this, false)">Fort Zeelandia 1</button>
+        </div>
+        <div class="quiz-answer-reveal">✅ De bibliotheek van het Surinaams Museum staat op Commewijnestraat nummer 18.</div>
       </div>
 
     </div>
 
     <div class="resultaat" id="resultaat">
+      <div class="resultaat-icon" id="resultaat-icon">🎉</div>
       <div class="resultaat-titel" id="resultaat-titel"></div>
+      <div class="result-sterren" id="result-sterren"></div>
       <div class="resultaat-tekst" id="resultaat-tekst"></div>
       <div class="resultaat-punten" id="resultaat-punten"></div>
     </div>
@@ -136,8 +382,10 @@
 
   <div class="nav-bar">
     <a href="map.html" class="nav-link home">🏠 Hoofdmenu</a>
-    <a href="de-waterkant.html" class="nav-link next">Volgende: De Waterkant →</a>
+    <a href="de-waterkant.html" class="nav-link next">Level 3: De Waterkant →</a>
   </div>
+
+  <div class="streak-toast" id="streak-toast"></div>
 
   <script src="js/api.js"></script>
   <script>
@@ -145,9 +393,87 @@
     toonSpelerBalk()
 
     const LOCATIE_ID = 'fort_zeelandia'
-    const TOTAAL     = 3
-    let score     = 0
+    const TOTAAL     = 4
+    let score      = 0
     let beantwoord = 0
+    let streak     = 0
+
+    /* ── VOLGORDE SPEL ── */
+    let verwachtVolgorde = 1
+    const VOLGORDE_TOTAAL = 4
+    let spelFouten = 0
+    const MAX_FOUTEN = 3
+
+    document.querySelectorAll('.volgorde-item').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (btn.classList.contains('vi-correct') || verwachtVolgorde > VOLGORDE_TOTAAL) return
+        const order = parseInt(btn.dataset.order)
+        if (order === verwachtVolgorde) {
+          btn.querySelector('.vi-num').textContent = verwachtVolgorde
+          btn.classList.add('vi-correct')
+          btn.disabled = true
+          verwachtVolgorde++
+          if (verwachtVolgorde > VOLGORDE_TOTAAL) {
+            const scoreEl = document.getElementById('volgorde-score')
+            if (spelFouten === 0) {
+              scoreEl.innerHTML = '🏆 <span style="color:#f4c430">Perfect! Geen fouten!</span>'
+            } else if (spelFouten <= 2) {
+              scoreEl.innerHTML = '🎉 <span style="color:#86efac">Goed gedaan! Tijdlijn klopt!</span>'
+            } else {
+              scoreEl.innerHTML = '✅ <span style="color:#fbbf24">Gelukt! Probeer volgende keer zonder fouten!</span>'
+            }
+            document.getElementById('spel-pogingen').textContent = `Je maakte ${spelFouten} fout${spelFouten === 1 ? '' : 'en'}.`
+          }
+        } else {
+          btn.classList.add('vi-wrong')
+          spelFouten++
+          const pogEl = document.getElementById('spel-pogingen')
+          pogEl.textContent = `❌ Dat is niet de eerste! Fouten: ${spelFouten}. Klik wat eerder gebeurde.`
+          setTimeout(() => {
+            btn.classList.remove('vi-wrong')
+            if (verwachtVolgorde <= VOLGORDE_TOTAAL) {
+              pogEl.textContent = `💡 Kies de ${verwachtVolgorde}e gebeurtenis in de tijd!`
+            }
+          }, 500)
+        }
+      })
+    })
+
+    /* ── QUIZ ── */
+    function floatPunten(btn) {
+      const rect = btn.getBoundingClientRect()
+      const el = document.createElement('div')
+      el.className = 'punten-float'
+      el.textContent = '+100'
+      el.style.left = (rect.left + rect.width / 2) + 'px'
+      el.style.top  = rect.top + 'px'
+      document.body.appendChild(el)
+      setTimeout(() => el.remove(), 1200)
+    }
+
+    function showStreak(n) {
+      const toast = document.getElementById('streak-toast')
+      toast.textContent = n >= 4 ? '🔥 Perfecte reeks!' : `🔥 ${n} op rij goed!`
+      toast.classList.add('show')
+      setTimeout(() => toast.classList.remove('show'), 2000)
+    }
+
+    function launchConfetti() {
+      const colors = ['#f4c430', '#22c55e', '#3b82f6', '#ef4444', '#a855f7', '#fb923c']
+      for (let i = 0; i < 55; i++) {
+        const el = document.createElement('div')
+        el.className = 'confetti-piece'
+        const size = 6 + Math.random() * 9
+        el.style.left = Math.random() * 100 + 'vw'
+        el.style.width = size + 'px'
+        el.style.height = size + 'px'
+        el.style.background = colors[i % colors.length]
+        el.style.animationDelay = Math.random() * 1.5 + 's'
+        el.style.animationDuration = (2 + Math.random() * 2) + 's'
+        document.body.appendChild(el)
+        setTimeout(() => el.remove(), 4500)
+      }
+    }
 
     function answer(btn, isCorrect) {
       const card    = btn.closest('.quiz-card')
@@ -156,14 +482,24 @@
 
       allBtns.forEach(b => b.disabled = true)
       btn.classList.add(isCorrect ? 'correct' : 'wrong')
+
       if (!isCorrect) {
         allBtns.forEach(b => { if (b.onclick.toString().includes('true')) b.classList.add('correct') })
+        streak = 0
+        card.classList.add('answered-wrong')
       } else {
-        score++
+        score++; streak++
+        card.classList.add('answered-correct')
+        floatPunten(btn)
+        if (streak >= 2) showStreak(streak)
       }
       card.querySelector('.quiz-answer-reveal').style.display = 'block'
 
       beantwoord++
+      const pct = Math.round(beantwoord / TOTAAL * 100)
+      document.getElementById('quiz-progress-fill').style.width = pct + '%'
+      document.getElementById('quiz-progress-count').textContent = beantwoord
+
       if (beantwoord === TOTAAL) setTimeout(toonResultaat, 700)
     }
 
@@ -172,15 +508,23 @@
       el.style.display = 'block'
       el.scrollIntoView({ behavior: 'smooth', block: 'center' })
 
-      let titel, kleur
-      if (score === TOTAAL)      { titel = 'Goed gedaan! 🎉';    kleur = '#86efac' }
-      else if (score >= 2)       { titel = 'Kan beter! 👍';      kleur = '#fbbf24' }
-      else                       { titel = 'Oefenen maar! 💪';   kleur = '#fca5a5' }
+      let icon, titel, kleur, sterren
+      if (score === TOTAAL) {
+        icon = '🏆'; titel = 'Uitstekend!'; kleur = '#86efac'; sterren = '⭐⭐⭐⭐'; launchConfetti()
+      } else if (score >= 3) {
+        icon = '🎉'; titel = 'Goed gedaan!'; kleur = '#fbbf24'; sterren = '⭐⭐⭐'
+      } else if (score >= 2) {
+        icon = '👍'; titel = 'Kan beter!'; kleur = '#fb923c'; sterren = '⭐⭐'
+      } else {
+        icon = '💪'; titel = 'Oefenen maar!'; kleur = '#fca5a5'; sterren = '⭐'
+      }
 
-      document.getElementById('resultaat-titel').style.color   = kleur
-      document.getElementById('resultaat-titel').textContent   = titel
-      document.getElementById('resultaat-tekst').textContent   = `${score} van de ${TOTAAL} vragen goed`
-      document.getElementById('resultaat-punten').textContent  = `+${score * 100} punten!`
+      document.getElementById('resultaat-icon').textContent   = icon
+      document.getElementById('resultaat-titel').style.color = kleur
+      document.getElementById('resultaat-titel').textContent = titel
+      document.getElementById('result-sterren').textContent  = sterren
+      document.getElementById('resultaat-tekst').textContent = `${score} van de ${TOTAAL} vragen goed`
+      document.getElementById('resultaat-punten').textContent = `+${score * 100} punten!`
 
       try {
         const speler = await laadSpeler()

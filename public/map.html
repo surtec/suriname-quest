@@ -9,39 +9,47 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      background: #0d1b12;
+      background: #0d2b0a;
       color: #f0e6c8;
       font-family: 'Nunito', sans-serif;
       min-height: 100vh;
-      padding-bottom: 60px;
+      padding-bottom: 80px;
+      overflow-x: hidden;
     }
 
+    /* ── HEADER ── */
     header {
-      background: rgba(0,0,0,0.5);
-      border-bottom: 1px solid rgba(244,196,48,0.2);
-      padding: 14px 24px;
+      background: linear-gradient(90deg, #0a2208, #142e0e, #0a2208);
+      border-bottom: 2px solid rgba(244,196,48,0.35);
+      padding: 12px 24px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 12px;
       flex-wrap: wrap;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      -webkit-backdrop-filter: blur(8px);
+      backdrop-filter: blur(8px);
     }
-
     .header-logo {
       font-family: 'Fredoka One', cursive;
-      font-size: 1.4rem;
+      font-size: 1.5rem;
       color: #f4c430;
+      letter-spacing: 0.02em;
+      text-shadow: 0 2px 12px rgba(244,196,48,0.4);
     }
-
-    .header-rechts {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-
+    .header-rechts { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
     #player-name  { font-weight: 800; color: #f0e6c8; }
-    #player-points { font-family: 'Fredoka One', cursive; color: #f4c430; }
-
+    #player-points {
+      font-family: 'Fredoka One', cursive;
+      color: #f4c430;
+      background: rgba(244,196,48,0.15);
+      border: 1px solid rgba(244,196,48,0.35);
+      border-radius: 20px;
+      padding: 4px 14px;
+    }
     .uitloggen-knop {
       background: rgba(255,255,255,0.08);
       border: 1px solid rgba(255,255,255,0.2);
@@ -51,184 +59,644 @@
       font-family: 'Nunito', sans-serif;
       font-size: 13px;
       cursor: pointer;
+      transition: background 0.2s;
     }
     .uitloggen-knop:hover { background: rgba(255,255,255,0.14); }
 
+    /* ── HERO ── */
     .hero {
+      background: linear-gradient(160deg, #0f3a12 0%, #0a2a08 50%, #071e06 100%);
       text-align: center;
-      padding: 48px 24px 32px;
+      padding: 48px 24px 36px;
+      position: relative;
+      overflow: hidden;
     }
-
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 15% 50%, rgba(34,197,94,0.1) 0%, transparent 45%),
+        radial-gradient(circle at 85% 30%, rgba(244,196,48,0.08) 0%, transparent 50%),
+        radial-gradient(circle at 50% 100%, rgba(34,197,94,0.06) 0%, transparent 40%);
+      pointer-events: none;
+    }
+    .deco-palms {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: space-between;
+      pointer-events: none;
+      font-size: 64px;
+      opacity: 0.12;
+      padding: 0 12px;
+      line-height: 1;
+    }
+    .mascot-wrap {
+      position: relative;
+      display: inline-block;
+      margin-bottom: 16px;
+    }
+    .mascot {
+      font-size: 56px;
+      display: block;
+      animation: mascot-bounce 2s ease-in-out infinite;
+      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.4));
+    }
+    @keyframes mascot-bounce {
+      0%, 100% { transform: translateY(0) rotate(-2deg); }
+      50% { transform: translateY(-8px) rotate(2deg); }
+    }
+    .speech-bubble {
+      position: absolute;
+      left: 60px;
+      top: -8px;
+      background: #f4c430;
+      color: #0a1a0e;
+      font-size: 0.72rem;
+      font-weight: 800;
+      padding: 6px 12px;
+      border-radius: 14px;
+      white-space: nowrap;
+      max-width: 200px;
+      white-space: normal;
+      line-height: 1.3;
+      text-align: left;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.3);
+      transition: opacity 0.5s;
+    }
+    .speech-bubble.fade { opacity: 0; }
+    .speech-bubble::before {
+      content: '';
+      position: absolute;
+      left: -8px;
+      top: 12px;
+      border: 8px solid transparent;
+      border-right-color: #f4c430;
+      border-left: none;
+    }
     .hero h1 {
       font-family: 'Fredoka One', cursive;
-      font-size: clamp(2rem, 6vw, 3rem);
+      font-size: clamp(2.4rem, 8vw, 3.8rem);
       color: #f4c430;
-      text-shadow: 0 2px 12px rgba(244,196,48,0.3);
+      text-shadow: 0 4px 24px rgba(244,196,48,0.5), 0 0 60px rgba(244,196,48,0.2);
       margin-bottom: 10px;
+      position: relative;
+      letter-spacing: 0.02em;
     }
-
     .hero p {
       color: #7ec98f;
-      font-size: 1rem;
-      font-weight: 600;
+      font-size: 1.05rem;
+      font-weight: 700;
+      position: relative;
+    }
+    .hero-sterren {
+      position: relative;
+      margin-top: 14px;
+      font-size: 22px;
+      letter-spacing: 4px;
+      animation: star-pulse 3s ease-in-out infinite;
+    }
+    @keyframes star-pulse {
+      0%, 100% { opacity: 0.6; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.05); }
     }
 
-    .locaties {
-      max-width: 800px;
-      margin: 0 auto;
+    /* ── TIJDMACHINE QUIZ ── */
+    .tijdmachine-wrapper {
+      max-width: 760px;
+      margin: 36px auto 0;
       padding: 0 20px;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 20px;
     }
+    .tijdmachine-card {
+      background: linear-gradient(135deg, rgba(244,196,48,0.07), rgba(34,197,94,0.04));
+      border: 2px solid rgba(244,196,48,0.35);
+      border-radius: 28px;
+      padding: 28px 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    .tijdmachine-card::before {
+      content: '🕰️';
+      position: absolute;
+      right: -10px;
+      top: -10px;
+      font-size: 80px;
+      opacity: 0.06;
+      pointer-events: none;
+    }
+    .tm-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .tm-title {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.25rem;
+      color: #f4c430;
+    }
+    .tm-voortgang {
+      font-size: 0.82rem;
+      font-weight: 800;
+      color: rgba(240,230,200,0.5);
+    }
+    .tm-score-display {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1rem;
+      color: #86efac;
+      background: rgba(34,197,94,0.12);
+      border-radius: 20px;
+      padding: 4px 14px;
+    }
+    .tm-progress-track {
+      height: 6px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 6px;
+      overflow: hidden;
+      margin-bottom: 22px;
+    }
+    .tm-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #f4c430, #86efac);
+      border-radius: 6px;
+      transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      width: 0%;
+    }
+    .tm-vraag-tekst {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: #f0e6c8;
+      text-align: center;
+      margin-bottom: 22px;
+      line-height: 1.55;
+      min-height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .tm-opties {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      max-width: 380px;
+      margin: 0 auto 16px;
+    }
+    .tm-optie {
+      background: rgba(255,255,255,0.07);
+      border: 2px solid rgba(255,255,255,0.14);
+      border-radius: 14px;
+      padding: 14px 10px;
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.4rem;
+      color: #f0e6c8;
+      cursor: pointer;
+      transition: all 0.18s;
+      text-align: center;
+    }
+    .tm-optie:hover:not(:disabled) {
+      background: rgba(244,196,48,0.14);
+      border-color: rgba(244,196,48,0.5);
+      transform: scale(1.06);
+    }
+    .tm-optie.goed {
+      background: rgba(34,197,94,0.22);
+      border-color: #22c55e;
+      color: #86efac;
+      animation: correct-pop 0.35s ease;
+    }
+    .tm-optie.fout {
+      background: rgba(239,68,68,0.18);
+      border-color: #ef4444;
+      color: #fca5a5;
+      animation: shake 0.4s ease;
+    }
+    @keyframes correct-pop {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-6px); }
+      75% { transform: translateX(6px); }
+    }
+    .tm-feedback {
+      text-align: center;
+      font-size: 0.9rem;
+      font-weight: 800;
+      min-height: 24px;
+      transition: opacity 0.3s;
+    }
+    .tm-feedback.goed { color: #86efac; }
+    .tm-feedback.fout { color: #fca5a5; }
+    .tm-klaar {
+      text-align: center;
+      padding: 16px 0 4px;
+    }
+    .tm-klaar-score {
+      font-family: 'Fredoka One', cursive;
+      font-size: 2rem;
+      color: #f4c430;
+      margin-bottom: 8px;
+    }
+    .tm-klaar-tekst {
+      font-weight: 700;
+      color: rgba(240,230,200,0.7);
+      margin-bottom: 16px;
+    }
+    .tm-opnieuw {
+      background: linear-gradient(135deg, #f4c430, #fb923c);
+      color: #0a1a0e;
+      border: none;
+      border-radius: 20px;
+      padding: 10px 28px;
+      font-family: 'Fredoka One', cursive;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: transform 0.18s, box-shadow 0.18s;
+    }
+    .tm-opnieuw:hover { transform: scale(1.05); box-shadow: 0 4px 16px rgba(244,196,48,0.3); }
 
+    /* ── LOCATIE KAARTEN ── */
+    .locaties-wrapper {
+      max-width: 860px;
+      margin: 36px auto 0;
+      padding: 0 20px;
+    }
+    .locaties-titel {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.3rem;
+      color: #f4c430;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .locaties-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 18px;
+    }
     .locatie-kaart {
       background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 20px;
-      padding: 28px 22px;
-      text-align: center;
+      border: 2px solid rgba(255,255,255,0.1);
+      border-radius: 24px;
+      overflow: hidden;
       text-decoration: none;
       color: inherit;
       display: block;
-      transition: transform 0.2s, border-color 0.2s, background 0.2s;
+      transition: transform 0.22s, box-shadow 0.22s, border-color 0.22s;
       position: relative;
     }
     .locatie-kaart:hover {
-      transform: translateY(-4px);
-      background: rgba(255,255,255,0.07);
+      transform: translateY(-6px) scale(1.01);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.5);
     }
-
-    .locatie-kaart.voltooid { border-color: rgba(134,239,172,0.4); }
+    .kaart-scene {
+      height: 130px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 62px;
+      position: relative;
+      overflow: hidden;
+    }
+    .kaart-emoji {
+      position: relative;
+      z-index: 1;
+      animation: kaart-float 3.5s ease-in-out infinite;
+    }
+    @keyframes kaart-float {
+      0%, 100% { transform: translateY(0) rotate(-2deg); }
+      50% { transform: translateY(-5px) rotate(2deg); }
+    }
+    .level-badge {
+      position: absolute;
+      top: 10px;
+      left: 12px;
+      font-family: 'Fredoka One', cursive;
+      font-size: 0.7rem;
+      padding: 3px 10px;
+      border-radius: 20px;
+      z-index: 2;
+      letter-spacing: 0.05em;
+    }
     .voltooid-badge {
       position: absolute;
-      top: 12px;
-      right: 14px;
-      font-size: 11px;
+      top: 10px;
+      right: 12px;
+      font-size: 0.7rem;
       font-weight: 800;
       color: #86efac;
-      background: rgba(34,197,94,0.15);
-      border: 1px solid rgba(34,197,94,0.3);
+      background: rgba(34,197,94,0.2);
+      border: 1px solid rgba(34,197,94,0.4);
       border-radius: 20px;
-      padding: 2px 10px;
+      padding: 3px 10px;
+      z-index: 2;
     }
-
-    .locatie-emoji { font-size: 56px; display: block; margin-bottom: 14px; }
-
+    .kaart-body { padding: 18px 18px 20px; }
     .locatie-naam {
       font-family: 'Fredoka One', cursive;
-      font-size: 1.3rem;
-      margin-bottom: 6px;
+      font-size: 1.2rem;
+      margin-bottom: 4px;
     }
-
-    .locatie-jaar {
-      font-size: 0.85rem;
-      font-weight: 700;
-      opacity: 0.55;
-      letter-spacing: 0.05em;
+    .locatie-moeilijk {
+      font-size: 0.72rem;
+      font-weight: 800;
+      opacity: 0.45;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
       margin-bottom: 10px;
     }
-
     .locatie-beschrijving {
-      font-size: 0.88rem;
-      line-height: 1.6;
-      color: rgba(240,230,200,0.7);
+      font-size: 0.84rem;
+      line-height: 1.55;
+      color: rgba(240,230,200,0.6);
+      margin-bottom: 14px;
     }
+    .kaart-sterren { font-size: 16px; margin-bottom: 10px; letter-spacing: 2px; }
+    .kaart-pijl {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.82rem;
+      font-weight: 800;
+      padding: 6px 16px;
+      border-radius: 20px;
+      transition: transform 0.18s;
+    }
+    .locatie-kaart:hover .kaart-pijl { transform: translateX(3px); }
 
-    .locatie-kaart.blauw  { border-color: rgba(72,180,220,0.25); }
-    .locatie-kaart.goud   { border-color: rgba(244,196,48,0.25); }
-    .locatie-kaart.oranje { border-color: rgba(234,88,12,0.25); }
+    /* per-level kleuren */
+    .lv1 .kaart-scene { background: linear-gradient(135deg, #0d3a1a, #1a4a20); }
+    .lv1 .kaart-scene::before { content:''; position:absolute; inset:0; background: radial-gradient(circle at 60% 40%, rgba(34,197,94,0.14) 0%, transparent 70%); }
+    .lv1 { border-color: rgba(34,197,94,0.3); }
+    .lv1:hover { border-color: rgba(34,197,94,0.6); box-shadow: 0 16px 40px rgba(34,197,94,0.14); }
+    .lv1 .locatie-naam { color: #4ade80; }
+    .lv1 .level-badge { background: #4ade80; color: #0a1a0e; }
+    .lv1 .kaart-pijl { color: #4ade80; background: rgba(74,222,128,0.12); }
 
-    .locatie-kaart.blauw  .locatie-naam { color: #48b4dc; }
-    .locatie-kaart.goud   .locatie-naam { color: #f4c430; }
-    .locatie-kaart.oranje .locatie-naam { color: #fb923c; }
+    .lv2 .kaart-scene { background: linear-gradient(135deg, #1a3a20, #2a1800); }
+    .lv2 .kaart-scene::before { content:''; position:absolute; inset:0; background: radial-gradient(circle at 60% 40%, rgba(244,196,48,0.12) 0%, transparent 70%); }
+    .lv2 { border-color: rgba(244,196,48,0.3); }
+    .lv2:hover { border-color: rgba(244,196,48,0.6); box-shadow: 0 16px 40px rgba(244,196,48,0.14); }
+    .lv2 .locatie-naam { color: #f4c430; }
+    .lv2 .level-badge { background: #f4c430; color: #0a1a0e; }
+    .lv2 .kaart-pijl { color: #f4c430; background: rgba(244,196,48,0.12); }
 
-    .stats-balk {
-      max-width: 800px;
+    .lv3 .kaart-scene { background: linear-gradient(135deg, #0a2030, #071828); }
+    .lv3 .kaart-scene::before { content:''; position:absolute; inset:0; background: radial-gradient(circle at 40% 60%, rgba(72,180,220,0.14) 0%, transparent 70%); }
+    .lv3 { border-color: rgba(72,180,220,0.3); }
+    .lv3:hover { border-color: rgba(72,180,220,0.6); box-shadow: 0 16px 40px rgba(72,180,220,0.14); }
+    .lv3 .locatie-naam { color: #48b4dc; }
+    .lv3 .level-badge { background: #48b4dc; color: #07111a; }
+    .lv3 .kaart-pijl { color: #48b4dc; background: rgba(72,180,220,0.12); }
+
+    .lv4 .kaart-scene { background: linear-gradient(135deg, #2a1500, #1e1000); }
+    .lv4 .kaart-scene::before { content:''; position:absolute; inset:0; background: radial-gradient(circle at 50% 50%, rgba(234,88,12,0.14) 0%, transparent 70%); }
+    .lv4 { border-color: rgba(234,88,12,0.3); }
+    .lv4:hover { border-color: rgba(234,88,12,0.6); box-shadow: 0 16px 40px rgba(234,88,12,0.14); }
+    .lv4 .locatie-naam { color: #fb923c; }
+    .lv4 .level-badge { background: #fb923c; color: #0a0500; }
+    .lv4 .kaart-pijl { color: #fb923c; background: rgba(234,88,12,0.12); }
+
+    .lv5 .kaart-scene { background: linear-gradient(135deg, #2a0a0a, #1a0808); }
+    .lv5 .kaart-scene::before { content:''; position:absolute; inset:0; background: radial-gradient(circle at 50% 50%, rgba(239,68,68,0.12) 0%, transparent 70%); }
+    .lv5 { border-color: rgba(239,68,68,0.3); }
+    .lv5:hover { border-color: rgba(239,68,68,0.6); box-shadow: 0 16px 40px rgba(239,68,68,0.14); }
+    .lv5 .locatie-naam { color: #f87171; }
+    .lv5 .level-badge { background: #f87171; color: #0a0000; }
+    .lv5 .kaart-pijl { color: #f87171; background: rgba(239,68,68,0.12); }
+
+    /* ── PROGRESS & STATS ── */
+    .voortgang-wrapper {
+      max-width: 860px;
       margin: 32px auto 0;
       padding: 0 20px;
+    }
+    .voortgang-header {
       display: flex;
-      gap: 16px;
-      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
     }
-
-    .stat {
-      flex: 1;
-      min-width: 120px;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.1);
+    .voortgang-titel { font-family: 'Fredoka One', cursive; font-size: 1.1rem; color: #f4c430; }
+    .voortgang-pct { font-family: 'Fredoka One', cursive; font-size: 1rem; color: #86efac; }
+    .voortgang-track {
+      height: 14px;
+      background: rgba(255,255,255,0.07);
       border-radius: 14px;
-      padding: 16px;
-      text-align: center;
+      overflow: hidden;
+      margin-bottom: 22px;
+      border: 1px solid rgba(255,255,255,0.08);
     }
-
+    .voortgang-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #1a7a4a, #22c55e, #4ade80);
+      border-radius: 14px;
+      transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+    .voortgang-fill::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.2) 50%, transparent 100%);
+      animation: shimmer 2s infinite;
+    }
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(200%); }
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+    .stat {
+      background: rgba(255,255,255,0.04);
+      border: 1.5px solid rgba(255,255,255,0.09);
+      border-radius: 18px;
+      padding: 18px 10px;
+      text-align: center;
+      transition: transform 0.2s;
+    }
+    .stat:hover { transform: translateY(-2px); }
+    .stat-icon { font-size: 26px; margin-bottom: 8px; }
     .stat-getal {
       font-family: 'Fredoka One', cursive;
-      font-size: 1.8rem;
+      font-size: 2.2rem;
       color: #f4c430;
+      line-height: 1;
+    }
+    .stat-label {
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: rgba(240,230,200,0.4);
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin-top: 6px;
     }
 
-    .stat-label {
-      font-size: 0.8rem;
-      font-weight: 700;
-      color: rgba(240,230,200,0.55);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-top: 4px;
+    @media (max-width: 480px) {
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .tm-opties { grid-template-columns: 1fr 1fr; }
     }
   </style>
 </head>
 <body>
 
   <header>
-    <div class="header-logo">🌴 SuriQuest 2060</div>
+    <div class="header-logo">🌴 SuriQuest</div>
     <div class="header-rechts">
       <span id="player-name">...</span>
       <span id="player-points">0 punten</span>
-      <button class="uitloggen-knop" onclick="logUit()">Uitloggen</button>
+      <button type="button" class="uitloggen-knop" onclick="logUit()">Uitloggen</button>
     </div>
   </header>
 
   <div class="hero">
-    <h1>Kies een locatie</h1>
-    <p>Verken Paramaribo en leer over de Surinaamse geschiedenis</p>
+    <div class="deco-palms"><span>🌴</span><span>🌴</span></div>
+    <div class="mascot-wrap">
+      <span class="mascot">🦜</span>
+      <div class="speech-bubble" id="speech-bubble">Hoi! Ik ben Suri de Ara! Leer mee over Suriname!</div>
+    </div>
+    <h1>Ontdek Suriname!</h1>
+    <p>Verken 5 historische plekken &amp; speel leuke spelletjes!</p>
+    <div class="hero-sterren">⭐ ⭐ ⭐ ⭐ ⭐</div>
   </div>
 
-  <div class="locaties">
-    <a href="fort-zeelandia.html" class="locatie-kaart goud" id="kaart-fort">
-      <span class="locatie-emoji">🏰</span>
-      <div class="locatie-naam">Fort Zeelandia</div>
-      <div class="locatie-jaar">1667</div>
-      <div class="locatie-beschrijving">Het oudste fort van Suriname, gebouwd door de Nederlanders aan de Surinamerivier.</div>
-    </a>
-
-    <a href="de-waterkant.html" class="locatie-kaart blauw" id="kaart-waterkant">
-      <span class="locatie-emoji">⚓</span>
-      <div class="locatie-naam">De Waterkant</div>
-      <div class="locatie-jaar">1700s</div>
-      <div class="locatie-beschrijving">De historische haven van Paramaribo, waar schepen uit Europa en Afrika aanmeerden.</div>
-    </a>
-
-    <a href="onafhankelijkheidsplein.html" class="locatie-kaart oranje" id="kaart-plein">
-      <span class="locatie-emoji">🇸🇷</span>
-      <div class="locatie-naam">Onafhankelijkheidsplein</div>
-      <div class="locatie-jaar">25 november 1975</div>
-      <div class="locatie-beschrijving">Het centrale plein dat de onafhankelijkheid van Suriname herdenkt.</div>
-    </a>
+  <!-- Tijdmachine interactive quiz -->
+  <div class="tijdmachine-wrapper">
+    <div class="tijdmachine-card">
+      <div class="tm-header">
+        <div class="tm-title">🕰️ Tijdmachine Quiz</div>
+        <div class="tm-score-display">🏆 <span id="tm-score">0</span> / 8</div>
+      </div>
+      <div class="tm-progress-track">
+        <div class="tm-progress-fill" id="tm-progress-fill"></div>
+      </div>
+      <div class="tm-vraag-tekst" id="tm-vraag">Laden…</div>
+      <div class="tm-opties" id="tm-opties"></div>
+      <div class="tm-feedback" id="tm-feedback"></div>
+      <div class="tm-klaar" id="tm-klaar" style="display:none">
+        <div class="tm-klaar-score" id="tm-klaar-score"></div>
+        <div class="tm-klaar-tekst" id="tm-klaar-tekst"></div>
+        <button type="button" class="tm-opnieuw" onclick="resetTijdmachine()">🔄 Speel opnieuw!</button>
+      </div>
+      <div class="tm-voortgang" id="tm-voortgang" style="text-align:center; margin-top:10px">Vraag 1 van 8</div>
+    </div>
   </div>
 
-  <div class="stats-balk">
-    <div class="stat">
-      <div class="stat-getal" id="stat-punten">0</div>
-      <div class="stat-label">Punten</div>
+  <!-- Location adventure cards -->
+  <div class="locaties-wrapper">
+    <div class="locaties-titel">🗺️ Kies een avontuur!</div>
+    <div class="locaties-grid">
+
+      <a href="inheemsen-dorp.html" class="locatie-kaart lv1" id="kaart-inheemsen">
+        <div class="kaart-scene">
+          <div class="level-badge">LEVEL 1</div>
+          <span class="kaart-emoji">🏹</span>
+        </div>
+        <div class="kaart-body">
+          <div class="locatie-naam">Inheemsen Dorp</div>
+          <div class="locatie-moeilijk">⭐ Makkelijk</div>
+          <div class="kaart-sterren" id="sterren-inheemsen">☆☆☆☆</div>
+          <div class="locatie-beschrijving">Ontmoet de eerste bewoners van Suriname: de Arowakken en Caraïben. Leer hoe zij leefden!</div>
+          <span class="kaart-pijl">Spelen! →</span>
+        </div>
+      </a>
+
+      <a href="fort-zeelandia.html" class="locatie-kaart lv2" id="kaart-fort">
+        <div class="kaart-scene">
+          <div class="level-badge">LEVEL 2</div>
+          <span class="kaart-emoji">🏰</span>
+        </div>
+        <div class="kaart-body">
+          <div class="locatie-naam">Fort Zeelandia</div>
+          <div class="locatie-moeilijk">⭐⭐ Gemiddeld</div>
+          <div class="kaart-sterren" id="sterren-fort">☆☆☆☆</div>
+          <div class="locatie-beschrijving">Het oudste fort van Suriname! Abraham Crijnssen veroverde het in 1667. Zet de tijdlijn in de juiste volgorde!</div>
+          <span class="kaart-pijl">Spelen! →</span>
+        </div>
+      </a>
+
+      <a href="de-waterkant.html" class="locatie-kaart lv3" id="kaart-waterkant">
+        <div class="kaart-scene">
+          <div class="level-badge">LEVEL 3</div>
+          <span class="kaart-emoji">⚓</span>
+        </div>
+        <div class="kaart-body">
+          <div class="locatie-naam">De Waterkant</div>
+          <div class="locatie-moeilijk">⭐⭐⭐ Moeilijk</div>
+          <div class="kaart-sterren" id="sterren-waterkant">☆☆☆☆</div>
+          <div class="locatie-beschrijving">De drukke haven van Paramaribo! Vind de matching paren in het memory spel over scheepsnamen!</div>
+          <span class="kaart-pijl">Spelen! →</span>
+        </div>
+      </a>
+
+      <a href="onafhankelijkheidsplein.html" class="locatie-kaart lv4" id="kaart-plein">
+        <div class="kaart-scene">
+          <div class="level-badge">LEVEL 4</div>
+          <span class="kaart-emoji">🇸🇷</span>
+        </div>
+        <div class="kaart-body">
+          <div class="locatie-naam">Onafhankelijkheidsplein</div>
+          <div class="locatie-moeilijk">⭐⭐⭐⭐ Heel moeilijk</div>
+          <div class="kaart-sterren" id="sterren-plein">☆☆☆☆</div>
+          <div class="locatie-beschrijving">25 november 1975! Koppel historische personen aan hun rol in Suriname's onafhankelijkheid!</div>
+          <span class="kaart-pijl">Spelen! →</span>
+        </div>
+      </a>
+
+      <a href="plantage.html" class="locatie-kaart lv5" id="kaart-plantage">
+        <div class="kaart-scene">
+          <div class="level-badge">LEVEL 5</div>
+          <span class="kaart-emoji">🌾</span>
+        </div>
+        <div class="kaart-body">
+          <div class="locatie-naam">De Plantage</div>
+          <div class="locatie-moeilijk">⭐⭐⭐⭐⭐ Expert!</div>
+          <div class="kaart-sterren" id="sterren-plantage">☆☆☆☆☆</div>
+          <div class="locatie-beschrijving">Leer over het zware leven op de plantages en de strijd voor vrijheid. Vul de ontbrekende woorden in!</div>
+          <span class="kaart-pijl">Spelen! →</span>
+        </div>
+      </a>
+
     </div>
-    <div class="stat">
-      <div class="stat-getal" id="stat-voltooid">0/3</div>
-      <div class="stat-label">Locaties voltooid</div>
+  </div>
+
+  <!-- Progress -->
+  <div class="voortgang-wrapper">
+    <div class="voortgang-header">
+      <span class="voortgang-titel">🎯 Jouw voortgang</span>
+      <span class="voortgang-pct" id="voortgang-pct">0%</span>
     </div>
-    <div class="stat">
-      <div class="stat-getal" id="stat-level">1</div>
-      <div class="stat-label">Level</div>
+    <div class="voortgang-track">
+      <div class="voortgang-fill" id="voortgang-fill" style="width:0%"></div>
+    </div>
+    <div class="stats-grid">
+      <div class="stat">
+        <div class="stat-icon">⭐</div>
+        <div class="stat-getal" id="stat-punten">0</div>
+        <div class="stat-label">Punten</div>
+      </div>
+      <div class="stat">
+        <div class="stat-icon">🗺️</div>
+        <div class="stat-getal" id="stat-voltooid">0/5</div>
+        <div class="stat-label">Locaties</div>
+      </div>
+      <div class="stat">
+        <div class="stat-icon">🏆</div>
+        <div class="stat-getal" id="stat-level">1</div>
+        <div class="stat-label">Level</div>
+      </div>
     </div>
   </div>
 
@@ -236,10 +704,132 @@
   <script>
     checkAuth()
 
+    /* ── MASCOT SPEECH BUBBLES ── */
+    const mascotvragen = [
+      'Wist je dat "barbecue" van de Inheemsen komt?',
+      'Columbus vertrok op 3 augustus 1492!',
+      'Fort Zeelandia was eerst Fort Willoughby!',
+      'Keti Koti betekent "gebroken ketenen"!',
+      'De Lalla Rookh bracht de eerste Hindostanen in 1873!',
+      'Bauxiet uit Suriname maakte vliegtuigen in WOII!',
+      'De vlag werd ontworpen door Jacques Herman Pinas!',
+      '25 november 1975 werd Suriname onafhankelijk!',
+    ]
+    let mascotIdx = 0
+    const bubbleEl = document.getElementById('speech-bubble')
+    setInterval(() => {
+      bubbleEl.classList.add('fade')
+      setTimeout(() => {
+        mascotIdx = (mascotIdx + 1) % mascotvragen.length
+        bubbleEl.textContent = mascotvragen[mascotIdx]
+        bubbleEl.classList.remove('fade')
+      }, 500)
+    }, 5000)
+
+    /* ── TIJDMACHINE QUIZ ── */
+    const tmVragen = [
+      { tekst: '⛵ Columbus vertrok met zijn drie schepen uit Spanje', jaar: 1492, opties: [1445, 1492, 1512, 1525] },
+      { tekst: '🏴 Engelsen onder Francis Willoughby bouwden Fort Willoughby', jaar: 1650, opties: [1620, 1640, 1650, 1680] },
+      { tekst: '🏰 Abraham Crijnssen veroverde Suriname voor Nederland', jaar: 1667, opties: [1645, 1660, 1667, 1690] },
+      { tekst: '⛓️ Keti Koti! De slavernij werd afgeschaft in Suriname', jaar: 1863, opties: [1834, 1848, 1863, 1873] },
+      { tekst: '🚢 De Lalla Rookh bracht de eerste Hindostanen naar Suriname', jaar: 1873, opties: [1853, 1863, 1873, 1890] },
+      { tekst: '🚢 De Willem II bracht de eerste Javanen naar Suriname', jaar: 1890, opties: [1873, 1882, 1890, 1900] },
+      { tekst: '⛏️ Bauxiet werd ontdekt bij Moengo in Suriname', jaar: 1916, opties: [1900, 1908, 1916, 1925] },
+      { tekst: '🇸🇷 Suriname werd onafhankelijk van Nederland!', jaar: 1975, opties: [1963, 1970, 1975, 1980] },
+    ]
+    let tmIdx = 0, tmScore = 0, tmBezig = false
+
+    function shuffleArr(a) { return [...a].sort(() => Math.random() - 0.5) }
+
+    function laadTmVraag() {
+      if (tmIdx >= tmVragen.length) { toonTmKlaar(); return }
+      const v = tmVragen[tmIdx]
+      document.getElementById('tm-vraag').textContent = v.tekst
+      document.getElementById('tm-voortgang').textContent = `Vraag ${tmIdx + 1} van ${tmVragen.length}`
+      document.getElementById('tm-feedback').textContent = ''
+      document.getElementById('tm-feedback').className = 'tm-feedback'
+      document.getElementById('tm-progress-fill').style.width = (tmIdx / tmVragen.length * 100) + '%'
+
+      const opties = shuffleArr(v.opties)
+      const container = document.getElementById('tm-opties')
+      container.innerHTML = ''
+      opties.forEach(jaar => {
+        const btn = document.createElement('button')
+        btn.type = 'button'
+        btn.className = 'tm-optie'
+        btn.textContent = jaar
+        btn.onclick = () => tmAnswer(btn, jaar, v.jaar)
+        container.appendChild(btn)
+      })
+      tmBezig = false
+    }
+
+    function tmAnswer(btn, gekozen, correct) {
+      if (tmBezig) return
+      tmBezig = true
+      const alleKnoppen = document.querySelectorAll('.tm-optie')
+      alleKnoppen.forEach(b => b.disabled = true)
+      const feedbackEl = document.getElementById('tm-feedback')
+
+      if (gekozen === correct) {
+        btn.classList.add('goed')
+        tmScore++
+        document.getElementById('tm-score').textContent = tmScore
+        feedbackEl.textContent = '🎉 Goed zo!'
+        feedbackEl.className = 'tm-feedback goed'
+      } else {
+        btn.classList.add('fout')
+        alleKnoppen.forEach(b => { if (parseInt(b.textContent) === correct) b.classList.add('goed') })
+        feedbackEl.textContent = `❌ Fout! Het goede antwoord was: ${correct}`
+        feedbackEl.className = 'tm-feedback fout'
+      }
+
+      tmIdx++
+      setTimeout(laadTmVraag, 1400)
+    }
+
+    function toonTmKlaar() {
+      document.getElementById('tm-opties').innerHTML = ''
+      document.getElementById('tm-vraag').textContent = ''
+      document.getElementById('tm-voortgang').style.display = 'none'
+      document.getElementById('tm-feedback').textContent = ''
+      document.getElementById('tm-progress-fill').style.width = '100%'
+
+      let icon, tekst
+      if (tmScore >= 7) { icon = '🏆'; tekst = 'Ongelooflijk! Je bent een echte historicus!' }
+      else if (tmScore >= 5) { icon = '🎉'; tekst = 'Super goed! Je kent Suriname goed!' }
+      else if (tmScore >= 3) { icon = '👍'; tekst = 'Niet slecht! Leer nog meer en probeer opnieuw!' }
+      else { icon = '💪'; tekst = 'Oefenen maar! Verken de locaties voor meer info.' }
+
+      const klaar = document.getElementById('tm-klaar')
+      document.getElementById('tm-klaar-score').textContent = `${icon} ${tmScore} / ${tmVragen.length} goed!`
+      document.getElementById('tm-klaar-tekst').textContent = tekst
+      klaar.style.display = 'block'
+    }
+
+    function resetTijdmachine() {
+      tmIdx = 0; tmScore = 0; tmBezig = false
+      document.getElementById('tm-klaar').style.display = 'none'
+      document.getElementById('tm-voortgang').style.display = 'block'
+      document.getElementById('tm-score').textContent = '0'
+      laadTmVraag()
+    }
+
+    laadTmVraag()
+
+    /* ── LOCATIE MAP DATA ── */
     const locatieMap = {
-      fort_zeelandia:          'kaart-fort',
-      waterkant:               'kaart-waterkant',
-      onafhankelijkheidsplein: 'kaart-plein',
+      inheemsen_dorp:          { kaartId: 'kaart-inheemsen', sterrenId: 'sterren-inheemsen', maxSterren: 4 },
+      fort_zeelandia:          { kaartId: 'kaart-fort',      sterrenId: 'sterren-fort',      maxSterren: 4 },
+      waterkant:               { kaartId: 'kaart-waterkant', sterrenId: 'sterren-waterkant', maxSterren: 4 },
+      onafhankelijkheidsplein: { kaartId: 'kaart-plein',     sterrenId: 'sterren-plein',     maxSterren: 4 },
+      plantage:                { kaartId: 'kaart-plantage',  sterrenId: 'sterren-plantage',  maxSterren: 5 },
+    }
+
+    function buildSterren(score, max) {
+      let s = ''
+      for (let i = 1; i <= max; i++) s += i <= score ? '⭐' : '☆'
+      return s
     }
 
     async function laadPagina() {
@@ -254,18 +844,33 @@
       document.getElementById('stat-level').textContent    = speler.level
 
       const voltooid = speler.completedLocations || []
-      document.getElementById('stat-voltooid').textContent = voltooid.length + '/3'
+      const totaal = Object.keys(locatieMap).length
+      document.getElementById('stat-voltooid').textContent = voltooid.length + '/' + totaal
+
+      const pct = Math.round(voltooid.length / totaal * 100)
+      document.getElementById('voortgang-fill').style.width = pct + '%'
+      document.getElementById('voortgang-pct').textContent  = pct + '%'
+
+      const quizRes = speler.quizResultaten || {}
 
       voltooid.forEach(id => {
-        const kaartId = locatieMap[id]
-        if (!kaartId) return
-        const kaart = document.getElementById(kaartId)
+        const info = locatieMap[id]
+        if (!info) return
+        const kaart = document.getElementById(info.kaartId)
         if (!kaart) return
         kaart.classList.add('voltooid')
-        const badge = document.createElement('div')
-        badge.className = 'voltooid-badge'
-        badge.textContent = '✓ Voltooid'
-        kaart.appendChild(badge)
+        if (!kaart.querySelector('.voltooid-badge')) {
+          const badge = document.createElement('div')
+          badge.className = 'voltooid-badge'
+          badge.textContent = '✓ Klaar!'
+          kaart.appendChild(badge)
+        }
+
+        const res = quizRes[id]
+        if (res) {
+          const sterrenEl = document.getElementById(info.sterrenId)
+          if (sterrenEl) sterrenEl.textContent = buildSterren(res.score, info.maxSterren)
+        }
       })
     }
 

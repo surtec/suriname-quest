@@ -3,135 +3,476 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Onafhankelijkheidsplein — Suriname Quest</title>
+  <title>Onafhankelijkheidsplein — SuriQuest</title>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background: #0d1b12; color: #f0e6c8; font-family: 'Nunito', sans-serif; min-height: 100vh; padding: 0 0 60px; }
+    :root { --accent: #fb923c; --accent2: #f4c430; --bg: #140800; }
+    body { background: var(--bg); color: #f0e6c8; font-family: 'Nunito', sans-serif; min-height: 100vh; padding-bottom: 80px; }
 
-    .player-balk { background: rgba(0,0,0,0.4); padding: 8px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(234,88,12,0.15); }
-    .player-balk span { font-weight: 700; font-size: 0.9rem; }
-    #player-name   { color: #f0e6c8; }
-    #player-points { color: #fb923c; font-family: 'Fredoka One', cursive; }
+    /* ── HUD ── */
+    .player-balk {
+      background: rgba(0,0,0,0.5);
+      padding: 9px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(234,88,12,0.18);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      -webkit-backdrop-filter: blur(8px);
+      backdrop-filter: blur(8px);
+    }
+    .balk-links { display: flex; align-items: center; gap: 10px; }
+    .balk-links a { color: rgba(251,146,60,0.7); text-decoration: none; font-size: 0.85rem; font-weight: 700; }
+    #player-name { font-weight: 800; color: #f0e6c8; font-size: 0.9rem; }
+    .balk-rechts { display: flex; align-items: center; gap: 12px; }
+    #player-points { color: var(--accent); font-family: 'Fredoka One', cursive; font-size: 1rem; }
     .uitloggen-knop { background: none; border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; color: rgba(255,255,255,0.5); padding: 4px 10px; font-size: 12px; cursor: pointer; }
 
-    .hero { background: linear-gradient(160deg, #2a1a0d 0%, #1e1208 60%, #0d1b12 100%); padding: 48px 24px 36px; text-align: center; border-bottom: 2px solid rgba(234,88,12,0.25); position: relative; overflow: hidden; }
-    .hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 50% 50%, rgba(234,88,12,0.07) 0%, transparent 70%); pointer-events: none; }
-    .back-btn { display: inline-flex; align-items: center; gap: 6px; color: #fb923c; text-decoration: none; font-weight: 700; font-size: 0.9rem; margin-bottom: 24px; padding: 6px 14px; border: 1px solid rgba(234,88,12,0.3); border-radius: 20px; transition: background 0.2s; }
+    /* ── HERO ── */
+    .hero {
+      background: linear-gradient(160deg, #2a1200 0%, #1a0c00 60%, var(--bg) 100%);
+      padding: 40px 24px 32px;
+      text-align: center;
+      border-bottom: 2px solid rgba(234,88,12,0.22);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 50% 50%, rgba(234,88,12,0.1) 0%, transparent 60%),
+        radial-gradient(circle at 20% 80%, rgba(244,196,48,0.06) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    /* Flag stripe decoration */
+    .flag-deco {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 6px;
+      background: linear-gradient(90deg,
+        #377E22 0%, #377E22 20%,
+        #fff 20%, #fff 30%,
+        #B40A2D 30%, #B40A2D 70%,
+        #fff 70%, #fff 80%,
+        #377E22 80%, #377E22 100%
+      );
+      opacity: 0.4;
+    }
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.88rem;
+      margin-bottom: 22px;
+      padding: 6px 14px;
+      border: 1px solid rgba(234,88,12,0.32);
+      border-radius: 20px;
+      transition: background 0.2s;
+    }
     .back-btn:hover { background: rgba(234,88,12,0.1); }
-    .year-badge { display: inline-block; background: #ea580c; color: #fff; font-family: 'Fredoka One', cursive; font-size: 0.95rem; padding: 4px 14px; border-radius: 20px; margin-bottom: 14px; }
-    .location-icon { font-size: 72px; display: block; margin: 0 auto 16px; filter: drop-shadow(0 0 18px rgba(234,88,12,0.4)); }
-    h1 { font-family: 'Fredoka One', cursive; font-size: clamp(1.8rem, 5.5vw, 3rem); color: #fb923c; text-shadow: 0 2px 12px rgba(234,88,12,0.3); margin-bottom: 14px; }
-    .description { max-width: 620px; margin: 0 auto; font-size: 1.05rem; line-height: 1.7; color: #e8d0b8; font-weight: 600; }
+    .year-badge {
+      display: inline-block;
+      background: var(--accent);
+      color: #140800;
+      font-family: 'Fredoka One', cursive;
+      font-size: 0.9rem;
+      padding: 4px 16px;
+      border-radius: 20px;
+      margin-bottom: 16px;
+    }
+    .location-icon {
+      font-size: 76px;
+      display: block;
+      margin: 0 auto 14px;
+      filter: drop-shadow(0 0 20px rgba(234,88,12,0.4));
+      animation: flag-wave 3s ease-in-out infinite;
+    }
+    @keyframes flag-wave {
+      0%, 100% { transform: rotate(-3deg) scale(1); }
+      50% { transform: rotate(3deg) scale(1.04); }
+    }
+    h1 {
+      font-family: 'Fredoka One', cursive;
+      font-size: clamp(1.8rem, 5.5vw, 3rem);
+      color: var(--accent);
+      text-shadow: 0 2px 16px rgba(234,88,12,0.35);
+      margin-bottom: 12px;
+      position: relative;
+    }
+    .description {
+      max-width: 620px;
+      margin: 0 auto;
+      font-size: 1rem;
+      line-height: 1.75;
+      color: #e0c0a0;
+      font-weight: 600;
+      position: relative;
+    }
 
-    .section { max-width: 760px; margin: 40px auto 0; padding: 0 20px; }
-    .section-title { font-family: 'Fredoka One', cursive; font-size: 1.5rem; color: #fb923c; margin-bottom: 18px; display: flex; align-items: center; gap: 10px; }
-    .section-title::after { content: ''; flex: 1; height: 2px; background: linear-gradient(90deg, rgba(234,88,12,0.4), transparent); border-radius: 2px; }
+    /* ── HIGHLIGHT BOX ── */
+    .vrijheid-box {
+      background: linear-gradient(135deg, rgba(234,88,12,0.14), rgba(244,196,48,0.08));
+      border: 1.5px solid rgba(234,88,12,0.4);
+      border-radius: 18px;
+      padding: 22px 24px;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+    .vrijheid-icon { font-size: 40px; flex-shrink: 0; }
+    .vrijheid-datum {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.3rem;
+      color: var(--accent);
+      margin-bottom: 4px;
+    }
+    .vrijheid-tekst { font-size: 0.9rem; color: rgba(240,230,200,0.85); font-weight: 600; line-height: 1.6; }
 
-    .highlight-box { background: linear-gradient(135deg, rgba(234,88,12,0.15), rgba(244,196,48,0.08)); border: 1px solid rgba(234,88,12,0.35); border-radius: 14px; padding: 18px 22px; margin-bottom: 24px; display: flex; align-items: center; gap: 16px; }
-    .highlight-box .hl-icon { font-size: 36px; flex-shrink: 0; }
-    .highlight-box .hl-text { font-weight: 700; font-size: 0.95rem; color: #e8d0b8; line-height: 1.6; }
-    .highlight-box .hl-date { font-family: 'Fredoka One', cursive; font-size: 1.2rem; color: #fb923c; }
+    /* ── SECTIONS ── */
+    .section { max-width: 760px; margin: 36px auto 0; padding: 0 20px; }
+    .section-title {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.4rem;
+      color: var(--accent);
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 2px;
+      background: linear-gradient(90deg, rgba(234,88,12,0.4), transparent);
+      border-radius: 2px;
+    }
 
-    .collectibles-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
-    .collectible-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(234,88,12,0.2); border-radius: 16px; padding: 22px 18px; text-align: center; transition: transform 0.2s, border-color 0.2s; }
-    .collectible-card:hover { transform: translateY(-3px); border-color: rgba(234,88,12,0.5); }
-    .collectible-emoji { font-size: 40px; display: block; margin-bottom: 10px; }
-    .collectible-name { font-weight: 800; font-size: 0.95rem; }
+    /* ── MINI TIJDLIJN ── */
+    .mini-tijdlijn { display: flex; flex-direction: column; gap: 0; position: relative; }
+    .mini-tijdlijn::before {
+      content: '';
+      position: absolute;
+      left: 19px; top: 22px; bottom: 22px;
+      width: 2px;
+      background: linear-gradient(180deg, rgba(234,88,12,0.5), rgba(234,88,12,0.1));
+    }
+    .mtl-item { display: flex; align-items: flex-start; gap: 16px; padding: 0 0 22px 0; position: relative; }
+    .mtl-dot {
+      width: 38px; height: 38px; border-radius: 50%;
+      background: rgba(234,88,12,0.12);
+      border: 2px solid rgba(234,88,12,0.4);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; flex-shrink: 0; position: relative; z-index: 1;
+    }
+    .mtl-content { padding-top: 6px; }
+    .mtl-jaar { font-family: 'Fredoka One', cursive; font-size: 0.9rem; color: var(--accent); margin-bottom: 2px; }
+    .mtl-tekst { font-size: 0.88rem; color: rgba(240,230,200,0.8); line-height: 1.5; font-weight: 600; }
+
+    /* ── FIGUUR KAARTEN ── */
+    .figuren-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; }
+    .figuur-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(234,88,12,0.2);
+      border-radius: 16px;
+      padding: 18px;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      transition: border-color 0.2s;
+    }
+    .figuur-card:hover { border-color: rgba(234,88,12,0.4); }
+    .figuur-avatar {
+      font-size: 36px;
+      width: 60px; height: 60px;
+      border-radius: 50%;
+      background: rgba(234,88,12,0.1);
+      border: 2px solid rgba(234,88,12,0.3);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .figuur-naam { font-family: 'Fredoka One', cursive; font-size: 1rem; color: var(--accent); margin-bottom: 2px; }
+    .figuur-rol { font-size: 0.72rem; font-weight: 800; color: rgba(240,230,200,0.45); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; }
+    .figuur-omschr { font-size: 0.84rem; color: rgba(240,230,200,0.78); line-height: 1.55; font-weight: 600; }
+
+    /* ── WIST JE DAT ── */
+    .feit-card {
+      background: linear-gradient(135deg, rgba(234,88,12,0.1), rgba(244,196,48,0.06));
+      border: 1px solid rgba(234,88,12,0.32);
+      border-radius: 16px;
+      padding: 18px 20px;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      margin-bottom: 14px;
+    }
+    .feit-icon { font-size: 28px; flex-shrink: 0; }
+    .feit-kop { font-family: 'Fredoka One', cursive; font-size: 0.85rem; color: var(--accent); margin-bottom: 4px; }
+    .feit-text { font-size: 0.88rem; color: rgba(240,230,200,0.85); line-height: 1.6; font-weight: 600; }
+
+    /* ── QUIZ ── */
+    .quiz-progress-wrap { margin-bottom: 20px; }
+    .quiz-progress-label { display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 700; color: rgba(240,230,200,0.45); margin-bottom: 8px; }
+    .quiz-progress-track { height: 8px; background: rgba(255,255,255,0.08); border-radius: 8px; overflow: hidden; }
+    .quiz-progress-fill { height: 100%; background: linear-gradient(90deg, #c2400a, #fb923c); border-radius: 8px; transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1); width: 0%; }
 
     .quiz-list { display: flex; flex-direction: column; gap: 20px; }
-    .quiz-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 22px 20px; }
-    .quiz-question { font-weight: 800; font-size: 1rem; color: #f0e6c8; margin-bottom: 14px; line-height: 1.5; }
+    .quiz-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 18px; padding: 22px 20px; transition: border-color 0.3s; }
+    .quiz-card.answered-correct { border-color: rgba(34,197,94,0.4); }
+    .quiz-card.answered-wrong   { border-color: rgba(239,68,68,0.35); }
+    .quiz-num { font-size: 0.72rem; font-weight: 800; color: rgba(240,230,200,0.35); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
+    .quiz-question { font-weight: 800; font-size: 1rem; color: #f0e6c8; margin-bottom: 14px; line-height: 1.55; }
     .quiz-options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .quiz-option { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: 10px; padding: 10px 14px; font-size: 0.9rem; font-weight: 600; color: #e8d0b8; cursor: pointer; transition: background 0.18s; text-align: left; }
-    .quiz-option:hover:not(:disabled) { background: rgba(234,88,12,0.1); border-color: rgba(234,88,12,0.4); }
-    .quiz-option.correct { background: rgba(34,197,94,0.15); border-color: rgba(34,197,94,0.5); color: #86efac; }
-    .quiz-option.wrong   { background: rgba(239,68,68,0.12);  border-color: rgba(239,68,68,0.4);  color: #fca5a5; }
-    .quiz-answer-reveal { margin-top: 12px; font-size: 0.88rem; color: #86efac; font-weight: 700; display: none; }
+    .quiz-option {
+      background: rgba(255,255,255,0.06);
+      border: 1.5px solid rgba(255,255,255,0.12);
+      border-radius: 12px;
+      padding: 11px 14px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #e0c0a0;
+      cursor: pointer;
+      transition: background 0.18s, border-color 0.18s, transform 0.12s;
+      text-align: left;
+      font-family: 'Nunito', sans-serif;
+    }
+    .quiz-option:hover:not(:disabled) { background: rgba(234,88,12,0.1); border-color: rgba(234,88,12,0.4); transform: translateY(-1px); }
+    .quiz-option.correct { background: rgba(34,197,94,0.18); border-color: rgba(34,197,94,0.55); color: #86efac; }
+    .quiz-option.wrong   { background: rgba(239,68,68,0.14); border-color: rgba(239,68,68,0.45); color: #fca5a5; animation: shake 0.4s ease; }
+    @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+    .quiz-answer-reveal { margin-top: 12px; font-size: 0.84rem; color: #86efac; font-weight: 700; display: none; padding: 8px 12px; background: rgba(34,197,94,0.08); border-radius: 8px; }
 
-    .resultaat { display: none; background: rgba(255,255,255,0.05); border-radius: 16px; padding: 24px; text-align: center; margin-top: 24px; }
-    .resultaat-titel { font-family: 'Fredoka One', cursive; font-size: 1.8rem; margin-bottom: 8px; }
-    .resultaat-tekst { color: rgba(240,230,200,0.7); margin-bottom: 8px; }
-    .resultaat-punten { font-family: 'Fredoka One', cursive; color: #f4c430; font-size: 1.2rem; }
+    /* ── STREAK TOAST ── */
+    .streak-toast {
+      position: fixed; top: 70px; left: 50%;
+      transform: translateX(-50%) translateY(-20px);
+      background: linear-gradient(135deg, #fb923c, #f4c430);
+      color: #140800;
+      font-family: 'Fredoka One', cursive; font-size: 1.1rem;
+      padding: 10px 24px; border-radius: 30px;
+      z-index: 500; opacity: 0;
+      transition: opacity 0.3s, transform 0.3s;
+      pointer-events: none; white-space: nowrap;
+    }
+    .streak-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
+    /* ── RESULT ── */
+    .resultaat { display: none; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 32px 24px; text-align: center; margin-top: 28px; }
+    .resultaat-icon { font-size: 56px; margin-bottom: 12px; }
+    .resultaat-titel { font-family: 'Fredoka One', cursive; font-size: 2rem; margin-bottom: 8px; }
+    .resultaat-tekst { color: rgba(240,230,200,0.65); margin-bottom: 10px; font-weight: 700; }
+    .resultaat-punten { font-family: 'Fredoka One', cursive; color: var(--accent2); font-size: 1.4rem; }
+    .result-sterren { font-size: 28px; margin: 12px 0; }
+
+    /* ── CONFETTI / FLOAT ── */
+    .confetti-piece { position: fixed; top: -10px; border-radius: 3px; pointer-events: none; z-index: 9999; animation: confetti-fall linear forwards; }
+    @keyframes confetti-fall { 0% { transform: translateY(0) rotate(0deg); opacity: 1; } 100% { transform: translateY(110vh) rotate(720deg); opacity: 0; } }
+    .punten-float { position: fixed; color: #f4c430; font-family: 'Fredoka One', cursive; font-size: 1.5rem; pointer-events: none; z-index: 9998; animation: float-up 1.1s ease-out forwards; transform: translateX(-50%); text-shadow: 0 2px 8px rgba(0,0,0,0.5); }
+    @keyframes float-up { 0% { opacity: 1; transform: translateX(-50%) translateY(0); } 100% { opacity: 0; transform: translateX(-50%) translateY(-70px); } }
+
+    /* ── NAV ── */
     .nav-bar { max-width: 760px; margin: 48px auto 0; padding: 0 20px; display: flex; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
-    .nav-link { flex: 1; min-width: 160px; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 20px; border-radius: 14px; font-family: 'Fredoka One', cursive; font-size: 1rem; text-decoration: none; transition: transform 0.18s; }
+    .nav-link { flex: 1; min-width: 140px; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 20px; border-radius: 14px; font-family: 'Fredoka One', cursive; font-size: 1rem; text-decoration: none; transition: transform 0.18s; }
     .nav-link:hover { transform: translateY(-2px); }
-    .nav-link.prev { background: rgba(72,180,220,0.15); border: 1px solid rgba(72,180,220,0.3); color: #48b4dc; }
-    .nav-link.home { background: rgba(244,196,48,0.12); border: 1px solid rgba(244,196,48,0.25); color: #f4c430; }
+    .nav-link.prev { background: rgba(72,180,220,0.1); border: 1px solid rgba(72,180,220,0.28); color: #48b4dc; }
+    .nav-link.home { background: rgba(244,196,48,0.12); border: 1px solid rgba(244,196,48,0.28); color: #f4c430; }
   </style>
 </head>
 <body>
 
   <div class="player-balk">
-    <span id="player-name">...</span>
-    <span id="player-points">...</span>
-    <button class="uitloggen-knop" onclick="logUit()">Uitloggen</button>
+    <div class="balk-links">
+      <a href="map.html">← Kaart</a>
+      <span id="player-name">...</span>
+    </div>
+    <div class="balk-rechts">
+      <span id="player-points">...</span>
+      <button type="button" class="uitloggen-knop" onclick="logUit()">Uitloggen</button>
+    </div>
   </div>
 
   <div class="hero">
+    <div class="flag-deco"></div>
     <a href="map.html" class="back-btn">← Terug naar kaart</a>
     <div class="year-badge">25 november 1975</div>
     <span class="location-icon">🇸🇷</span>
     <h1>Onafhankelijkheidsplein</h1>
-    <p class="description">Het centrale plein in Paramaribo dat de onafhankelijkheid van Suriname herdenkt. Vroeger heette het Oranjeplein — nu is het een symbool van vrijheid en nationale trots.</p>
+    <p class="description">Het centrale plein van Paramaribo waar op 25 november 1975 de Surinaamse vlag voor het eerst werd gehesen. Vroeger heette dit het Oranjeplein — nu is het het hart van een vrij en onafhankelijk Suriname.</p>
   </div>
 
+  <!-- Freedom highlight -->
   <div class="section">
-    <div class="highlight-box">
-      <span class="hl-icon">🎉</span>
-      <div class="hl-text">Op <span class="hl-date">25 november 1975</span> werd Suriname onafhankelijk van Nederland. Dit plein is de plek waar de onafhankelijkheid werd gevierd en wordt herdacht.</div>
-    </div>
-
-    <h2 class="section-title">🎒 Verzamelobjecten</h2>
-    <div class="collectibles-grid">
-      <div class="collectible-card"><span class="collectible-emoji">🇸🇷</span><div class="collectible-name">Surinaamse Vlag</div></div>
-      <div class="collectible-card"><span class="collectible-emoji">📸</span><div class="collectible-name">Foto 25 november</div></div>
-      <div class="collectible-card"><span class="collectible-emoji">🏅</span><div class="collectible-name">Onafhankelijkheidsmunt</div></div>
+    <div class="vrijheid-box">
+      <span class="vrijheid-icon">🎉</span>
+      <div>
+        <div class="vrijheid-datum">25 november 1975</div>
+        <div class="vrijheid-tekst">Op deze dag riep Suriname de onafhankelijkheid uit. Kinderen vormden de vlag op dit plein. Het volkslied klonk voor het eerst. Eerste president: <strong>Johan H.E. Ferrier</strong>.</div>
+      </div>
     </div>
   </div>
 
+  <!-- Mini timeline -->
   <div class="section">
-    <h2 class="section-title">🧠 Quizvragen</h2>
+    <h2 class="section-title">📅 Weg naar onafhankelijkheid</h2>
+    <div class="mini-tijdlijn">
+      <div class="mtl-item">
+        <div class="mtl-dot">📉</div>
+        <div class="mtl-content">
+          <div class="mtl-jaar">~1929 — Economische crisis</div>
+          <div class="mtl-tekst">Een wereldwijde economische crisis treft Suriname zwaar. Grote werkloosheid en honger. Arbeiders richten de <strong>S.A.W.O.</strong> (Surinaamse Arbeiders en Werklozen Organisatie) op.</div>
+        </div>
+      </div>
+      <div class="mtl-item">
+        <div class="mtl-dot">✊</div>
+        <div class="mtl-content">
+          <div class="mtl-jaar">1933 — Anton de Kom</div>
+          <div class="mtl-tekst"><strong>Anton de Kom</strong> keert terug uit Nederland en opent een klachtenbureau op de Pontewerfstraat. Arbeiders noemen hem <em>"Papa de Kom"</em>. Hij roept op tot onafhankelijkheid. Na protest wordt hij gearresteerd — politie schiet: 2 doden, 22 gewonden.</div>
+        </div>
+      </div>
+      <div class="mtl-item">
+        <div class="mtl-dot">⚔️</div>
+        <div class="mtl-content">
+          <div class="mtl-jaar">1939–1945 — Tweede Wereldoorlog</div>
+          <div class="mtl-tekst">Suriname vecht mee aan de kant van de Geallieerden. Het Surinaamse bauxiet was cruciaal voor Amerikaanse oorlogsvliegtuigen. Het oorlogsmonument op dit plein herdenkt de meer dan <strong>500 Surinamers</strong> die stierven in de Tweede Wereldoorlog.</div>
+        </div>
+      </div>
+      <div class="mtl-item">
+        <div class="mtl-dot">🇸🇷</div>
+        <div class="mtl-content">
+          <div class="mtl-jaar">25 november 1975 — Onafhankelijkheid</div>
+          <div class="mtl-tekst">Suriname wordt een zelfstandige republiek. De vlag — ontworpen door <strong>Jacques Herman Pinas</strong> — waait voor het eerst over dit plein. Eerste president: <strong>Johan H.E. Ferrier</strong>.</div>
+        </div>
+      </div>
+      <div class="mtl-item">
+        <div class="mtl-dot">🪖</div>
+        <div class="mtl-content">
+          <div class="mtl-jaar">25 februari 1980 — Militaire coup</div>
+          <div class="mtl-tekst"><strong>Desiré Delano Bouterse</strong> pleegt een militaire coup. De Nationale Militaire Raad (NMR) neemt de macht over. President Ferrier treedt af op 13 augustus 1980.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Historical figures -->
+  <div class="section">
+    <h2 class="section-title">👤 Historische figuren</h2>
+    <div class="figuren-grid">
+      <div class="figuur-card">
+        <div class="figuur-avatar">✊</div>
+        <div>
+          <div class="figuur-naam">Anton de Kom</div>
+          <div class="figuur-rol">Activist & Schrijver · 1898–1945</div>
+          <div class="figuur-omschr">Onderwijzer die terugkeerde uit Nederland in 1933 en vocht voor Surinaamse onafhankelijkheid. Schreef <em>"Wij slaven van Suriname"</em> (1934). Stierf in een Duits concentratiekamp op 24 april 1945. Een straat in Paramaribo draagt zijn naam.</div>
+        </div>
+      </div>
+      <div class="figuur-card">
+        <div class="figuur-avatar">🏛️</div>
+        <div>
+          <div class="figuur-naam">Johan H.E. Ferrier</div>
+          <div class="figuur-rol">Eerste President · 1910–2010</div>
+          <div class="figuur-omschr">Johan Henri Eliza Ferrier was de laatste gouverneur en de eerste president van Suriname. Hij was aanwezig op het Onafhankelijkheidsplein op 25 november 1975 toen de vlag voor het eerst werd gehesen.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fun facts -->
+  <div class="section">
+    <div class="feit-card">
+      <span class="feit-icon">🎨</span>
+      <div>
+        <div class="feit-kop">De Surinaamse vlag</div>
+        <div class="feit-text">De vlag werd ontworpen door <strong>Jacques Herman Pinas</strong>. De kleuren hebben een betekenis: <strong>groen</strong> = vruchtbaarheid, <strong>wit</strong> = gerechtigheid en vrede, <strong>rood</strong> = vooruitgang, <strong>gele ster</strong> = eenheid en een gouden toekomst.</div>
+      </div>
+    </div>
+    <div class="feit-card">
+      <span class="feit-icon">🎵</span>
+      <div>
+        <div class="feit-kop">Het Volkslied</div>
+        <div class="feit-text">Het Surinaamse volkslied werd herschreven in <strong>1959</strong> door dichter <strong>Henri de Ziel (Trefossa)</strong>. Het bestaat uit twee coupletten — één in het Nederlands ("God zij met ons Suriname") en één in Sranan ("Opo kondreman un opo").</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quiz -->
+  <div class="section">
+    <h2 class="section-title">🧠 Quiz — Onafhankelijkheidsplein</h2>
+
+    <div class="quiz-progress-wrap">
+      <div class="quiz-progress-label">
+        <span>Voortgang</span>
+        <span><span id="quiz-progress-count">0</span> / 4 beantwoord</span>
+      </div>
+      <div class="quiz-progress-track">
+        <div class="quiz-progress-fill" id="quiz-progress-fill"></div>
+      </div>
+    </div>
+
     <div class="quiz-list">
 
       <div class="quiz-card">
-        <div class="quiz-question">📅 Op welke datum werd Suriname onafhankelijk?</div>
+        <div class="quiz-num">Vraag 1 van 4</div>
+        <div class="quiz-question">🏛️ Wie was de eerste president van Suriname na de onafhankelijkheid in 1975?</div>
         <div class="quiz-options">
-          <button class="quiz-option" onclick="answer(this, false)">1 januari 1975</button>
-          <button class="quiz-option" onclick="answer(this, false)">4 juli 1975</button>
-          <button class="quiz-option" onclick="answer(this, true)">25 november 1975</button>
-          <button class="quiz-option" onclick="answer(this, false)">25 december 1975</button>
+          <button type="button" class="quiz-option" onclick="answer(this, false)">Anton de Kom</button>
+          <button type="button" class="quiz-option" onclick="answer(this, false)">Desiré Bouterse</button>
+          <button type="button" class="quiz-option" onclick="answer(this, true)">Johan H.E. Ferrier</button>
+          <button type="button" class="quiz-option" onclick="answer(this, false)">Abraham Crijnssen</button>
         </div>
-        <div class="quiz-answer-reveal">✅ Juist antwoord: 25 november 1975</div>
+        <div class="quiz-answer-reveal">✅ Johan Henri Eliza Ferrier (1910–2010) was de eerste president van Suriname — ook de laatste gouverneur vóór de onafhankelijkheid.</div>
       </div>
 
       <div class="quiz-card">
-        <div class="quiz-question">⭐ Wat staat er in het midden van de Surinaamse vlag?</div>
+        <div class="quiz-num">Vraag 2 van 4</div>
+        <div class="quiz-question">🎨 Wie ontwierp de Surinaamse vlag?</div>
         <div class="quiz-options">
-          <button class="quiz-option" onclick="answer(this, false)">Een vogel</button>
-          <button class="quiz-option" onclick="answer(this, true)">Een gele ster</button>
-          <button class="quiz-option" onclick="answer(this, false)">Een palm</button>
-          <button class="quiz-option" onclick="answer(this, false)">Een schild</button>
+          <button type="button" class="quiz-option" onclick="answer(this, false)">Henri de Ziel (Trefossa)</button>
+          <button type="button" class="quiz-option" onclick="answer(this, false)">Johan Ferrier</button>
+          <button type="button" class="quiz-option" onclick="answer(this, false)">Louis Doedel</button>
+          <button type="button" class="quiz-option" onclick="answer(this, true)">Jacques Herman Pinas</button>
         </div>
-        <div class="quiz-answer-reveal">✅ Juist antwoord: Een gele ster</div>
+        <div class="quiz-answer-reveal">✅ Jacques Herman Pinas ontwierp de Surinaamse vlag. De gele ster staat voor eenheid en een gouden toekomst.</div>
       </div>
 
       <div class="quiz-card">
-        <div class="quiz-question">🏛️ Hoe heette het Onafhankelijkheidsplein vroeger?</div>
+        <div class="quiz-num">Vraag 3 van 4</div>
+        <div class="quiz-question">🪖 Wat herdenkt het oorlogsmonument op het Onafhankelijkheidsplein?</div>
         <div class="quiz-options">
-          <button class="quiz-option" onclick="answer(this, false)">Vrijheidsplein</button>
-          <button class="quiz-option" onclick="answer(this, false)">Nassauplein</button>
-          <button class="quiz-option" onclick="answer(this, true)">Oranjeplein</button>
-          <button class="quiz-option" onclick="answer(this, false)">Wilhelminaplein</button>
+          <button type="button" class="quiz-option" onclick="answer(this, false)">De emancipatie in 1863</button>
+          <button type="button" class="quiz-option" onclick="answer(this, false)">De militaire coup in 1980</button>
+          <button type="button" class="quiz-option" onclick="answer(this, true)">Meer dan 500 Surinamers die stierven in WOII</button>
+          <button type="button" class="quiz-option" onclick="answer(this, false)">De aankomst van de Lalla Rookh</button>
         </div>
-        <div class="quiz-answer-reveal">✅ Juist antwoord: Oranjeplein</div>
+        <div class="quiz-answer-reveal">✅ Het monument herdenkt de meer dan 500 Surinamers die sneuvelden tijdens de Tweede Wereldoorlog (1939–1945) aan de zijde van de Geallieerden.</div>
+      </div>
+
+      <div class="quiz-card">
+        <div class="quiz-num">Vraag 4 van 4</div>
+        <div class="quiz-question">📅 Op welke datum vond de militaire coup van Bouterse plaats?</div>
+        <div class="quiz-options">
+          <button type="button" class="quiz-option" onclick="answer(this, false)">25 november 1975</button>
+          <button type="button" class="quiz-option" onclick="answer(this, false)">1 juli 1863</button>
+          <button type="button" class="quiz-option" onclick="answer(this, true)">25 februari 1980</button>
+          <button type="button" class="quiz-option" onclick="answer(this, false)">29 november 1986</button>
+        </div>
+        <div class="quiz-answer-reveal">✅ Op 25 februari 1980 pleegde Desiré Delano Bouterse een militaire coup. De Nationale Militaire Raad (NMR) nam de macht over van de democratische regering.</div>
       </div>
 
     </div>
 
     <div class="resultaat" id="resultaat">
+      <div class="resultaat-icon" id="resultaat-icon">🎉</div>
       <div class="resultaat-titel" id="resultaat-titel"></div>
+      <div class="result-sterren" id="result-sterren"></div>
       <div class="resultaat-tekst" id="resultaat-tekst"></div>
       <div class="resultaat-punten" id="resultaat-punten"></div>
     </div>
@@ -142,15 +483,53 @@
     <a href="map.html" class="nav-link home">🏠 Hoofdmenu</a>
   </div>
 
+  <div class="streak-toast" id="streak-toast"></div>
+
   <script src="js/api.js"></script>
   <script>
     checkAuth()
     toonSpelerBalk()
 
     const LOCATIE_ID = 'onafhankelijkheidsplein'
-    const TOTAAL     = 3
+    const TOTAAL     = 4
     let score      = 0
     let beantwoord = 0
+    let streak     = 0
+
+    function floatPunten(btn) {
+      const rect = btn.getBoundingClientRect()
+      const el = document.createElement('div')
+      el.className = 'punten-float'
+      el.textContent = '+100'
+      el.style.left = (rect.left + rect.width / 2) + 'px'
+      el.style.top  = rect.top + 'px'
+      document.body.appendChild(el)
+      setTimeout(() => el.remove(), 1200)
+    }
+
+    function showStreak(n) {
+      const toast = document.getElementById('streak-toast')
+      toast.textContent = n >= 4 ? '🔥 Perfecte reeks!' : `🔥 ${n} op rij goed!`
+      toast.classList.add('show')
+      setTimeout(() => toast.classList.remove('show'), 2000)
+    }
+
+    function launchConfetti() {
+      const colors = ['#fb923c', '#f4c430', '#377E22', '#B40A2D', '#ffffff', '#a855f7']
+      for (let i = 0; i < 60; i++) {
+        const el = document.createElement('div')
+        el.className = 'confetti-piece'
+        const size = 6 + Math.random() * 10
+        el.style.left = Math.random() * 100 + 'vw'
+        el.style.width = size + 'px'
+        el.style.height = size + 'px'
+        el.style.background = colors[i % colors.length]
+        el.style.animationDelay = Math.random() * 1.5 + 's'
+        el.style.animationDuration = (2 + Math.random() * 2) + 's'
+        document.body.appendChild(el)
+        setTimeout(() => el.remove(), 4500)
+      }
+    }
 
     function answer(btn, isCorrect) {
       const card    = btn.closest('.quiz-card')
@@ -159,14 +538,24 @@
 
       allBtns.forEach(b => b.disabled = true)
       btn.classList.add(isCorrect ? 'correct' : 'wrong')
+
       if (!isCorrect) {
         allBtns.forEach(b => { if (b.onclick.toString().includes('true')) b.classList.add('correct') })
+        streak = 0
+        card.classList.add('answered-wrong')
       } else {
         score++
+        streak++
+        card.classList.add('answered-correct')
+        floatPunten(btn)
+        if (streak >= 2) showStreak(streak)
       }
       card.querySelector('.quiz-answer-reveal').style.display = 'block'
 
       beantwoord++
+      document.getElementById('quiz-progress-fill').style.width = Math.round(beantwoord / TOTAAL * 100) + '%'
+      document.getElementById('quiz-progress-count').textContent = beantwoord
+
       if (beantwoord === TOTAAL) setTimeout(toonResultaat, 700)
     }
 
@@ -175,14 +564,17 @@
       el.style.display = 'block'
       el.scrollIntoView({ behavior: 'smooth', block: 'center' })
 
-      let titel, kleur
-      if (score === TOTAAL)      { titel = 'Goed gedaan! 🎉';  kleur = '#86efac' }
-      else if (score >= 2)       { titel = 'Kan beter! 👍';    kleur = '#fbbf24' }
-      else                       { titel = 'Oefenen maar! 💪'; kleur = '#fca5a5' }
+      let icon, titel, kleur, sterren
+      if (score === TOTAAL)      { icon = '🏆'; titel = 'Uitstekend!';    kleur = '#86efac'; sterren = '⭐⭐⭐⭐'; launchConfetti() }
+      else if (score >= 3)       { icon = '🎉'; titel = 'Goed gedaan!';   kleur = '#fbbf24'; sterren = '⭐⭐⭐' }
+      else if (score >= 2)       { icon = '👍'; titel = 'Kan beter!';     kleur = '#fb923c'; sterren = '⭐⭐' }
+      else                       { icon = '💪'; titel = 'Oefenen maar!';  kleur = '#fca5a5'; sterren = '⭐' }
 
-      document.getElementById('resultaat-titel').style.color  = kleur
-      document.getElementById('resultaat-titel').textContent  = titel
-      document.getElementById('resultaat-tekst').textContent  = `${score} van de ${TOTAAL} vragen goed`
+      document.getElementById('resultaat-icon').textContent   = icon
+      document.getElementById('resultaat-titel').style.color = kleur
+      document.getElementById('resultaat-titel').textContent = titel
+      document.getElementById('result-sterren').textContent  = sterren
+      document.getElementById('resultaat-tekst').textContent = `${score} van de ${TOTAAL} vragen goed`
       document.getElementById('resultaat-punten').textContent = `+${score * 100} punten!`
 
       try {
