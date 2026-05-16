@@ -190,6 +190,33 @@
     .volk-jaar { font-size: 0.75rem; font-weight: 700; color: rgba(240,230,200,0.45); }
     .volk-schip { font-size: 0.78rem; font-weight: 700; color: rgba(168,204,224,0.7); margin-top: 4px; }
 
+    /* ── SCHIP SPEL ── */
+    .schip-spel { background: rgba(72,180,220,0.05); border: 1px solid rgba(72,180,220,0.2); border-radius: 18px; padding: 22px 20px; }
+    .schip-teller { text-align: center; font-family: 'Fredoka One', cursive; font-size: 0.9rem; color: rgba(72,180,220,0.6); margin-bottom: 16px; letter-spacing: 1px; }
+    .schip-kaart { display: none; }
+    .schip-kaart.actief { display: block; }
+    .schip-vraag { font-weight: 800; font-size: 1.05rem; color: #f0e6c8; text-align: center; margin-bottom: 18px; line-height: 1.5; }
+    .schip-opties { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .schip-btn {
+      background: rgba(255,255,255,0.06);
+      border: 1.5px solid rgba(72,180,220,0.25);
+      border-radius: 12px;
+      padding: 13px 12px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: #a8cce0;
+      cursor: pointer;
+      transition: background 0.18s, border-color 0.18s, transform 0.12s;
+    }
+    .schip-btn:hover:not(:disabled) { background: rgba(72,180,220,0.12); border-color: rgba(72,180,220,0.5); transform: translateY(-2px); }
+    .schip-btn.correct { background: rgba(34,197,94,0.18); border-color: rgba(34,197,94,0.55); color: #86efac; }
+    .schip-btn.wrong   { background: rgba(239,68,68,0.14); border-color: rgba(239,68,68,0.45); color: #fca5a5; }
+    .schip-feedback { text-align: center; margin-top: 14px; font-size: 0.88rem; font-weight: 700; min-height: 24px; color: #86efac; }
+    .schip-klaar { display: none; text-align: center; padding: 10px 0; }
+    .schip-klaar-icon { font-size: 48px; margin-bottom: 10px; }
+    .schip-klaar-tekst { font-family: 'Fredoka One', cursive; font-size: 1.1rem; color: var(--accent); }
+
     /* ── QUIZ ── */
     .quiz-progress-wrap { margin-bottom: 20px; }
     .quiz-progress-label { display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 700; color: rgba(240,230,200,0.45); margin-bottom: 8px; }
@@ -368,6 +395,65 @@
       <div>
         <div class="feit-kop">Monument Baba en Mai</div>
         <div class="feit-text">Het <strong>Baba en Mai</strong>-monument (1994) op de Kleine Combéweg in Paramaribo herdenkt de eerste Hindostaanse immigranten. "Baba en Mai" betekent vader en moeder — symbool voor alle voorouders die kwamen.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mini-game: Schip Spel -->
+  <div class="section">
+    <h2 class="section-title">🎮 Schip Spel — Kies het juiste antwoord!</h2>
+    <div class="schip-spel">
+      <div class="schip-teller">Ronde <span id="schip-huidig">1</span> van 4</div>
+      <div id="schip-kaarten">
+
+        <div class="schip-kaart actief" id="schip-ronde-1">
+          <div class="schip-vraag">🚢 De eerste Hindostanen kwamen in 1873 naar Suriname. Op welk schip?</div>
+          <div class="schip-opties">
+            <button type="button" class="schip-btn" data-correct="true"  onclick="schipAntwoord(this,1)">Lalla Rookh</button>
+            <button type="button" class="schip-btn" data-correct="false" onclick="schipAntwoord(this,1)">Willem II</button>
+            <button type="button" class="schip-btn" data-correct="false" onclick="schipAntwoord(this,1)">Goslar</button>
+            <button type="button" class="schip-btn" data-correct="false" onclick="schipAntwoord(this,1)">Santa María</button>
+          </div>
+          <div class="schip-feedback" id="schip-feedback-1"></div>
+        </div>
+
+        <div class="schip-kaart" id="schip-ronde-2">
+          <div class="schip-vraag">⚓ De eerste Javanen kwamen in 1890 naar Suriname. Op welk schip?</div>
+          <div class="schip-opties">
+            <button type="button" class="schip-btn" data-correct="false" onclick="schipAntwoord(this,2)">Lalla Rookh</button>
+            <button type="button" class="schip-btn" data-correct="true"  onclick="schipAntwoord(this,2)">Willem II</button>
+            <button type="button" class="schip-btn" data-correct="false" onclick="schipAntwoord(this,2)">Goslar</button>
+            <button type="button" class="schip-btn" data-correct="false" onclick="schipAntwoord(this,2)">Niña</button>
+          </div>
+          <div class="schip-feedback" id="schip-feedback-2"></div>
+        </div>
+
+        <div class="schip-kaart" id="schip-ronde-3">
+          <div class="schip-vraag">💣 Welk Duits schip zonk in de Surinamerivier tijdens de Tweede Wereldoorlog?</div>
+          <div class="schip-opties">
+            <button type="button" class="schip-btn" data-correct="false" onclick="schipAntwoord(this,3)">Lalla Rookh</button>
+            <button type="button" class="schip-btn" data-correct="false" onclick="schipAntwoord(this,3)">Willem II</button>
+            <button type="button" class="schip-btn" data-correct="true"  onclick="schipAntwoord(this,3)">Goslar</button>
+            <button type="button" class="schip-btn" data-correct="false" onclick="schipAntwoord(this,3)">Santa María</button>
+          </div>
+          <div class="schip-feedback" id="schip-feedback-3"></div>
+        </div>
+
+        <div class="schip-kaart" id="schip-ronde-4">
+          <div class="schip-vraag">🌾 Op welke suikerplantage werden de eerste Javanen te werk gesteld?</div>
+          <div class="schip-opties">
+            <button type="button" class="schip-btn" data-correct="true"  onclick="schipAntwoord(this,4)">Mariënburg</button>
+            <button type="button" class="schip-btn" data-correct="false" onclick="schipAntwoord(this,4)">Catharina Sophia</button>
+            <button type="button" class="schip-btn" data-correct="false" onclick="schipAntwoord(this,4)">Voorzorg</button>
+            <button type="button" class="schip-btn" data-correct="false" onclick="schipAntwoord(this,4)">Alliance</button>
+          </div>
+          <div class="schip-feedback" id="schip-feedback-4"></div>
+        </div>
+
+      </div>
+      <div class="schip-klaar" id="schip-klaar">
+        <div class="schip-klaar-icon">⚓</div>
+        <div class="schip-klaar-tekst">Goed gedaan! Je kent de schepen van Suriname. Nu naar de quiz!</div>
       </div>
     </div>
   </div>
@@ -560,6 +646,42 @@
         })
         document.getElementById('player-points').textContent = ((speler.punten || 0) + score * 100) + ' punten'
       } catch (e) { console.error(e) }
+    }
+
+    // ── SCHIP SPEL ──
+    let schipRonde = 1
+
+    function schipAntwoord(btn, ronde) {
+      const kaart = document.getElementById('schip-ronde-' + ronde)
+      const alleKnoppen = kaart.querySelectorAll('.schip-btn')
+      if (alleKnoppen[0].disabled) return
+
+      alleKnoppen.forEach(b => b.disabled = true)
+      const isCorrect = btn.dataset.correct === 'true'
+      btn.classList.add(isCorrect ? 'correct' : 'wrong')
+
+      const feedback = document.getElementById('schip-feedback-' + ronde)
+      if (isCorrect) {
+        feedback.textContent = '✅ Goed!'
+        feedback.style.color = '#86efac'
+        if (!isCorrect) alleKnoppen.forEach(b => { if (b.dataset.correct === 'true') b.classList.add('correct') })
+      } else {
+        alleKnoppen.forEach(b => { if (b.dataset.correct === 'true') b.classList.add('correct') })
+        feedback.textContent = '❌ Niet goed — het juiste antwoord is groen gemarkeerd.'
+        feedback.style.color = '#fca5a5'
+      }
+
+      setTimeout(() => {
+        if (schipRonde < 4) {
+          kaart.classList.remove('actief')
+          schipRonde++
+          document.getElementById('schip-huidig').textContent = schipRonde
+          document.getElementById('schip-ronde-' + schipRonde).classList.add('actief')
+        } else {
+          document.getElementById('schip-kaarten').style.display = 'none'
+          document.getElementById('schip-klaar').style.display = 'block'
+        }
+      }, isCorrect ? 1400 : 2200)
     }
   </script>
 

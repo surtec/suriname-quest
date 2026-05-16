@@ -219,6 +219,32 @@
     .feit-kop { font-family: 'Fredoka One', cursive; font-size: 0.85rem; color: var(--accent); margin-bottom: 4px; }
     .feit-text { font-size: 0.88rem; color: rgba(240,230,200,0.85); line-height: 1.6; font-weight: 600; }
 
+    /* ── WAAR OF NIET WAAR SPEL ── */
+    .wnw-spel { background: rgba(234,88,12,0.06); border: 1px solid rgba(234,88,12,0.22); border-radius: 18px; padding: 22px 20px; }
+    .wnw-teller { text-align: center; font-family: 'Fredoka One', cursive; font-size: 0.9rem; color: rgba(234,88,12,0.6); margin-bottom: 16px; letter-spacing: 1px; }
+    .wnw-kaart { display: none; }
+    .wnw-kaart.actief { display: block; }
+    .wnw-stelling { font-weight: 800; font-size: 1.05rem; color: #f0e6c8; text-align: center; margin-bottom: 22px; line-height: 1.6; padding: 16px; background: rgba(255,255,255,0.04); border-radius: 12px; }
+    .wnw-knoppen { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+    .wnw-btn {
+      padding: 16px 12px;
+      border: 2px solid transparent;
+      border-radius: 14px;
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.3rem;
+      cursor: pointer;
+      transition: transform 0.15s, opacity 0.2s;
+    }
+    .wnw-btn:hover:not(:disabled) { transform: translateY(-3px); }
+    .wnw-waar { background: rgba(34,197,94,0.14); border-color: rgba(34,197,94,0.4); color: #86efac; }
+    .wnw-niet  { background: rgba(239,68,68,0.12); border-color: rgba(239,68,68,0.35); color: #fca5a5; }
+    .wnw-btn.goed   { background: rgba(34,197,94,0.3); border-color: #22c55e; }
+    .wnw-btn.fout   { background: rgba(239,68,68,0.25); border-color: #ef4444; }
+    .wnw-feedback { text-align: center; font-size: 0.88rem; font-weight: 700; min-height: 22px; }
+    .wnw-klaar { display: none; text-align: center; padding: 10px 0; }
+    .wnw-klaar-icon { font-size: 48px; margin-bottom: 10px; }
+    .wnw-klaar-tekst { font-family: 'Fredoka One', cursive; font-size: 1.1rem; color: var(--accent); }
+
     /* ── QUIZ ── */
     .quiz-progress-wrap { margin-bottom: 20px; }
     .quiz-progress-label { display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 700; color: rgba(240,230,200,0.45); margin-bottom: 8px; }
@@ -399,6 +425,57 @@
       <div>
         <div class="feit-kop">Het Volkslied</div>
         <div class="feit-text">Het Surinaamse volkslied werd herschreven in <strong>1959</strong> door dichter <strong>Henri de Ziel (Trefossa)</strong>. Het bestaat uit twee coupletten — één in het Nederlands ("God zij met ons Suriname") en één in Sranan ("Opo kondreman un opo").</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mini-game: Waar of Niet Waar -->
+  <div class="section">
+    <h2 class="section-title">🎮 Waar of Niet Waar?</h2>
+    <div class="wnw-spel">
+      <div class="wnw-teller">Stelling <span id="wnw-huidig">1</span> van 4</div>
+      <div id="wnw-kaarten">
+
+        <div class="wnw-kaart actief" id="wnw-ronde-1">
+          <div class="wnw-stelling">Anton de Kom schreef het boek <em>"Wij slaven van Suriname"</em> in 1934.</div>
+          <div class="wnw-knoppen">
+            <button type="button" class="wnw-btn wnw-waar" data-correct="true"  onclick="wnwAntwoord(this,1)">✅ Waar</button>
+            <button type="button" class="wnw-btn wnw-niet" data-correct="false" onclick="wnwAntwoord(this,1)">❌ Niet Waar</button>
+          </div>
+          <div class="wnw-feedback" id="wnw-feedback-1"></div>
+        </div>
+
+        <div class="wnw-kaart" id="wnw-ronde-2">
+          <div class="wnw-stelling">Suriname werd onafhankelijk op <strong>25 november 1974</strong>.</div>
+          <div class="wnw-knoppen">
+            <button type="button" class="wnw-btn wnw-waar" data-correct="false" onclick="wnwAntwoord(this,2)">✅ Waar</button>
+            <button type="button" class="wnw-btn wnw-niet" data-correct="true"  onclick="wnwAntwoord(this,2)">❌ Niet Waar</button>
+          </div>
+          <div class="wnw-feedback" id="wnw-feedback-2"></div>
+        </div>
+
+        <div class="wnw-kaart" id="wnw-ronde-3">
+          <div class="wnw-stelling">De eerste president van Suriname was <strong>Desiré Delano Bouterse</strong>.</div>
+          <div class="wnw-knoppen">
+            <button type="button" class="wnw-btn wnw-waar" data-correct="false" onclick="wnwAntwoord(this,3)">✅ Waar</button>
+            <button type="button" class="wnw-btn wnw-niet" data-correct="true"  onclick="wnwAntwoord(this,3)">❌ Niet Waar</button>
+          </div>
+          <div class="wnw-feedback" id="wnw-feedback-3"></div>
+        </div>
+
+        <div class="wnw-kaart" id="wnw-ronde-4">
+          <div class="wnw-stelling">De Surinaamse vlag werd ontworpen door <strong>Jacques Herman Pinas</strong>.</div>
+          <div class="wnw-knoppen">
+            <button type="button" class="wnw-btn wnw-waar" data-correct="true"  onclick="wnwAntwoord(this,4)">✅ Waar</button>
+            <button type="button" class="wnw-btn wnw-niet" data-correct="false" onclick="wnwAntwoord(this,4)">❌ Niet Waar</button>
+          </div>
+          <div class="wnw-feedback" id="wnw-feedback-4"></div>
+        </div>
+
+      </div>
+      <div class="wnw-klaar" id="wnw-klaar">
+        <div class="wnw-klaar-icon">🇸🇷</div>
+        <div class="wnw-klaar-tekst">Goed gedaan! Je kent de feiten over onze onafhankelijkheid. Nu naar de quiz!</div>
       </div>
     </div>
   </div>
@@ -590,6 +667,41 @@
         })
         document.getElementById('player-points').textContent = ((speler.punten || 0) + score * 100) + ' punten'
       } catch (e) { console.error(e) }
+    }
+
+    // ── WAAR OF NIET WAAR SPEL ──
+    let wnwRonde = 1
+
+    function wnwAntwoord(btn, ronde) {
+      const kaart = document.getElementById('wnw-ronde-' + ronde)
+      const alleKnoppen = kaart.querySelectorAll('.wnw-btn')
+      if (alleKnoppen[0].disabled) return
+
+      alleKnoppen.forEach(b => b.disabled = true)
+      const isCorrect = btn.dataset.correct === 'true'
+      btn.classList.add(isCorrect ? 'goed' : 'fout')
+
+      const feedback = document.getElementById('wnw-feedback-' + ronde)
+      if (isCorrect) {
+        feedback.textContent = '✅ Correct!'
+        feedback.style.color = '#86efac'
+      } else {
+        alleKnoppen.forEach(b => { if (b.dataset.correct === 'true') b.classList.add('goed') })
+        feedback.textContent = '❌ Niet goed — kijk naar het juiste antwoord.'
+        feedback.style.color = '#fca5a5'
+      }
+
+      setTimeout(() => {
+        if (wnwRonde < 4) {
+          kaart.classList.remove('actief')
+          wnwRonde++
+          document.getElementById('wnw-huidig').textContent = wnwRonde
+          document.getElementById('wnw-ronde-' + wnwRonde).classList.add('actief')
+        } else {
+          document.getElementById('wnw-kaarten').style.display = 'none'
+          document.getElementById('wnw-klaar').style.display = 'block'
+        }
+      }, isCorrect ? 1400 : 2200)
     }
   </script>
 
