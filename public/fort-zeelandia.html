@@ -188,6 +188,16 @@
     .nav-link:hover { transform: translateY(-2px); }
     .nav-link.home { background: rgba(244,196,48,0.12); border: 1px solid rgba(244,196,48,0.3); color: var(--accent); }
     .nav-link.next { background: linear-gradient(135deg, #1a4a2a, #0f3020); color: #f0e6c8; box-shadow: 0 4px 16px rgba(0,0,0,0.3); }
+
+    /* ── SECTIE PAGINA'S ── */
+    .page-section { display: none; }
+    .page-section.actief { display: block; }
+    .sec-nav { max-width: 760px; margin: 28px auto 0; padding: 0 20px; display: flex; gap: 12px; flex-wrap: wrap; }
+    .sec-btn { flex: 1; min-width: 140px; padding: 14px 20px; border-radius: 14px; border: none; font-family: 'Fredoka One', cursive; font-size: 1.1rem; cursor: pointer; transition: transform 0.18s, opacity 0.18s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .sec-btn:hover { transform: translateY(-2px); opacity: 0.9; }
+    .sec-btn--game { background: linear-gradient(135deg, #22c55e, #16a34a); color: #071a08; }
+    .sec-btn--quiz { background: linear-gradient(135deg, #f4c430, #e5a818); color: #1a0f00; }
+    .sec-btn--back { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.15); color: rgba(240,230,200,0.7); font-size: 0.95rem; }
   </style>
 </head>
 <body>
@@ -212,6 +222,7 @@
     <p class="description">Het oudste fort van Suriname — veroverd door Abraham Crijnssen in 1667. Ooit een verdedigingsfestung, later een gevangenis, en nu het trotse Surinaams Museum.</p>
   </div>
 
+  <div id="page-gegevens" class="page-section actief">
   <!-- Historical figure -->
   <div class="section">
     <h2 class="section-title">👤 Historische figuur</h2>
@@ -234,6 +245,17 @@
         <div class="feit-text">Het woord <strong>"barbecue"</strong> stamt van de Inheemse bevolking van Suriname! Zij rookten vlees op een houten rek boven laag vuur — dit noemden zij <em>barbacotten</em>. Europese ontdekkingsreizigers namen dit woord mee terug naar Europa.</div>
       </div>
     </div>
+  </div>
+
+  <div class="sec-nav">
+    <button type="button" onclick="naarSectie('game')" class="sec-btn sec-btn--game">🎮 Speel Mini-game</button>
+    <button type="button" onclick="naarSectie('quiz')" class="sec-btn sec-btn--quiz">🧠 Start Quiz</button>
+  </div>
+  </div>
+
+  <div id="page-game" class="page-section">
+  <div class="sec-nav">
+    <button type="button" onclick="naarSectie('gegevens')" class="sec-btn sec-btn--back">← Terug naar info</button>
   </div>
 
   <!-- Mini-game: Kanon Spel -->
@@ -259,6 +281,17 @@
         <button type="button" class="ksk-replay" onclick="resetKanonSpel()">↺ Opnieuw</button>
       </div>
     </div>
+  </div>
+
+  <div class="sec-nav">
+    <button type="button" onclick="naarSectie('gegevens')" class="sec-btn sec-btn--back">← Terug</button>
+    <button type="button" onclick="naarSectie('quiz')" class="sec-btn sec-btn--quiz">🧠 Start Quiz</button>
+  </div>
+  </div>
+
+  <div id="page-quiz" class="page-section">
+  <div class="sec-nav">
+    <button type="button" onclick="naarSectie('gegevens')" class="sec-btn sec-btn--back">← Terug naar info</button>
   </div>
 
   <!-- Quiz -->
@@ -340,6 +373,7 @@
     <a href="map.html" class="nav-link home">🏠 Hoofdmenu</a>
     <a href="de-waterkant.html" class="nav-link next">Level 3: De Waterkant →</a>
   </div>
+  </div>
 
   <div class="streak-toast" id="streak-toast"></div>
 
@@ -347,6 +381,12 @@
   <script>
     checkAuth()
     toonSpelerBalk()
+
+    function naarSectie(naam) {
+      document.querySelectorAll('.page-section').forEach(s => s.classList.remove('actief'))
+      document.getElementById('page-' + naam).classList.add('actief')
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
 
     const LOCATIE_ID = 'fort_zeelandia'
     const TOTAAL     = 4

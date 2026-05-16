@@ -200,6 +200,16 @@
     .nav-link { flex: 1; min-width: 150px; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 20px; border-radius: 14px; font-family: 'Fredoka One', cursive; font-size: 1rem; text-decoration: none; transition: transform 0.18s, box-shadow 0.18s; }
     .nav-link:hover { transform: translateY(-2px); }
     .nav-link.home { background: rgba(248,113,113,0.12); border: 1px solid rgba(248,113,113,0.3); color: var(--accent); }
+
+    /* ── SECTIE PAGINA'S ── */
+    .page-section { display: none; }
+    .page-section.actief { display: block; }
+    .sec-nav { max-width: 760px; margin: 28px auto 0; padding: 0 20px; display: flex; gap: 12px; flex-wrap: wrap; }
+    .sec-btn { flex: 1; min-width: 140px; padding: 14px 20px; border-radius: 14px; border: none; font-family: 'Fredoka One', cursive; font-size: 1.1rem; cursor: pointer; transition: transform 0.18s, opacity 0.18s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .sec-btn:hover { transform: translateY(-2px); opacity: 0.9; }
+    .sec-btn--game { background: linear-gradient(135deg, #22c55e, #16a34a); color: #071a08; }
+    .sec-btn--quiz { background: linear-gradient(135deg, #f4c430, #e5a818); color: #1a0f00; }
+    .sec-btn--back { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.15); color: rgba(240,230,200,0.7); font-size: 0.95rem; }
   </style>
 </head>
 <body>
@@ -224,6 +234,7 @@
     <p class="description">Het zware leven op de plantages en de lange strijd voor vrijheid. Van slavernij tot <strong>Keti Koti</strong> — 1 juli 1863. Leer deze donkere maar belangrijke geschiedenis.</p>
   </div>
 
+  <div id="page-gegevens" class="page-section actief">
   <!-- Info cards -->
   <div class="section">
     <h2 class="section-title">🌾 Het leven op de plantage</h2>
@@ -285,6 +296,17 @@
     </div>
   </div>
 
+  <div class="sec-nav">
+    <button type="button" onclick="naarSectie('game')" class="sec-btn sec-btn--game">🎮 Speel Mini-game</button>
+    <button type="button" onclick="naarSectie('quiz')" class="sec-btn sec-btn--quiz">🧠 Start Quiz</button>
+  </div>
+  </div>
+
+  <div id="page-game" class="page-section">
+  <div class="sec-nav">
+    <button type="button" onclick="naarSectie('gegevens')" class="sec-btn sec-btn--back">← Terug naar info</button>
+  </div>
+
   <!-- Mini-game: Marron Loop Spel -->
   <div class="section">
     <h2 class="section-title">🎮 Marron Spel — Ontsnap naar vrijheid!</h2>
@@ -308,6 +330,17 @@
         <button type="button" class="mlk-replay" onclick="resetMarronSpel()">↺ Opnieuw</button>
       </div>
     </div>
+  </div>
+
+  <div class="sec-nav">
+    <button type="button" onclick="naarSectie('gegevens')" class="sec-btn sec-btn--back">← Terug</button>
+    <button type="button" onclick="naarSectie('quiz')" class="sec-btn sec-btn--quiz">🧠 Start Quiz</button>
+  </div>
+  </div>
+
+  <div id="page-quiz" class="page-section">
+  <div class="sec-nav">
+    <button type="button" onclick="naarSectie('gegevens')" class="sec-btn sec-btn--back">← Terug naar info</button>
   </div>
 
   <!-- Quiz -->
@@ -400,6 +433,7 @@
   <div class="nav-bar">
     <a href="map.html" class="nav-link home">🏠 Terug naar kaart</a>
   </div>
+  </div>
 
   <div class="streak-toast" id="streak-toast"></div>
 
@@ -407,6 +441,12 @@
   <script>
     checkAuth()
     toonSpelerBalk()
+
+    function naarSectie(naam) {
+      document.querySelectorAll('.page-section').forEach(s => s.classList.remove('actief'))
+      document.getElementById('page-' + naam).classList.add('actief')
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
 
     const LOCATIE_ID = 'plantage'
     const TOTAAL     = 5

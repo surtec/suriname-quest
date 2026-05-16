@@ -280,6 +280,16 @@
     .nav-link.prev { background: rgba(244,196,48,0.12); border: 1px solid rgba(244,196,48,0.28); color: #f4c430; }
     .nav-link.home { background: rgba(72,180,220,0.1); border: 1px solid rgba(72,180,220,0.28); color: var(--accent); }
     .nav-link.next { background: linear-gradient(135deg, #1a7a4a, #0f5c34); color: #f0e6c8; box-shadow: 0 4px 16px rgba(0,0,0,0.3); }
+
+    /* ── SECTIE PAGINA'S ── */
+    .page-section { display: none; }
+    .page-section.actief { display: block; }
+    .sec-nav { max-width: 760px; margin: 28px auto 0; padding: 0 20px; display: flex; gap: 12px; flex-wrap: wrap; }
+    .sec-btn { flex: 1; min-width: 140px; padding: 14px 20px; border-radius: 14px; border: none; font-family: 'Fredoka One', cursive; font-size: 1.1rem; cursor: pointer; transition: transform 0.18s, opacity 0.18s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .sec-btn:hover { transform: translateY(-2px); opacity: 0.9; }
+    .sec-btn--game { background: linear-gradient(135deg, #22c55e, #16a34a); color: #071a08; }
+    .sec-btn--quiz { background: linear-gradient(135deg, #f4c430, #e5a818); color: #1a0f00; }
+    .sec-btn--back { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.15); color: rgba(240,230,200,0.7); font-size: 0.95rem; }
   </style>
 </head>
 <body>
@@ -303,6 +313,8 @@
     <h1>De Waterkant</h1>
     <p class="description">De historische haven van Paramaribo waar eeuwenlang schepen uit Europa en Afrika aanmeerden. Hier werden slaven verkocht, en hier stapten ook de Hindostanen en Javanen aan wal — elk met hun eigen verhaal.</p>
   </div>
+
+  <div id="page-gegevens" class="page-section actief">
 
   <!-- Mini timeline -->
   <div class="section">
@@ -395,6 +407,17 @@
     </div>
   </div>
 
+  <div class="sec-nav">
+    <button type="button" onclick="naarSectie('game')" class="sec-btn sec-btn--game">🎮 Speel Mini-game</button>
+    <button type="button" onclick="naarSectie('quiz')" class="sec-btn sec-btn--quiz">🧠 Start Quiz</button>
+  </div>
+  </div>
+
+  <div id="page-game" class="page-section">
+  <div class="sec-nav">
+    <button type="button" onclick="naarSectie('gegevens')" class="sec-btn sec-btn--back">← Terug naar info</button>
+  </div>
+
   <!-- Mini-game: Boot Vang Spel -->
   <div class="section">
     <h2 class="section-title">🎮 Boot Spel — Vang de Lading!</h2>
@@ -425,6 +448,17 @@
         <button type="button" class="bsk-herspeel" onclick="resetBootSpel()">🔄 Herspelen</button>
       </div>
     </div>
+  </div>
+
+  <div class="sec-nav">
+    <button type="button" onclick="naarSectie('gegevens')" class="sec-btn sec-btn--back">← Terug</button>
+    <button type="button" onclick="naarSectie('quiz')" class="sec-btn sec-btn--quiz">🧠 Start Quiz</button>
+  </div>
+  </div>
+
+  <div id="page-quiz" class="page-section">
+  <div class="sec-nav">
+    <button type="button" onclick="naarSectie('gegevens')" class="sec-btn sec-btn--back">← Terug naar info</button>
   </div>
 
   <!-- Quiz -->
@@ -507,6 +541,7 @@
     <a href="map.html" class="nav-link home">🏠 Menu</a>
     <a href="onafhankelijkheidsplein.html" class="nav-link next">Onafhankelijkheidsplein →</a>
   </div>
+  </div>
 
   <div class="streak-toast" id="streak-toast"></div>
 
@@ -514,6 +549,12 @@
   <script>
     checkAuth()
     toonSpelerBalk()
+
+    function naarSectie(naam) {
+      document.querySelectorAll('.page-section').forEach(s => s.classList.remove('actief'))
+      document.getElementById('page-' + naam).classList.add('actief')
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
 
     const LOCATIE_ID = 'waterkant'
     const TOTAAL     = 4
