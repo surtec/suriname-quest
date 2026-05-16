@@ -140,6 +140,10 @@
     @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} }
 
     /* ── QUIZ ── */
+    /* ── SPEL UITLEG ── */
+    .spel-uitleg { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); border-radius: 12px; padding: 10px 14px; width: 100%; display: flex; flex-direction: column; gap: 6px; }
+    .su-item { font-size: 0.84rem; font-weight: 700; color: rgba(240,230,200,0.72); line-height: 1.5; }
+
     .quiz-progress-wrap { margin-bottom: 20px; }
     .quiz-progress-label {
       display: flex; justify-content: space-between;
@@ -319,6 +323,10 @@
       <div class="visspel-hud">
         <span>⏱️ <span id="vs-timer">35</span>s</span>
         <span>🎣 <span id="vs-score">0</span> pts</span>
+      </div>
+      <div class="spel-uitleg">
+        <div class="su-item">📱 <strong>Telefoon:</strong> Tik snel op de vissen als ze verschijnen op de waterlelies!</div>
+        <div class="su-item">💻 <strong>Laptop/PC:</strong> Klik met de muis op de vissen voordat ze wegduiken.</div>
       </div>
       <div class="vs-canvas-wrap">
         <canvas id="visCanvas"></canvas>

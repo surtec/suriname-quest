@@ -124,6 +124,10 @@
     .feit-text { font-size: 0.88rem; color: rgba(240,230,200,0.85); line-height: 1.6; font-weight: 600; }
 
     /* ── QUIZ ── */
+    /* ── SPEL UITLEG ── */
+    .spel-uitleg { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); border-radius: 12px; padding: 10px 14px; width: 100%; display: flex; flex-direction: column; gap: 6px; }
+    .su-item { font-size: 0.84rem; font-weight: 700; color: rgba(240,230,200,0.72); line-height: 1.5; }
+
     .quiz-progress-wrap { margin-bottom: 20px; }
     .quiz-progress-label { display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 700; color: rgba(240,230,200,0.45); margin-bottom: 8px; }
     .quiz-progress-track { height: 8px; background: rgba(255,255,255,0.08); border-radius: 8px; overflow: hidden; }
@@ -208,27 +212,6 @@
     <p class="description">Het oudste fort van Suriname — veroverd door Abraham Crijnssen in 1667. Ooit een verdedigingsfestung, later een gevangenis, en nu het trotse Surinaams Museum.</p>
   </div>
 
-  <!-- Mini-game: Kanon Spel -->
-  <div class="section">
-    <h2 class="section-title">🎮 Kanon Spel — Vernietig de schepen!</h2>
-    <div class="kanonspel-wrap">
-      <div class="kanonspel-hud">
-        <span id="ks-levens">❤️❤️❤️</span>
-        <span>⏱️ <span id="ks-timer">35</span>s</span>
-        <span>💥 <span id="ks-score">0</span></span>
-      </div>
-      <div class="ks-canvas-wrap">
-        <canvas id="kanonCanvas"></canvas>
-      </div>
-      <button type="button" class="ks-start-btn" id="ks-start-btn" onclick="startKanonSpel()">▶ Speel!</button>
-      <div class="kanonspel-klaar" id="kanonspel-klaar">
-        <div class="ksk-score" id="ksk-score">💥 0 pts!</div>
-        <div class="ksk-feit">🏰 Wist je dat? In 1667 veroverde Abraham Crijnssen met de Zeeuwse vloot Fort Willoughby op de Engelsen. Het werd herdoopt tot Fort Zeelandia!</div>
-        <button type="button" class="ksk-replay" onclick="resetKanonSpel()">↺ Opnieuw</button>
-      </div>
-    </div>
-  </div>
-
   <!-- Historical figure -->
   <div class="section">
     <h2 class="section-title">👤 Historische figuur</h2>
@@ -249,6 +232,31 @@
       <div>
         <div class="feit-kop">Wist je dat? — Barbecue!</div>
         <div class="feit-text">Het woord <strong>"barbecue"</strong> stamt van de Inheemse bevolking van Suriname! Zij rookten vlees op een houten rek boven laag vuur — dit noemden zij <em>barbacotten</em>. Europese ontdekkingsreizigers namen dit woord mee terug naar Europa.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mini-game: Kanon Spel -->
+  <div class="section">
+    <h2 class="section-title">🎮 Kanon Spel — Vernietig de schepen!</h2>
+    <div class="kanonspel-wrap">
+      <div class="kanonspel-hud">
+        <span id="ks-levens">❤️❤️❤️</span>
+        <span>⏱️ <span id="ks-timer">35</span>s</span>
+        <span>💥 <span id="ks-score">0</span></span>
+      </div>
+      <div class="spel-uitleg">
+        <div class="su-item">📱 <strong>Telefoon:</strong> Tik op de vijandelijke schepen voordat ze voorbijvaren!</div>
+        <div class="su-item">💻 <strong>Laptop/PC:</strong> Klik met de muis op de schepen om ze te vernietigen.</div>
+      </div>
+      <div class="ks-canvas-wrap">
+        <canvas id="kanonCanvas"></canvas>
+      </div>
+      <button type="button" class="ks-start-btn" id="ks-start-btn" onclick="startKanonSpel()">▶ Speel!</button>
+      <div class="kanonspel-klaar" id="kanonspel-klaar">
+        <div class="ksk-score" id="ksk-score">💥 0 pts!</div>
+        <div class="ksk-feit">🏰 Wist je dat? In 1667 veroverde Abraham Crijnssen met de Zeeuwse vloot Fort Willoughby op de Engelsen. Het werd herdoopt tot Fort Zeelandia!</div>
+        <button type="button" class="ksk-replay" onclick="resetKanonSpel()">↺ Opnieuw</button>
       </div>
     </div>
   </div>

@@ -210,6 +210,10 @@
     .bsk-herspeel:hover { background: rgba(72,180,220,0.22); }
 
     /* ── QUIZ ── */
+    /* ── SPEL UITLEG ── */
+    .spel-uitleg { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); border-radius: 12px; padding: 10px 14px; width: 100%; display: flex; flex-direction: column; gap: 6px; }
+    .su-item { font-size: 0.84rem; font-weight: 700; color: rgba(240,230,200,0.72); line-height: 1.5; }
+
     .quiz-progress-wrap { margin-bottom: 20px; }
     .quiz-progress-label { display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 700; color: rgba(240,230,200,0.45); margin-bottom: 8px; }
     .quiz-progress-track { height: 8px; background: rgba(255,255,255,0.08); border-radius: 8px; overflow: hidden; }
@@ -400,7 +404,11 @@
         <span class="bsh-item">⏱️ <span id="bs-timer">40</span>s</span>
         <span class="bsh-item">⭐ <span id="bs-score">0</span></span>
       </div>
-      <div class="bootspel-instructie">Vang 📦 lading &amp; 👥 passagiers — Vermijd ⛓️ ketens &amp; 💣 bommen</div>
+      <div class="spel-uitleg">
+        <div class="su-item">🎯 <strong>Doel:</strong> Vang 📦 lading &amp; 👥 passagiers — Vermijd ⛓️ ketens &amp; 💣 bommen!</div>
+        <div class="su-item">📱 <strong>Telefoon:</strong> Gebruik de ◀ ▶ knoppen onderaan om de boot te bewegen.</div>
+        <div class="su-item">💻 <strong>Laptop/PC:</strong> Gebruik de pijltjestoetsen ← → of de ◀ ▶ knoppen.</div>
+      </div>
       <div class="bs-canvas-wrap">
         <canvas id="bootCanvas"></canvas>
       </div>

@@ -137,6 +137,10 @@
     @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
 
     /* ── QUIZ ── */
+    /* ── SPEL UITLEG ── */
+    .spel-uitleg { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); border-radius: 12px; padding: 10px 14px; width: 100%; display: flex; flex-direction: column; gap: 6px; }
+    .su-item { font-size: 0.84rem; font-weight: 700; color: rgba(240,230,200,0.72); line-height: 1.5; }
+
     .quiz-progress-wrap { margin-bottom: 20px; }
     .quiz-progress-label { display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 700; color: rgba(240,220,200,0.45); margin-bottom: 8px; }
     .quiz-progress-track { height: 8px; background: rgba(255,255,255,0.08); border-radius: 8px; overflow: hidden; }
@@ -289,6 +293,10 @@
         <span id="ml-levens">❤️❤️❤️</span>
         <span>⏱️ <span id="ml-timer">40</span>s</span>
         <span>🏃 <span id="ml-score">0</span></span>
+      </div>
+      <div class="spel-uitleg">
+        <div class="su-item">📱 <strong>Telefoon:</strong> Tik op het scherm om te springen over de hindernissen!</div>
+        <div class="su-item">💻 <strong>Laptop/PC:</strong> Druk op de <strong>spatiebalk</strong> of klik op het scherm om te springen.</div>
       </div>
       <div class="ml-canvas-wrap">
         <canvas id="marronCanvas"></canvas>
