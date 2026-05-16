@@ -204,6 +204,8 @@
       font-size: 0.82rem;
       font-weight: 800;
       color: rgba(240,230,200,0.5);
+      text-align: center;
+      margin-top: 10px;
     }
     .tm-score-display {
       font-family: 'Fredoka One', cursive;
@@ -297,6 +299,7 @@
     .tm-klaar {
       text-align: center;
       padding: 16px 0 4px;
+      display: none;
     }
     .tm-klaar-score {
       font-family: 'Fredoka One', cursive;
@@ -497,6 +500,7 @@
     }
     .voortgang-fill {
       height: 100%;
+      width: 0%;
       background: linear-gradient(90deg, #1a7a4a, #22c55e, #4ade80);
       border-radius: 14px;
       transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
@@ -585,12 +589,12 @@
       <div class="tm-vraag-tekst" id="tm-vraag">Laden…</div>
       <div class="tm-opties" id="tm-opties"></div>
       <div class="tm-feedback" id="tm-feedback"></div>
-      <div class="tm-klaar" id="tm-klaar" style="display:none">
+      <div class="tm-klaar" id="tm-klaar">
         <div class="tm-klaar-score" id="tm-klaar-score"></div>
         <div class="tm-klaar-tekst" id="tm-klaar-tekst"></div>
         <button type="button" class="tm-opnieuw" onclick="resetTijdmachine()">🔄 Speel opnieuw!</button>
       </div>
-      <div class="tm-voortgang" id="tm-voortgang" style="text-align:center; margin-top:10px">Vraag 1 van 8</div>
+      <div class="tm-voortgang" id="tm-voortgang">Vraag 1 van 8</div>
     </div>
   </div>
 
@@ -679,7 +683,7 @@
       <span class="voortgang-pct" id="voortgang-pct">0%</span>
     </div>
     <div class="voortgang-track">
-      <div class="voortgang-fill" id="voortgang-fill" style="width:0%"></div>
+      <div class="voortgang-fill" id="voortgang-fill"></div>
     </div>
     <div class="stats-grid">
       <div class="stat">
