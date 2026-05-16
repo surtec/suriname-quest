@@ -1,15 +1,13 @@
 # 🌴 SuriQuest 2060 — Setup Instructies
 
 ## Vereisten
-- Node.js 18+ geïnstalleerd
-- VSCode met Claude extensie
-- Firebase account (gratis)
+
+- Node.js 18+
+- MySQL 8.0 (lokaal geïnstalleerd)
 
 ---
 
 ## Stap 1 — Project installeren
-
-Open de projectmap in VSCode en run in de terminal:
 
 ```bash
 npm install
@@ -17,55 +15,105 @@ npm install
 
 ---
 
-## Stap 2 — Firebase instellen
+## Stap 2 — MySQL database instellen
 
-1. Ga naar [firebase.google.com](https://firebase.google.com)
-2. Maak een nieuw project aan: **"suriname-quest"**
-3. Voeg een **web app** toe (</> icoon)
-4. Kopieer de `firebaseConfig` gegevens
-5. Open `src/firebase/config.js` en plak jouw gegevens
+**Zorg dat MySQL draait** (via Services of MySQL Workbench).
 
-**Schakel in:**
-- Authentication → Sign-in method → **Email/Password** ✓
-- Firestore Database → Start in **test mode** (voor nu)
+Maak de database en tabel aan:
+
+```bash
+Get-Content server/setup.sql | mysql -u root -P 2004 -p
+```
+
+> Vervang `2004` door jouw MySQL poort als die anders is. Druk Enter als je geen wachtwoord hebt.
 
 ---
 
-## Stap 3 — Game starten
+## Stap 3 — Omgevingsvariabelen instellen
+
+Maak een `.env` bestand in de projectmap (of pas de bestaande aan):
+
+```env
+DB_HOST=localhost
+DB_PORT=2004
+DB_USER=root
+DB_PASSWORD=jouw_wachtwoord
+DB_NAME=suriname_quest
+
+JWT_SECRET=verander_dit_naar_iets_unieks
+
+PORT=3001
+```
+
+---
+
+## Stap 4 — Project starten
+
+Je hebt **twee terminals** nodig:
+
+**Terminal 1 — backend server:**
+
+```bash
+npm run server
+```
+
+**Terminal 2 — frontend:**
 
 ```bash
 npm run dev
 ```
 
-Open [http://localhost:5173](http://localhost:5173) in je browser.
+Open daarna [http://localhost:5173](http://localhost:5173) in de browser.
 
 ---
 
 ## Project Structuur
 
+```text
+suriname-quest/
+├── server/
+│   ├── index.js            ← Express server (poort 3001)
+│   ├── db.js               ← MySQL verbinding
+│   ├── setup.sql           ← SQL om database aan te maken
+│   ├── middleware/
+│   │   └── auth.js         ← JWT token verificatie
+│   └── routes/
+│       ├── auth.js         ← POST /api/auth/register & /login
+│       └── speler.js       ← GET/PUT /api/speler/:uid
+├── src/
+│   ├── api/
+│   │   ├── config.js       ← API basis URL
+│   │   ├── auth.js         ← Login/register functies
+│   │   └── database.js     ← Voortgang opslaan
+│   ├── game/
+│   │   ├── scenes/
+│   │   │   ├── BootScene.js      ← Laadscherm
+│   │   │   ├── WorldScene.js     ← De spelwereld
+│   │   │   ├── LocationScene.js  ← Locatie bezoeken
+│   │   │   └── QuizScene.js      ← Quiz spelen
+│   │   ├── objects/
+│   │   │   └── Player.js         ← Speler karakter
+│   │   ├── data/
+│   │   │   └── locations.js      ← Content: locaties, vragen
+│   │   └── PhaserGame.jsx        ← Phaser ↔ React brug
+│   ├── ui/
+│   │   ├── Login.jsx       ← Inlogscherm
+│   │   └── HUD.jsx         ← In-game overlay
+│   ├── App.jsx             ← Hoofd app
+│   └── main.jsx            ← Entry point
+└── .env                    ← Database & JWT instellingen (niet in git!)
 ```
-src/
-├── firebase/
-│   ├── config.js      ← Jouw Firebase sleutels
-│   ├── auth.js        ← Login/register functies
-│   └── database.js    ← Voortgang opslaan
-├── game/
-│   ├── scenes/
-│   │   ├── BootScene.js      ← Laadscherm
-│   │   ├── WorldScene.js     ← De spelwereld
-│   │   ├── LocationScene.js  ← Locatie bezoeken
-│   │   └── QuizScene.js      ← Quiz spelen
-│   ├── objects/
-│   │   └── Player.js         ← Speler karakter
-│   ├── data/
-│   │   └── locations.js      ← Content: locaties, vragen
-│   └── PhaserGame.jsx        ← Phaser ↔ React brug
-├── ui/
-│   ├── Login.jsx      ← Inlogscherm
-│   └── HUD.jsx        ← In-game overlay
-├── App.jsx            ← Hoofd app
-└── main.jsx           ← Entry point
-```
+
+---
+
+## API Endpoints
+
+| Methode | Route | Beschrijving |
+| ------- | ----- | ------------ |
+| POST | `/api/auth/register` | Nieuw account aanmaken |
+| POST | `/api/auth/login` | Inloggen, geeft JWT terug |
+| GET | `/api/speler/:uid` | Spelerdata ophalen |
+| PUT | `/api/speler/:uid` | Spelerdata opslaan |
 
 ---
 
@@ -98,27 +146,4 @@ Open `src/game/data/locations.js` en voeg een nieuw object toe:
 
 ---
 
-## Sprites toevoegen (optioneel)
-
-Vervang de Graphics-gebaseerde tekeningen door echte sprites:
-
-1. Zet je sprites in `public/assets/sprites/`
-2. Laad ze in `BootScene.js`:
-   ```javascript
-   this.load.spritesheet('speler', 'assets/sprites/speler.png', { frameWidth: 32, frameHeight: 48 })
-   ```
-3. Vervang in `Player.js` de `graphics` door `this.sprite = scene.add.sprite(...)`
-
----
-
-## Bouwen voor productie
-
-```bash
-npm run build
-```
-
-De `dist/` map kan je uploaden naar elke web host (Netlify, Vercel, Firebase Hosting).
-
----
-
-*Gemaakt met ❤️ voor Surinaams erfgoed*
+Gemaakt met ❤️ voor Surinaams erfgoed
