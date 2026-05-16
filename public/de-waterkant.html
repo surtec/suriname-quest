@@ -190,32 +190,24 @@
     .volk-jaar { font-size: 0.75rem; font-weight: 700; color: rgba(240,230,200,0.45); }
     .volk-schip { font-size: 0.78rem; font-weight: 700; color: rgba(168,204,224,0.7); margin-top: 4px; }
 
-    /* ── RAAD HET VOLK SPEL ── */
-    .schip-spel { background: rgba(72,180,220,0.05); border: 1px solid rgba(72,180,220,0.2); border-radius: 18px; padding: 22px 20px; }
-    .schip-teller { text-align: center; font-family: 'Fredoka One', cursive; font-size: 0.9rem; color: rgba(72,180,220,0.6); margin-bottom: 16px; letter-spacing: 1px; }
-    .schip-kaart { display: none; }
-    .schip-kaart.actief { display: block; }
-    .schip-vraag { font-weight: 800; font-size: 1.05rem; color: #f0e6c8; text-align: center; margin-bottom: 18px; line-height: 1.5; }
-    .schip-opties { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .schip-btn {
-      background: rgba(255,255,255,0.06);
-      border: 1.5px solid rgba(72,180,220,0.25);
-      border-radius: 12px;
-      padding: 13px 12px;
-      font-family: 'Nunito', sans-serif;
-      font-size: 0.92rem;
-      font-weight: 700;
-      color: #a8cce0;
-      cursor: pointer;
-      transition: background 0.18s, border-color 0.18s, transform 0.12s;
-    }
-    .schip-btn:hover:not(:disabled) { background: rgba(72,180,220,0.12); border-color: rgba(72,180,220,0.5); transform: translateY(-2px); }
-    .schip-btn.correct { background: rgba(34,197,94,0.18); border-color: rgba(34,197,94,0.55); color: #86efac; }
-    .schip-btn.wrong   { background: rgba(239,68,68,0.14); border-color: rgba(239,68,68,0.45); color: #fca5a5; }
-    .schip-feedback { text-align: center; margin-top: 14px; font-size: 0.88rem; font-weight: 700; min-height: 24px; color: #86efac; }
-    .schip-klaar { display: none; text-align: center; padding: 10px 0; }
-    .schip-klaar-icon { font-size: 48px; margin-bottom: 10px; }
-    .schip-klaar-tekst { font-family: 'Fredoka One', cursive; font-size: 1.1rem; color: var(--accent); }
+    /* ── BOOT SPEL ── */
+    .bootspel-wrap { background: rgba(72,180,220,0.05); border: 1px solid rgba(72,180,220,0.22); border-radius: 18px; padding: 16px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+    .bootspel-hud { display: flex; gap: 28px; font-family: 'Fredoka One', cursive; font-size: 1.15rem; color: #f0e6c8; }
+    .bsh-item span { color: var(--accent); }
+    .bootspel-instructie { font-size: 0.8rem; color: rgba(240,230,200,0.55); font-weight: 700; text-align: center; }
+    .bs-canvas-wrap { width: 100%; max-width: 380px; border-radius: 12px; overflow: hidden; border: 2px solid rgba(72,180,220,0.3); background: #030c14; }
+    #bootCanvas { display: block; width: 100%; height: auto; touch-action: none; cursor: pointer; }
+    .bootspel-controls { display: flex; gap: 14px; align-items: center; }
+    .bs-ctrl-btn { width: 52px; height: 52px; border-radius: 50%; background: rgba(72,180,220,0.12); border: 2px solid rgba(72,180,220,0.35); color: var(--accent); font-size: 1.2rem; cursor: pointer; -webkit-user-select: none; user-select: none; transition: background 0.15s; }
+    .bs-ctrl-btn:active { background: rgba(72,180,220,0.3); }
+    .bs-start-btn { width: auto; padding: 0 22px; border-radius: 26px; font-family: 'Fredoka One', cursive; font-size: 1rem; color: #f0e6c8; }
+    .bootspel-klaar { display: none; text-align: center; padding: 6px 0; }
+    .bsk-icon { font-size: 48px; margin-bottom: 8px; }
+    .bsk-titel { font-family: 'Fredoka One', cursive; font-size: 1.5rem; color: var(--accent); margin-bottom: 4px; }
+    .bsk-score { font-family: 'Fredoka One', cursive; font-size: 1.05rem; color: #f4c430; margin-bottom: 10px; }
+    .bsk-feit { font-size: 0.83rem; color: rgba(240,230,200,0.6); line-height: 1.6; font-weight: 700; max-width: 300px; margin: 0 auto 14px; }
+    .bsk-herspeel { background: rgba(72,180,220,0.12); border: 1.5px solid rgba(72,180,220,0.45); border-radius: 12px; color: var(--accent); font-family: 'Fredoka One', cursive; font-size: 1rem; padding: 10px 22px; cursor: pointer; }
+    .bsk-herspeel:hover { background: rgba(72,180,220,0.22); }
 
     /* ── QUIZ ── */
     .quiz-progress-wrap { margin-bottom: 20px; }
@@ -399,61 +391,30 @@
     </div>
   </div>
 
-  <!-- Mini-game: Raad het Volk -->
+  <!-- Mini-game: Boot Vang Spel -->
   <div class="section">
-    <h2 class="section-title">🎮 Raad het Volk — Wie zijn zij?</h2>
-    <div class="schip-spel">
-      <div class="schip-teller">Ronde <span id="schip-huidig">1</span> van 4</div>
-      <div id="schip-kaarten">
-
-        <div class="schip-kaart actief" id="schip-ronde-1">
-          <div class="schip-vraag">🌍 Dit volk werd in overvolle schepen vanuit West-Afrika vervoerd. Bij aankomst in Paramaribo werden zij op de markt verkocht en gebrandmerkt met de initialen van hun eigenaar. Welk volk?</div>
-          <div class="schip-opties">
-            <button type="button" class="schip-btn" data-correct="true"  onclick="schipAntwoord(this,1)">Afrikanen</button>
-            <button type="button" class="schip-btn" data-correct="false" onclick="schipAntwoord(this,1)">Hindostanen</button>
-            <button type="button" class="schip-btn" data-correct="false" onclick="schipAntwoord(this,1)">Javanen</button>
-            <button type="button" class="schip-btn" data-correct="false" onclick="schipAntwoord(this,1)">Chinezen</button>
-          </div>
-          <div class="schip-feedback" id="schip-feedback-1"></div>
-        </div>
-
-        <div class="schip-kaart" id="schip-ronde-2">
-          <div class="schip-vraag">🥢 Dit volk was de allereerste groep contractarbeiders in Suriname (1853). Zij kwamen via China, Hong Kong, Macao en Madeira en gingen werken op plantage Catharina Sophia. Welk volk?</div>
-          <div class="schip-opties">
-            <button type="button" class="schip-btn" data-correct="false" onclick="schipAntwoord(this,2)">Afrikanen</button>
-            <button type="button" class="schip-btn" data-correct="false" onclick="schipAntwoord(this,2)">Hindostanen</button>
-            <button type="button" class="schip-btn" data-correct="false" onclick="schipAntwoord(this,2)">Javanen</button>
-            <button type="button" class="schip-btn" data-correct="true"  onclick="schipAntwoord(this,2)">Chinezen</button>
-          </div>
-          <div class="schip-feedback" id="schip-feedback-2"></div>
-        </div>
-
-        <div class="schip-kaart" id="schip-ronde-3">
-          <div class="schip-vraag">🪔 Dit volk vierde Diwali, sprak Hindi en werd herdacht met het monument "Baba en Mai" op de Kleine Combéweg in Paramaribo. Welk volk?</div>
-          <div class="schip-opties">
-            <button type="button" class="schip-btn" data-correct="false" onclick="schipAntwoord(this,3)">Afrikanen</button>
-            <button type="button" class="schip-btn" data-correct="true"  onclick="schipAntwoord(this,3)">Hindostanen</button>
-            <button type="button" class="schip-btn" data-correct="false" onclick="schipAntwoord(this,3)">Javanen</button>
-            <button type="button" class="schip-btn" data-correct="false" onclick="schipAntwoord(this,3)">Chinezen</button>
-          </div>
-          <div class="schip-feedback" id="schip-feedback-3"></div>
-        </div>
-
-        <div class="schip-kaart" id="schip-ronde-4">
-          <div class="schip-vraag">🎭 Dit volk bracht de wayang kulit-poppentheater traditie mee naar Suriname. Ze kwamen uit Nederlands-Indië en verbleven eerst in district Commewijne. Welk volk?</div>
-          <div class="schip-opties">
-            <button type="button" class="schip-btn" data-correct="false" onclick="schipAntwoord(this,4)">Afrikanen</button>
-            <button type="button" class="schip-btn" data-correct="false" onclick="schipAntwoord(this,4)">Hindostanen</button>
-            <button type="button" class="schip-btn" data-correct="true"  onclick="schipAntwoord(this,4)">Javanen</button>
-            <button type="button" class="schip-btn" data-correct="false" onclick="schipAntwoord(this,4)">Chinezen</button>
-          </div>
-          <div class="schip-feedback" id="schip-feedback-4"></div>
-        </div>
-
+    <h2 class="section-title">🎮 Boot Spel — Vang de Lading!</h2>
+    <div class="bootspel-wrap">
+      <div class="bootspel-hud">
+        <span class="bsh-item">❤️ <span id="bs-levens">3</span></span>
+        <span class="bsh-item">⏱️ <span id="bs-timer">40</span>s</span>
+        <span class="bsh-item">⭐ <span id="bs-score">0</span></span>
       </div>
-      <div class="schip-klaar" id="schip-klaar">
-        <div class="schip-klaar-icon">🌍</div>
-        <div class="schip-klaar-tekst">Goed gedaan! Je kent de volkeren van de Waterkant. Nu naar de quiz!</div>
+      <div class="bootspel-instructie">Vang 📦 lading &amp; 👥 passagiers — Vermijd ⛓️ ketens &amp; 💣 bommen</div>
+      <div class="bs-canvas-wrap">
+        <canvas id="bootCanvas"></canvas>
+      </div>
+      <div class="bootspel-controls">
+        <button type="button" class="bs-ctrl-btn" id="bs-left-btn">◀</button>
+        <button type="button" class="bs-ctrl-btn bs-start-btn" id="bs-start-btn" onclick="startBootSpel()">▶ Speel!</button>
+        <button type="button" class="bs-ctrl-btn" id="bs-right-btn">▶</button>
+      </div>
+      <div class="bootspel-klaar" id="bootspel-klaar">
+        <div class="bsk-icon" id="bsk-icon">⚓</div>
+        <div class="bsk-titel" id="bsk-titel">Spel klaar!</div>
+        <div class="bsk-score" id="bsk-score-tekst"></div>
+        <div class="bsk-feit" id="bsk-feit"></div>
+        <button type="button" class="bsk-herspeel" onclick="resetBootSpel()">🔄 Herspelen</button>
       </div>
     </div>
   </div>
@@ -648,41 +609,180 @@
       } catch (e) { console.error(e) }
     }
 
-    // ── SCHIP SPEL ──
-    let schipRonde = 1
+    // ── BOOT SPEL ──
+    ;(function () {
+      const CW = 380, CH = 400
+      let canvas, ctx, running = false, animId
+      let bsScore, bsLevens, bsTimer, bsTimerInterval
+      let boat, items, keys, btnL, btnR, lastSpawn
 
-    function schipAntwoord(btn, ronde) {
-      const kaart = document.getElementById('schip-ronde-' + ronde)
-      const alleKnoppen = kaart.querySelectorAll('.schip-btn')
-      if (alleKnoppen[0].disabled) return
+      const GOOD = ['📦','🌾','☕','🍬','👥','🎁']
+      const BAD  = ['⛓️','💣']
+      const FEITEN = [
+        'De Waterkant was eeuwenlang het kloppende hart van Paramaribo. Schepen uit Europa, Afrika en Azië meerden hier aan.',
+        'Op 1 mei 1873 meerde de Lalla Rookh aan. Ruim 400 Hindostanen stapten voor het eerst op Surinaamse bodem.',
+        'In 1890 kwamen de eerste Javanen op het schip Willem II aan. Zij brachten de wayang kulit-traditie mee naar Suriname.',
+      ]
 
-      alleKnoppen.forEach(b => b.disabled = true)
-      const isCorrect = btn.dataset.correct === 'true'
-      btn.classList.add(isCorrect ? 'correct' : 'wrong')
-
-      const feedback = document.getElementById('schip-feedback-' + ronde)
-      if (isCorrect) {
-        feedback.textContent = '✅ Goed!'
-        feedback.style.color = '#86efac'
-        if (!isCorrect) alleKnoppen.forEach(b => { if (b.dataset.correct === 'true') b.classList.add('correct') })
-      } else {
-        alleKnoppen.forEach(b => { if (b.dataset.correct === 'true') b.classList.add('correct') })
-        feedback.textContent = '❌ Niet goed — het juiste antwoord is groen gemarkeerd.'
-        feedback.style.color = '#fca5a5'
+      function init() {
+        canvas = document.getElementById('bootCanvas')
+        canvas.width = CW; canvas.height = CH
+        ctx = canvas.getContext('2d')
+        drawWacht()
       }
 
-      setTimeout(() => {
-        if (schipRonde < 4) {
-          kaart.classList.remove('actief')
-          schipRonde++
-          document.getElementById('schip-huidig').textContent = schipRonde
-          document.getElementById('schip-ronde-' + schipRonde).classList.add('actief')
-        } else {
-          document.getElementById('schip-kaarten').style.display = 'none'
-          document.getElementById('schip-klaar').style.display = 'block'
+      function drawWacht() {
+        ctx.fillStyle = '#030c14'
+        ctx.fillRect(0, 0, CW, CH)
+        ctx.font = '52px serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'
+        ctx.fillText('⛵', CW / 2, CH / 2 - 24)
+        ctx.font = "bold 17px 'Nunito', sans-serif"
+        ctx.fillStyle = 'rgba(72,180,220,0.7)'
+        ctx.fillText('Druk op ▶ Speel!', CW / 2, CH / 2 + 32)
+      }
+
+      window.startBootSpel = function () {
+        bsScore = 0; bsLevens = 3; bsTimer = 40; lastSpawn = 0
+        boat = { x: CW / 2 - 32, y: CH - 56, w: 64, h: 28, spd: 7 }
+        items = []; keys = {}; btnL = false; btnR = false
+        running = true
+        const startBtn = document.getElementById('bs-start-btn')
+        startBtn.textContent = '⏸ Bezig'; startBtn.disabled = true
+        document.getElementById('bootspel-klaar').style.display = 'none'
+        updateHud()
+
+        document.addEventListener('keydown', onKey)
+        document.addEventListener('keyup', offKey)
+        document.getElementById('bs-left-btn').onpointerdown  = () => btnL = true
+        document.getElementById('bs-left-btn').onpointerup    = () => btnL = false
+        document.getElementById('bs-right-btn').onpointerdown = () => btnR = true
+        document.getElementById('bs-right-btn').onpointerup   = () => btnR = false
+        canvas.addEventListener('pointerdown', onCanvasTap)
+
+        bsTimerInterval = setInterval(() => {
+          bsTimer--
+          document.getElementById('bs-timer').textContent = bsTimer
+          if (bsTimer <= 0) eindSpel()
+        }, 1000)
+        requestAnimationFrame(loop)
+      }
+
+      function onKey(e)  { keys[e.key] = true;  if (['ArrowLeft','ArrowRight'].includes(e.key)) e.preventDefault() }
+      function offKey(e) { delete keys[e.key] }
+      function onCanvasTap(e) {
+        const r = canvas.getBoundingClientRect()
+        if ((e.clientX - r.left) < r.width / 2) btnL = true; else btnR = true
+        setTimeout(() => { btnL = false; btnR = false }, 140)
+      }
+
+      function loop(ts) {
+        if (!running) return
+        animId = requestAnimationFrame(loop)
+
+        if (keys['ArrowLeft']  || keys['a'] || keys['A'] || btnL) boat.x = Math.max(0, boat.x - boat.spd)
+        if (keys['ArrowRight'] || keys['d'] || keys['D'] || btnR) boat.x = Math.min(CW - boat.w, boat.x + boat.spd)
+
+        const gap = Math.max(600, 1100 - (40 - bsTimer) * 18)
+        if (!lastSpawn || ts - lastSpawn > gap) { spawn(); lastSpawn = ts }
+
+        items = items.filter(it => {
+          it.y += it.spd
+          if (it.y > CH + 20) return false
+          if (it.y + 16 >= boat.y && it.y - 16 <= boat.y + boat.h &&
+              it.x + 16 >= boat.x && it.x - 16 <= boat.x + boat.w) {
+            if (it.good) {
+              bsScore += 10
+              document.getElementById('bs-score').textContent = bsScore
+            } else {
+              bsLevens--
+              document.getElementById('bs-levens').textContent = bsLevens
+              if (bsLevens <= 0) { eindSpel(); return false }
+            }
+            return false
+          }
+          return true
+        })
+        draw()
+      }
+
+      function spawn() {
+        const good = Math.random() > 0.32
+        items.push({
+          x: 22 + Math.random() * (CW - 44), y: -22,
+          spd: 2.2 + Math.random() * 2.2 + (40 - bsTimer) * 0.07,
+          good,
+          emoji: good ? GOOD[Math.floor(Math.random() * GOOD.length)]
+                      : BAD[Math.floor(Math.random() * BAD.length)]
+        })
+      }
+
+      function draw() {
+        ctx.fillStyle = '#030c14'; ctx.fillRect(0, 0, CW, CH)
+
+        for (let y = 18; y < CH - 52; y += 22) {
+          ctx.strokeStyle = `rgba(72,180,220,0.05)`; ctx.lineWidth = 1
+          ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(CW, y); ctx.stroke()
         }
-      }, isCorrect ? 1400 : 2200)
-    }
+
+        ctx.fillStyle = 'rgba(60,40,20,0.4)'; ctx.fillRect(0, CH - 50, CW, 50)
+        ctx.fillStyle = 'rgba(72,180,220,0.18)'; ctx.fillRect(0, CH - 52, CW, 3)
+
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle'
+        items.forEach(it => {
+          ctx.beginPath(); ctx.arc(it.x, it.y, 18, 0, Math.PI * 2)
+          ctx.fillStyle   = it.good ? 'rgba(34,197,94,0.18)' : 'rgba(239,68,68,0.18)'; ctx.fill()
+          ctx.strokeStyle = it.good ? 'rgba(34,197,94,0.5)'  : 'rgba(239,68,68,0.5)';
+          ctx.lineWidth = 1.5; ctx.stroke()
+          ctx.font = '22px serif'; ctx.fillText(it.emoji, it.x, it.y)
+        })
+
+        const bx = boat.x, by = boat.y, bw = boat.w
+        ctx.fillStyle = '#5a3010'
+        ctx.beginPath()
+        ctx.moveTo(bx - 4, by + boat.h); ctx.lineTo(bx + bw + 4, by + boat.h)
+        ctx.lineTo(bx + bw - 2, by + 4); ctx.lineTo(bx + 2, by + 4); ctx.closePath(); ctx.fill()
+        ctx.font = '34px serif'; ctx.fillText('⛵', bx + bw / 2, by - 2)
+
+        ctx.textAlign = 'left'; ctx.font = '16px serif'
+        for (let i = 0; i < bsLevens; i++) ctx.fillText('❤️', 8 + i * 22, 18)
+
+        if (bsTimer <= 10) {
+          ctx.font = "bold 13px 'Nunito', sans-serif"
+          ctx.fillStyle = `rgba(239,68,68,${0.6 + Math.sin(Date.now() / 200) * 0.4})`
+          ctx.textAlign = 'right'; ctx.fillText(bsTimer + 's', CW - 8, 20)
+        }
+      }
+
+      function updateHud() {
+        document.getElementById('bs-score').textContent  = bsScore
+        document.getElementById('bs-levens').textContent = bsLevens
+        document.getElementById('bs-timer').textContent  = bsTimer
+      }
+
+      function eindSpel() {
+        running = false
+        clearInterval(bsTimerInterval); cancelAnimationFrame(animId)
+        document.removeEventListener('keydown', onKey); document.removeEventListener('keyup', offKey)
+        canvas.removeEventListener('pointerdown', onCanvasTap)
+        const startBtn = document.getElementById('bs-start-btn')
+        startBtn.textContent = '▶ Speel!'; startBtn.disabled = false
+        document.getElementById('bootspel-klaar').style.display = 'block'
+        const icon  = bsScore >= 120 ? '🏆' : bsScore >= 60 ? '⚓' : '🌊'
+        const titel = bsScore >= 120 ? 'Geweldig Kapitein!' : bsScore >= 60 ? 'Goed gedaan!' : 'Oefenen maar!'
+        document.getElementById('bsk-icon').textContent       = icon
+        document.getElementById('bsk-titel').textContent      = titel
+        document.getElementById('bsk-score-tekst').textContent = `Score: ${bsScore} punten`
+        document.getElementById('bsk-feit').textContent       = FEITEN[Math.floor(Math.random() * FEITEN.length)]
+      }
+
+      window.resetBootSpel = function () {
+        document.getElementById('bootspel-klaar').style.display = 'none'
+        startBootSpel()
+      }
+
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init)
+      else init()
+    })()
   </script>
 
 </body>
