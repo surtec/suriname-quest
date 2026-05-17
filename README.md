@@ -31,7 +31,7 @@ Get-Content backend/setup.sql | mysql -u root -P 2004 -p
 
 ## Stap 3 — Omgevingsvariabelen instellen
 
-Maak een `.env` bestand in de projectmap (of pas de bestaande aan):
+Maak een `.env` bestand in de projectmap:
 
 ```env
 DB_HOST=localhost
@@ -71,77 +71,79 @@ Open daarna [http://localhost:5173](http://localhost:5173) in de browser.
 
 ```text
 suriname-quest/
-├── server/
-│   ├── index.js            ← Express server (poort 3001)
-│   ├── db.js               ← MySQL verbinding
-│   ├── setup.sql           ← SQL om database aan te maken
+├── backend/
+│   ├── index.js              ← Express server (poort 3001)
+│   ├── db.js                 ← MySQL verbinding
+│   ├── setup.sql             ← SQL om database aan te maken
 │   ├── middleware/
-│   │   └── auth.js         ← JWT token verificatie
+│   │   └── auth.js           ← JWT token verificatie
 │   └── routes/
-│       ├── auth.js         ← POST /api/auth/register & /login
-│       └── speler.js       ← GET/PUT /api/speler/:uid
-├── src/
-│   ├── api/
-│   │   ├── config.js       ← API basis URL
-│   │   ├── auth.js         ← Login/register functies
-│   │   └── database.js     ← Voortgang opslaan
-│   ├── game/
-│   │   ├── scenes/
-│   │   │   ├── BootScene.js      ← Laadscherm
-│   │   │   ├── WorldScene.js     ← De spelwereld
-│   │   │   ├── LocationScene.js  ← Locatie bezoeken
-│   │   │   └── QuizScene.js      ← Quiz spelen
-│   │   ├── objects/
-│   │   │   └── Player.js         ← Speler karakter
-│   │   ├── data/
-│   │   │   └── locations.js      ← Content: locaties, vragen
-│   │   └── PhaserGame.jsx        ← Phaser ↔ React brug
-│   ├── ui/
-│   │   ├── Login.jsx       ← Inlogscherm
-│   │   └── HUD.jsx         ← In-game overlay
-│   ├── App.jsx             ← Hoofd app
-│   └── main.jsx            ← Entry point
-└── .env                    ← Database & JWT instellingen (niet in git!)
+│       ├── auth.js           ← /api/auth/register & /login
+│       └── speler.js         ← /api/speler/:uid
+├── public/
+│   ├── index.html            ← Login / registratie pagina
+│   ├── map.html              ← Kaart met alle locaties
+│   ├── inheemsen-dorp.html   ← Level 1 — Inheemsen Dorp
+│   ├── fort-zeelandia.html   ← Level 2 — Fort Zeelandia
+│   ├── de-waterkant.html     ← Level 3 — De Waterkant
+│   ├── onafhankelijkheidsplein.html  ← Level 4 — Onafhankelijkheidsplein
+│   ├── plantage.html         ← Level 5 — De Plantage
+│   └── js/
+│       └── api.js            ← Gedeelde auth/API functies
+├── package.json
+└── .env                      ← Database & JWT instellingen (niet in git!)
 ```
 
 ---
 
 ## API Endpoints
 
-| Methode | Route | Beschrijving |
-| ------- | ----- | ------------ |
-| POST | `/api/auth/register` | Nieuw account aanmaken |
-| POST | `/api/auth/login` | Inloggen, geeft JWT terug |
-| GET | `/api/speler/:uid` | Spelerdata ophalen |
-| PUT | `/api/speler/:uid` | Spelerdata opslaan |
+| Methode | Route | Beschermd | Beschrijving |
+| ------- | ----- | --------- | ------------ |
+| POST | `/api/auth/register` | Nee | Nieuw account aanmaken |
+| POST | `/api/auth/login` | Nee | Inloggen, geeft JWT terug |
+| GET | `/api/speler/:uid` | Ja | Spelerdata ophalen |
+| PUT | `/api/speler/:uid` | Ja | Spelerdata opslaan |
+
+Beveiligde routes vereisen de header:
+
+```http
+Authorization: Bearer <token>
+```
 
 ---
 
-## Nieuwe locaties toevoegen
+## Nieuwe locatie toevoegen
 
-Open `src/game/data/locations.js` en voeg een nieuw object toe:
+1. Maak een nieuw HTML-bestand aan in `public/`, bijv. `public/nieuwe-locatie.html`.
+2. Kopieer de structuur van een bestaande locatiepagina (bijv. `fort-zeelandia.html`).
+3. Pas aan:
+   - `:root { --accent: #kleurcode; --bg: #achtergrondkleur; }` — kies een eigen kleur
+   - De `<title>`, `<h1>`, `.description` en `.level-chip` tekst
+   - De informatie-kaarten, feiten en quiz-vragen in de HTML
+   - Het mini-game canvas en de spellogica in het `<script>` blok
+4. Voeg de locatie toe aan `public/map.html` in de `.locaties-grid`:
+
+```html
+<a href="nieuwe-locatie.html" class="locatie-kaart lv6" id="kaart-nieuw">
+  <div class="kaart-scene">
+    <div class="level-badge">LEVEL 6</div>
+    <span class="kaart-emoji">🏛️</span>
+  </div>
+  <div class="kaart-body">
+    <div class="locatie-naam">Nieuwe Locatie</div>
+    <div class="locatie-moeilijk">⭐⭐⭐⭐⭐⭐ Legendarisch</div>
+    <div class="kaart-sterren" id="sterren-nieuw">☆☆☆☆</div>
+    <div class="locatie-beschrijving">Beschrijving van de locatie.</div>
+    <span class="kaart-pijl">Spelen! →</span>
+  </div>
+</a>
+```
+
+1. Registreer de locatie in de `locatieMap` in `map.html`:
 
 ```javascript
-{
-  id:          'maroon_dorp',
-  naam:        'Maroon Dorp',
-  jaar:        '1700s',
-  beschrijving: 'De Marrons waren vroeger tot slaaf gemaakte mensen die vluchtten...',
-  kleur:       0x8B4513,
-  wereldPositie: { x: 550, y: 280 },
-  collectibles: [
-    { id: 'djembe_001', naam: 'Traditionele Djembe', emoji: '🥁', beschrijving: '...' },
-  ],
-  quiz: [
-    {
-      vraag:  'Wie zijn de Marrons?',
-      emoji:  '🌿',
-      opties: ['Visser', 'Vrijgevochten mensen', 'Handelaars', 'Soldaten'],
-      juist:  1,
-      uitleg: 'Goed! De Marrons vluchtten uit de slavernij en leefden vrij in het oerwoud.',
-    },
-  ],
-}
+nieuwe_locatie: { kaartId: 'kaart-nieuw', sterrenId: 'sterren-nieuw', maxSterren: 4 },
 ```
 
 ---
