@@ -1,10 +1,3 @@
-// ────────────────────────────────────────────────────────────────
-//  routes_genormaliseerd/auth.js
-//  Aangepaste versie voor het genormaliseerde schema.
-//  Verschil met de originele: de INSERT verwijst niet meer naar
-//  de JSON-kolommen (locaties_bezoekt, collectibles, ...) want
-//  die staan nu in losse tabellen.
-// ────────────────────────────────────────────────────────────────
 import express from 'express'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
@@ -34,11 +27,11 @@ router.post('/register', async (req, res) => {
     const uid = uuidv4()
     const hash = await bcrypt.hash(wachtwoord, 10)
 
-    // Veel simpeler dan vroeger: geen JSON-kolommen meer.
     await db.execute(
       `INSERT INTO spelers
-        (uid, naam, email, wachtwoord_hash, punten, level, avatar, aangemeld_op)
-       VALUES (?, ?, ?, ?, 0, 1, 'karakter_1', NOW())`,
+        (uid, naam, email, wachtwoord_hash, punten, level, avatar,
+         locaties_bezoekt, collectibles, quiz_resultaten, badges, completed_locations, aangemeld_op)
+       VALUES (?, ?, ?, ?, 0, 1, 'karakter_1', '[]', '[]', '{}', '[]', '[]', NOW())`,
       [uid, naam, email, hash]
     )
 
@@ -50,7 +43,7 @@ router.post('/register', async (req, res) => {
   }
 })
 
-// POST /api/auth/login — ongewijzigd t.o.v. de originele versie.
+// POST /api/auth/login
 router.post('/login', async (req, res) => {
   const { email, wachtwoord } = req.body
   if (!email || !wachtwoord) {

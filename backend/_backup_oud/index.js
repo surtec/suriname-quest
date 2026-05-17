@@ -3,7 +3,7 @@ import express from 'express'
 import cors from 'cors'
 import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
-import authRoutes   from './routes/auth.js'
+import authRoutes from './routes/auth.js'
 import spelerRoutes from './routes/speler.js'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
@@ -17,7 +17,7 @@ app.use(express.json())
 // Serveer de public/ map als statische bestanden
 app.use(express.static(join(__dirname, '..', 'public')))
 
-app.use('/api/auth',   authRoutes)
+app.use('/api/auth', authRoutes)
 app.use('/api/speler', spelerRoutes)
 
 app.listen(PORT, () => {

@@ -19,13 +19,24 @@ npm install
 
 **Zorg dat MySQL draait** (via Services of MySQL Workbench).
 
-Maak de database en tabel aan:
+Maak de database en tabellen aan:
 
 ```bash
 Get-Content backend/setup.sql | mysql -u root -P 2004 -p
 ```
 
 > Vervang `2004` door jouw MySQL poort als die anders is. Druk Enter als je geen wachtwoord hebt.
+
+Dit script maakt **6 tabellen** aan en vult de referentietabellen automatisch:
+
+| Tabel | Rol |
+| --- | --- |
+| `spelers` | Accountgegevens en algemene stats (punten, level, avatar) |
+| `locaties` | Referentietabel met de 5 historische plekken |
+| `quiz_resultaten` | Score en sterren per speler per locatie |
+| `badges` | Alle beschikbare badges (seed-data inbegrepen) |
+| `speler_badges` | Koppeltabel: welke speler heeft welke badge |
+| `collectibles` | Verzamelde items per speler per locatie |
 
 ---
 
@@ -74,12 +85,13 @@ suriname-quest/
 ├── backend/
 │   ├── index.js              ← Express server (poort 3001)
 │   ├── db.js                 ← MySQL verbinding
-│   ├── setup.sql             ← SQL om database aan te maken
+│   ├── setup.sql             ← SQL: 6 tabellen + seed-data aanmaken
 │   ├── middleware/
 │   │   └── auth.js           ← JWT token verificatie
-│   └── routes/
-│       ├── auth.js           ← /api/auth/register & /login
-│       └── speler.js         ← /api/speler/:uid
+│   ├── routes/
+│   │   ├── auth.js           ← /api/auth/register & /login
+│   │   └── speler.js         ← /api/speler/:uid (GET + PUT met JOINs)
+│   └── _backup_oud/          ← Originele één-tabel + JSON versie
 ├── public/
 │   ├── index.html            ← Login / registratie pagina
 │   ├── map.html              ← Kaart met alle locaties
@@ -93,6 +105,16 @@ suriname-quest/
 ├── package.json
 └── .env                      ← Database & JWT instellingen (niet in git!)
 ```
+
+### Tabelrelaties
+
+```text
+spelers ──< quiz_resultaten >── locaties
+spelers ──< speler_badges   >── badges
+spelers ──< collectibles    >── locaties
+```
+
+`GET /api/speler/:uid` bouwt het frontend-object terug op uit deze tabellen via JOINs en geeft exact hetzelfde JSON-formaat terug als de vroegere één-tabel versie.
 
 ---
 
@@ -144,6 +166,13 @@ Authorization: Bearer <token>
 
 ```javascript
 nieuwe_locatie: { kaartId: 'kaart-nieuw', sterrenId: 'sterren-nieuw', maxSterren: 4 },
+```
+
+1. Voeg de locatie toe aan de `locaties`-tabel in MySQL:
+
+```sql
+INSERT INTO locaties (code, naam, level_nummer, max_sterren, emoji, beschrijving)
+VALUES ('nieuwe_locatie', 'Nieuwe Locatie', 6, 4, '🏛️', 'Beschrijving hier.');
 ```
 
 ---
