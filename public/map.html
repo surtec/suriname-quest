@@ -18,6 +18,26 @@
       overflow-x: hidden;
     }
 
+    .header-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 800;
+      font-size: 1.5rem;
+      color: #f4c430;
+      letter-spacing: 0.02em;
+      text-shadow: 0 2px 12px rgba(244,196,48,0.4);
+    }
+    .flag-badge {
+      width: 52px;
+      height: auto;
+      border-radius: 10px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.35);
+      border: 1px solid rgba(255,255,255,0.22);
+      display: block;
+    }
+
     /* ── HEADER ── */
     header {
       background: linear-gradient(90deg, #0a2208, #142e0e, #0a2208);
@@ -556,9 +576,11 @@
   </style>
 </head>
 <body>
-
   <header>
-    <div class="header-logo">🌴 SuriQuest</div>
+    <div class="header-logo">
+      🌴 SuriQuest
+      <img class="flag-badge" src="https://www.countryflags.com/wp-content/uploads/suriname-flag-png-large.png" alt="Suriname vlag">
+    </div>
     <div class="header-rechts">
       <span id="player-name">...</span>
       <span id="player-points">0 punten</span>

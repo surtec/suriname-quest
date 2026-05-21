@@ -21,6 +21,21 @@
 
     .palm-icon { font-size: 48px; margin-bottom: 8px; }
 
+    body { position: relative; }
+    .flag-badge {
+      position: fixed;
+      top: 14px;
+      left: 14px;
+      width: 80px;
+      height: auto;
+      display: block;
+      border-radius: 8px;
+      box-shadow: 0 0 16px rgba(0,0,0,0.45);
+      border: 1px solid rgba(255,255,255,0.22);
+      z-index: 20;
+      pointer-events: none;
+    }
+
     .kaart {
       width: 100%;
       max-width: 420px;
@@ -264,6 +279,8 @@
       </div>
     </div>
   </div>
+
+  <img class="flag-badge" src="https://www.countryflags.com/wp-content/uploads/suriname-flag-png-large.png" alt="Suriname vlag">
 
   <div class="kaart">
     <div class="palm-icon">🌴</div>

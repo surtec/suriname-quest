@@ -3,6 +3,7 @@ import express from 'express'
 import cors from 'cors'
 import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
+import db from './db.js'
 import authRoutes   from './routes/auth.js'
 import spelerRoutes from './routes/speler.js'
 

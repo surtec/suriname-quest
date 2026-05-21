@@ -12,7 +12,7 @@
 --  experimenteer-materiaal.
 --
 --  Draaien:
---    Get-Content backend/setup_genormaliseerd.sql | mysql -u root -P 2004 -p
+--    Get-Content backend/setup_genormaliseerd.sql | mysql -u root -P 3306 -p
 -- ============================================================
 
 -- 1) Database aanmaken
