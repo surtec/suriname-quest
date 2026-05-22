@@ -580,6 +580,9 @@
       document.querySelectorAll('.page-section').forEach(s => s.classList.remove('actief'))
       document.getElementById('page-' + naam).classList.add('actief')
       window.scrollTo({ top: 0, behavior: 'smooth' })
+      if (naam === 'game' && !document.getElementById('memo-start-btn').disabled) {
+        startMemoSpel()
+      }
     }
 
     function speelGeluid(type) {
