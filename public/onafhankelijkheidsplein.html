@@ -220,17 +220,29 @@
     .feit-kop { font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 0.85rem; color: var(--accent); margin-bottom: 4px; }
     .feit-text { font-size: 0.88rem; color: rgba(240,230,200,0.85); line-height: 1.6; font-weight: 600; }
 
-    /* ── VUURWERK SPEL ── */
-    .vuurwerkspel-wrap { background: rgba(244,196,48,0.04); border: 1px solid rgba(244,196,48,0.2); border-radius: 18px; padding: 16px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
-    .vuurwerkspel-hud { display: flex; gap: 24px; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 1.05rem; color: #f0e6c8; }
-    .vw-canvas-wrap { width: 100%; max-width: 600px; border-radius: 12px; overflow: hidden; border: 2px solid rgba(244,196,48,0.2); background: #050a1a; }
-    #vuurwerkCanvas { display: block; width: 100%; height: auto; touch-action: none; cursor: crosshair; }
+    /* ── ONAFHANKELIJKHEID MEMO SPEL ── */
+    .memo-wrap { background: rgba(244,196,48,0.04); border: 1px solid rgba(244,196,48,0.2); border-radius: 18px; padding: 16px; display: flex; flex-direction: column; align-items: center; gap: 12px; width: 100%; }
+    .memo-hud { display: flex; gap: 20px; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 1.0rem; color: #f0e6c8; flex-wrap: wrap; justify-content: center; }
+    .memo-uitleg { font-size: 0.83rem; color: rgba(240,230,200,0.65); text-align: center; }
+    .memo-bord { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: 100%; max-width: 560px; }
+    .memo-kaart { position: relative; height: 72px; cursor: pointer; perspective: 600px; }
+    .memo-kaart-inner { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.35s; }
+    .memo-kaart.omgedraaid .memo-kaart-inner { transform: rotateY(180deg); }
+    .memo-kaart.gevonden .memo-kaart-inner { transform: rotateY(180deg); }
+    .memo-k-voor, .memo-k-achter { position: absolute; inset: 0; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-family: 'Nunito', sans-serif; font-weight: 800; -webkit-backface-visibility: hidden; backface-visibility: hidden; padding: 6px; text-align: center; }
+    .memo-k-voor { background: linear-gradient(135deg, #1a0f00, #2a1800); border: 2px solid rgba(244,196,48,0.3); font-size: 1.6rem; }
+    .memo-k-achter { background: linear-gradient(135deg, #140800, #201000); border: 2px solid rgba(244,196,48,0.5); transform: rotateY(180deg); font-size: 0.75rem; color: #f0e6c8; line-height: 1.3; }
+    .memo-kaart.gevonden .memo-k-achter { background: linear-gradient(135deg, #1a3a10, #2a5a18); border-color: #4ade80; color: #bbf7d0; }
+    .memo-kaart.fout .memo-kaart-inner { animation: memo-shake 0.4s ease; }
     .vw-start-btn { background: linear-gradient(135deg, #fb923c, #ea580c); border: none; border-radius: 12px; padding: 11px 30px; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 1.3rem; color: #fff; cursor: pointer; transition: opacity 0.2s, transform 0.1s; }
     .vw-start-btn:hover { opacity: 0.9; transform: translateY(-1px); }
     .vw-start-btn:disabled { opacity: 0.55; cursor: default; transform: none; }
-    .vuurwerkspel-klaar { display: none; text-align: center; padding: 16px 0; }
+    .memo-klaar { display: none; text-align: center; padding: 16px 0; }
     .vwk-score { font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 1.6rem; color: var(--accent2); }
     .vwk-feit { font-size: 0.82rem; color: rgba(251,146,60,0.8); margin-top: 8px; font-weight: 700; line-height: 1.5; background: rgba(251,146,60,0.07); padding: 10px; border-radius: 10px; }
+    .mlk-replay { margin-top: 10px; background: none; border: 1.5px solid rgba(244,196,48,0.4); border-radius: 10px; padding: 8px 20px; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 1.05rem; color: var(--accent2); cursor: pointer; }
+    .mlk-replay:hover { background: rgba(244,196,48,0.1); }
+    @keyframes memo-shake { 0%,100%{transform:rotateY(180deg) translateX(0)} 25%{transform:rotateY(180deg) translateX(-5px)} 75%{transform:rotateY(180deg) translateX(5px)} }
     .vwk-replay { margin-top: 10px; background: none; border: 1.5px solid rgba(244,196,48,0.4); border-radius: 10px; padding: 8px 20px; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 1.05rem; color: var(--accent2); cursor: pointer; }
     .vwk-replay:hover { background: rgba(244,196,48,0.1); }
 
@@ -445,27 +457,22 @@
     <button type="button" onclick="naarSectie('gegevens')" class="sec-btn sec-btn--back">← Terug naar info</button>
   </div>
 
-  <!-- Mini-game: Vuurwerk Spel -->
+  <!-- Mini-game: Onafhankelijkheid Memo -->
   <div class="section">
-    <h2 class="section-title">🎮 Vuurwerk Spel — Vier de vrijheid!</h2>
-    <div class="vuurwerkspel-wrap">
-      <div class="vuurwerkspel-hud">
-        <span id="vw-levens">❤️❤️❤️</span>
-        <span>⏱️ <span id="vw-timer">35</span>s</span>
-        <span>🎆 <span id="vw-score">0</span></span>
+    <h2 class="section-title">🎮 Onafhankelijkheid-Memo — Vind de paren!</h2>
+    <div class="memo-wrap">
+      <div class="memo-hud">
+        <span>🃏 Paren: <span id="memo-paren">0/6</span></span>
+        <span>⏱️ <span id="memo-timer">60</span>s</span>
+        <span>🔄 Pogingen: <span id="memo-pogingen">0</span></span>
       </div>
-      <div class="spel-uitleg">
-        <div class="su-item">📱 <strong>Telefoon:</strong> Tik op de vuurpijlen voordat ze het scherm verlaten!</div>
-        <div class="su-item">💻 <strong>Laptop/PC:</strong> Klik met de muis op de vuurpijlen om ze te laten exploderen.</div>
-      </div>
-      <div class="vw-canvas-wrap">
-        <canvas id="vuurwerkCanvas"></canvas>
-      </div>
-      <button type="button" class="vw-start-btn" id="vw-start-btn" onclick="startVuurwerkSpel()">▶ Vieren!</button>
-      <div class="vuurwerkspel-klaar" id="vuurwerkspel-klaar">
-        <div class="vwk-score" id="vwk-score">🎆 0 pts!</div>
-        <div class="vwk-feit">🇸🇷 Wist je dat? Op 25 november 1975 werd de Surinaamse vlag voor het eerst gehesen op dit plein. Kinderen vormden samen de vlag op het plein!</div>
-        <button type="button" class="vwk-replay" onclick="resetVuurwerkSpel()">↺ Opnieuw</button>
+      <div class="memo-uitleg">Klik twee kaarten om ze om te draaien. Vind alle 6 overeenkomende paren!</div>
+      <div class="memo-bord" id="memo-bord"></div>
+      <button type="button" class="vw-start-btn" id="memo-start-btn" onclick="startMemoSpel()">▶ Speel!</button>
+      <div class="memo-klaar" id="memo-klaar">
+        <div class="vwk-score" id="memo-klaar-score"></div>
+        <div class="vwk-feit">🇸🇷 Wist je dat? Op 25 november 1975 werd de Surinaamse vlag voor het eerst gehesen op het Onafhankelijkheidsplein. Kinderen vormden samen de vlag!</div>
+        <button type="button" class="mlk-replay" onclick="resetMemoSpel()">↺ Opnieuw</button>
       </div>
     </div>
   </div>
@@ -696,114 +703,104 @@
       } catch (e) { console.error(e) }
     }
 
-    // ── VUURWERK SPEL ──
+    // ── ONAFHANKELIJKHEID MEMO SPEL ──
     ;(function(){
-      const CW=600,CH=480
-      const COLORS=['#B40A2D','#377E22','#f4c430','#ffffff','#fb923c','#a855f7']
-      let cv,cx,running=false,aid
-      let vwScore,vwLevens,vwTimer,vwIv,fireworks,particles,lastSpawn
-      function mkFw(){
-        return{x:40+Math.random()*(CW-80),y:CH+20,vy:-(2+Math.random()*2.5),r:14+Math.random()*8,color:COLORS[Math.floor(Math.random()*COLORS.length)],burst:false,burstT:0}
+      const PAREN=[
+        ['25 nov. 1975',   'Onafhankelijkheidsdag'],
+        ['Johan Ferrier',  'Eerste president'],
+        ['Henck Arron',    'Eerste premier'],
+        ['Fort Zeelandia', 'Historisch fort Paramaribo'],
+        ['Paramaribo',     'Hoofdstad Suriname'],
+        ['Jacques Pinas',  'Ontwerper Surinaamse vlag'],
+      ]
+      let kaarten=[],omgedraaid=[],gevonden=0,pogingen=0,wachten=false,timerIv,memoTimer
+
+      function maakBord(){
+        const bord=document.getElementById('memo-bord')
+        bord.innerHTML=''
+        const items=[]
+        PAREN.forEach((p,i)=>{
+          items.push({tekst:p[0],paar:i})
+          items.push({tekst:p[1],paar:i})
+        })
+        items.sort(()=>Math.random()-0.5)
+        kaarten=items.map((item,idx)=>{
+          const div=document.createElement('div')
+          div.className='memo-kaart'
+          div.innerHTML=`<div class="memo-kaart-inner"><div class="memo-k-voor">🇸🇷</div><div class="memo-k-achter">${item.tekst}</div></div>`
+          div.addEventListener('click',()=>klikKaart(idx))
+          bord.appendChild(div)
+          return{el:div,paar:item.paar,omgedraaid:false,gevonden:false}
+        })
       }
-      function mkParts(fw){
-        const arr=[]
-        for(let i=0;i<16;i++){
-          const a=Math.random()*Math.PI*2,s=2+Math.random()*4
-          arr.push({x:fw.x,y:fw.y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,color:fw.color,life:1,r:3+Math.random()*2})
-        }
-        return arr
-      }
-      function drawBg(){
-        cx.fillStyle='#050a1a';cx.fillRect(0,0,CW,CH)
-        cx.fillStyle='rgba(255,255,255,0.7)'
-        [[47,60],[126,30],[237,90],[347,45],[458,75],[537,37],[95,120],[284,22],[490,105]].forEach(([sx,sy])=>{cx.beginPath();cx.arc(sx,sy,1.5,0,Math.PI*2);cx.fill()})
-        cx.fillStyle='#070f1a';cx.fillRect(0,CH-80,CW,80)
-        cx.fillStyle='#0c1825'
-        [[32,47,63],[110,79,47],[174,55,55],[253,95,39],[316,63,63],[395,47,55],[466,87,47],[529,60,63]].forEach(([bx,bh,bw])=>cx.fillRect(bx,CH-80-bh,bw,bh+2))
-      }
-      function init(){
-        cv=document.getElementById('vuurwerkCanvas')
-        cv.width=CW;cv.height=CH;cx=cv.getContext('2d')
-        drawBg()
-        cx.fillStyle='rgba(0,0,0,0.5)';cx.fillRect(0,0,CW,CH)
-        cx.fillStyle='#f0e6c8';cx.font='bold 15px Nunito,sans-serif';cx.textAlign='center'
-        cx.fillText('Klik ▶ Vieren! om te starten',CW/2,CH/2-10)
-        cx.font='13px Nunito,sans-serif';cx.fillStyle='rgba(244,196,48,0.8)'
-        cx.fillText('Klik op vuurpijlen voor ze verdwijnen! 🎆',CW/2,CH/2+16)
-      }
-      window.startVuurwerkSpel=function(){
-        vwScore=0;vwLevens=3;vwTimer=35;fireworks=[];particles=[];lastSpawn=0
-        document.getElementById('vw-score').textContent=vwScore
-        document.getElementById('vw-levens').textContent='❤️❤️❤️'
-        document.getElementById('vw-timer').textContent=vwTimer
-        document.getElementById('vw-start-btn').disabled=true
-        document.getElementById('vuurwerkspel-klaar').style.display='none'
-        cv.addEventListener('pointerdown',onClick)
-        vwIv=setInterval(()=>{
-          vwTimer--;document.getElementById('vw-timer').textContent=vwTimer
-          if(vwTimer<=0)stopVuurwerk()
-        },1000)
-        running=true;aid=requestAnimationFrame(loop)
-      }
-      function onClick(e){
-        if(!running)return
-        const r=cv.getBoundingClientRect()
-        const mx=(e.clientX-r.left)*(CW/r.width),my=(e.clientY-r.top)*(CH/r.height)
-        fireworks.forEach(fw=>{
-          if(fw.burst)return
-          if(Math.hypot(mx-fw.x,my-fw.y)<fw.r+14){
-            fw.burst=true;fw.burstT=28
-            particles.push(...mkParts(fw))
-            vwScore+=10;document.getElementById('vw-score').textContent=vwScore;speelGeluid('hit')
+
+      function klikKaart(idx){
+        if(wachten)return
+        const k=kaarten[idx]
+        if(k.omgedraaid||k.gevonden||omgedraaid.length>=2)return
+        k.el.classList.add('omgedraaid')
+        k.omgedraaid=true
+        omgedraaid.push(idx)
+        if(omgedraaid.length===2){
+          pogingen++
+          document.getElementById('memo-pogingen').textContent=pogingen
+          const[a,b]=omgedraaid
+          if(kaarten[a].paar===kaarten[b].paar){
+            kaarten[a].gevonden=kaarten[b].gevonden=true
+            kaarten[a].el.classList.add('gevonden')
+            kaarten[b].el.classList.add('gevonden')
+            omgedraaid=[]
+            gevonden++
+            document.getElementById('memo-paren').textContent=gevonden+'/6'
+            speelGeluid('hit')
+            if(gevonden===6)setTimeout(stopMemo,400)
+          } else {
+            wachten=true
+            kaarten[a].el.classList.add('fout')
+            kaarten[b].el.classList.add('fout')
+            setTimeout(()=>{
+              kaarten[a].el.classList.remove('omgedraaid','fout')
+              kaarten[b].el.classList.remove('omgedraaid','fout')
+              kaarten[a].omgedraaid=kaarten[b].omgedraaid=false
+              omgedraaid=[]
+              wachten=false
+              speelGeluid('mis')
+            },1000)
           }
-        })
-      }
-      function loop(){
-        if(!running)return
-        const now=performance.now()
-        const gap=Math.max(550,1800-(35-vwTimer)*32)
-        if(now-lastSpawn>gap){fireworks.push(mkFw());lastSpawn=now}
-        fireworks.forEach(fw=>{if(!fw.burst)fw.y+=fw.vy;else fw.burstT--})
-        const escaped=fireworks.filter(fw=>!fw.burst&&fw.y<-30)
-        if(escaped.length){
-          escaped.forEach(fw=>fireworks.splice(fireworks.indexOf(fw),1))
-          vwLevens=Math.max(0,vwLevens-escaped.length);speelGeluid('mis')
-          document.getElementById('vw-levens').textContent='❤️'.repeat(vwLevens)+'🖤'.repeat(3-vwLevens)
-          if(vwLevens<=0){stopVuurwerk();return}
         }
-        fireworks=fireworks.filter(fw=>!fw.burst||fw.burstT>0)
-        particles.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=0.1;p.life-=0.04;p.vx*=0.97;p.vy*=0.97})
-        particles=particles.filter(p=>p.life>0)
-        drawBg()
-        fireworks.forEach(fw=>{
-          if(fw.burst)return
-          const grd=cx.createRadialGradient(fw.x,fw.y,0,fw.x,fw.y,fw.r)
-          grd.addColorStop(0,fw.color);grd.addColorStop(1,'rgba(0,0,0,0)')
-          cx.fillStyle=grd;cx.beginPath();cx.arc(fw.x,fw.y,fw.r,0,Math.PI*2);cx.fill()
-          cx.fillStyle='rgba(255,255,255,0.6)';cx.beginPath();cx.arc(fw.x,fw.y+fw.r*0.5,2,0,Math.PI*2);cx.fill()
-        })
-        particles.forEach(p=>{
-          cx.save();cx.globalAlpha=p.life
-          cx.fillStyle=p.color;cx.beginPath();cx.arc(p.x,p.y,p.r*p.life,0,Math.PI*2);cx.fill()
-          cx.restore()
-        })
-        cx.fillStyle='rgba(0,0,0,0.35)';cx.fillRect(0,0,CW,30)
-        cx.fillStyle='#f0e6c8';cx.font='bold 13px Fredoka One,cursive';cx.textAlign='center'
-        cx.fillText('⏱️ '+vwTimer+'s',CW/2-70,21)
-        cx.fillText('🎆 '+vwScore,CW/2,21)
-        cx.fillText('❤️'.repeat(Math.max(0,vwLevens))+'🖤'.repeat(Math.max(0,3-vwLevens)),CW/2+65,21)
-        aid=requestAnimationFrame(loop)
       }
-      function stopVuurwerk(){
-        speelGeluid('klaar');running=false;cancelAnimationFrame(aid);clearInterval(vwIv)
-        cv.removeEventListener('pointerdown',onClick)
-        const msg=vwScore>=100?`🏆 ${vwScore} pts — Geweldig vuurwerk!`:vwScore>=60?`🎉 ${vwScore} pts — Mooi gevangen!`:`🎆 ${vwScore} pts — Oefenen maar!`
-        document.getElementById('vwk-score').textContent=msg
-        document.getElementById('vuurwerkspel-klaar').style.display='block'
-        document.getElementById('vw-start-btn').disabled=false
+
+      window.startMemoSpel=function(){
+        gevonden=0;pogingen=0;omgedraaid=[];wachten=false;memoTimer=60
+        document.getElementById('memo-paren').textContent='0/6'
+        document.getElementById('memo-pogingen').textContent='0'
+        document.getElementById('memo-timer').textContent=memoTimer
+        document.getElementById('memo-start-btn').disabled=true
+        document.getElementById('memo-klaar').style.display='none'
+        maakBord()
+        timerIv=setInterval(()=>{
+          memoTimer--
+          document.getElementById('memo-timer').textContent=memoTimer
+          if(memoTimer<=0)stopMemo()
+        },1000)
       }
-      window.resetVuurwerkSpel=function(){document.getElementById('vuurwerkspel-klaar').style.display='none';window.startVuurwerkSpel()}
-      init()
+
+      function stopMemo(){
+        clearInterval(timerIv)
+        speelGeluid('klaar')
+        const score=gevonden===6?Math.max(50,300-pogingen*10+memoTimer*3):gevonden*30
+        const msg=gevonden===6
+          ?(pogingen<=8?`🏆 ${score} pts — Geweldig! Alle paren gevonden!`:`🎉 ${score} pts — Alle paren gevonden!`)
+          :`🃏 ${gevonden}/6 paren — Probeer opnieuw!`
+        document.getElementById('memo-klaar-score').textContent=msg
+        document.getElementById('memo-klaar').style.display='block'
+        document.getElementById('memo-start-btn').disabled=false
+      }
+
+      window.resetMemoSpel=function(){
+        document.getElementById('memo-klaar').style.display='none'
+        window.startMemoSpel()
+      }
     })()
   </script>
 

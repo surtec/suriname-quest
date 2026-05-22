@@ -553,7 +553,7 @@
         drawBg()
         cx.font='30px serif';cx.textAlign='center';cx.textBaseline='bottom'
         obstacles.forEach(o=>cx.fillText(o.e,o.x,o.y+o.h))
-        cx.save();cx.translate(PX,ply.y)
+        cx.save();cx.translate(PX,ply.y);cx.scale(-1,1)
         if(ply.flash>0)cx.globalAlpha=0.5+0.5*Math.sin(ply.flash*0.6)
         cx.font='32px serif';cx.textAlign='center';cx.textBaseline='bottom'
         cx.fillText('🏃',0,0);cx.restore()

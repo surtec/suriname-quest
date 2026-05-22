@@ -1,7 +1,7 @@
-const API_URL = 'http://localhost:3001/api'
+const API_URL = '/api'
 
 function getToken()     { return localStorage.getItem('token') }
-function getGebruiker() { const g = localStorage.getItem('gebruiker'); return g ? JSON.parse(g) : null }
+function getGebruiker() { const g = localStorage.getItem('gebruiker'); if (!g || g === 'undefined') return null; try { return JSON.parse(g) } catch { return null } }
 
 function checkAuth() {
   if (!getToken() || !getGebruiker()) window.location.href = '/index.html'
