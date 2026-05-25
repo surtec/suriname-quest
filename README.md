@@ -1,11 +1,27 @@
-# 🌴 SuriQuest 2060 — Setup Instructies
+# 🌴 SuriQuest 2060
 
-## Vereisten
+SuriQuest is een educatief geschiedenisspel over Suriname. Spelers verkennen 5 historische locaties, beantwoorden quizvragen en verdienen punten en sterren. Het spel is gebouwd als een multi-page web-app met een Node.js/Express backend en MySQL database.
 
-- Node.js 18+
+## Technologies
+
+- **Node.js** — runtime omgeving voor de backend
+- **Express** — webframework voor de REST API
+- **MySQL** — relationele database voor spelers en voortgang
+- **jsonwebtoken (JWT)** — authenticatie en sessiebeheer
+- **bcryptjs** — veilig opslaan van wachtwoorden
+- **mysql2** — MySQL driver voor Node.js
+- **dotenv** — omgevingsvariabelen laden vanuit `.env`
+- **HTML/CSS/JavaScript** — frontend (geen framework)
+
+## Requirements
+
+- Node.js 18 of hoger
 - MySQL 8.0 (lokaal geïnstalleerd)
+- npm (wordt meegeleverd met Node.js)
 
 ---
+
+## Installation
 
 ## Stap 1 — Project installeren
 

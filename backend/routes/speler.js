@@ -9,8 +9,8 @@
 //  collectibles).
 // ────────────────────────────────────────────────────────────────
 import express from 'express'
-import db from '../db.js'
-import { verifyToken } from '../middleware/auth.js'
+import db from '../config/db.js'
+import { verifyToken } from '../middlewares/auth.js'
 
 const router = express.Router()
 

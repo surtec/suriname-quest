@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600">
+  <!-- Vlag van Suriname -->
+  <rect width="900" height="600" fill="#377E3F"/>
+  <rect y="150" width="900" height="100" fill="#FFFFFF"/>
+  <rect y="200" width="900" height="200" fill="#B40A2D"/>
+  <rect y="350" width="900" height="100" fill="#FFFFFF"/>
+  <polygon points="450,240 476,320 558,320 492,368 516,448 450,400 384,448 408,368 342,320 424,320" fill="#ECC81A"/>
+</svg>

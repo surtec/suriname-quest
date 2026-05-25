@@ -6,8 +6,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "server": "node backend/index.js",
-    "server:watch": "node --watch backend/index.js"
+    "server": "node backend/server.js",
+    "server:watch": "node --watch backend/server.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
