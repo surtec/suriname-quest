@@ -1,0 +1,27 @@
+:root { --accent: #4ade80; --accent-rgb: 74,222,128; --bg: #071a0a; }
+.hero {
+  background: linear-gradient(160deg, #0f3a18 0%, #0a2a10 60%, #071a08 100%);
+  border-bottom: 3px solid rgba(74,222,128,0.3);
+}
+.hero::before {
+  background:
+    radial-gradient(circle at 20% 60%, rgba(74,222,128,0.12) 0%, transparent 55%),
+    radial-gradient(circle at 80% 30%, rgba(34,197,94,0.08) 0%, transparent 50%);
+}
+.jungle-deco { position: absolute; bottom: 0; left: 0; right: 0; font-size: 52px; opacity: 0.1; pointer-events: none; display: flex; justify-content: space-around; align-items: flex-end; }
+@keyframes icon-bounce { 0%, 100% { transform: translateY(0) rotate(-3deg); } 50% { transform: translateY(-8px) rotate(3deg); } }
+.location-icon { filter: drop-shadow(0 0 20px rgba(74,222,128,0.4)); animation: icon-bounce 2.5s ease-in-out infinite; }
+
+.visspel-wrap { background: rgba(34,197,94,0.05); border: 1px solid rgba(34,197,94,0.22); border-radius: 18px; padding: 16px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.visspel-hud { display: flex; gap: 32px; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 1.1rem; color: #f0e6c8; }
+.vs-canvas-wrap { width: 100%; max-width: 600px; border-radius: 12px; overflow: hidden; border: 2px solid rgba(34,197,94,0.3); background: #020c06; }
+#visCanvas { display: block; width: 100%; height: auto; touch-action: none; cursor: crosshair; }
+.vs-start-btn { background: linear-gradient(135deg, #22c55e, #16a34a); border: none; border-radius: 12px; padding: 11px 30px; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 1.3rem; color: #071a0a; cursor: pointer; transition: opacity 0.2s, transform 0.1s; }
+.vs-start-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+.vs-start-btn:disabled { opacity: 0.55; cursor: default; transform: none; }
+.visspel-klaar { display: none; text-align: center; padding: 16px 0; }
+.vsk-score { font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 1.7rem; color: var(--accent); }
+.vsk-feit { font-size: 0.82rem; color: rgba(74,222,128,0.75); margin-top: 8px; font-weight: 700; line-height: 1.5; background: rgba(74,222,128,0.07); padding: 10px; border-radius: 10px; }
+.vsk-replay { margin-top: 10px; background: none; border: 1.5px solid rgba(74,222,128,0.4); border-radius: 10px; padding: 8px 20px; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 1.05rem; color: var(--accent); cursor: pointer; }
+.vsk-replay:hover { background: rgba(74,222,128,0.1); }
+@keyframes correct-pop { 0%{transform:scale(1)} 50%{transform:scale(1.08)} 100%{transform:scale(1)} }

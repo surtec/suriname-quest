@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="nl">
 <head>
   <meta charset="UTF-8" />
@@ -7,53 +7,7 @@
   <title>Onafhankelijkheidsplein — SuriQuest</title>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/game.css">
-  <style>
-    :root { --accent: #fb923c; --accent2: #f4c430; --accent-rgb: 251,146,60; --bg: #140800; }
-    .hero {
-      background: linear-gradient(160deg, #2a1200 0%, #1a0c00 60%, #140800 100%);
-      border-bottom: 2px solid rgba(234,88,12,0.22);
-    }
-    .hero::before {
-      background:
-        radial-gradient(circle at 50% 50%, rgba(234,88,12,0.1) 0%, transparent 60%),
-        radial-gradient(circle at 20% 80%, rgba(244,196,48,0.06) 0%, transparent 50%);
-    }
-    .flag-deco { position: absolute; bottom: 0; left: 0; right: 0; height: 6px; background: linear-gradient(90deg, #377E22 0%, #377E22 20%, #fff 20%, #fff 30%, #B40A2D 30%, #B40A2D 70%, #fff 70%, #fff 80%, #377E22 80%, #377E22 100%); opacity: 0.4; }
-    @keyframes flag-wave { 0%, 100% { transform: rotate(-3deg) scale(1); } 50% { transform: rotate(3deg) scale(1.04); } }
-    .location-icon { filter: drop-shadow(0 0 20px rgba(234,88,12,0.4)); animation: flag-wave 3s ease-in-out infinite; }
-
-    /* Vrijheid highlight */
-    .vrijheid-box { background: linear-gradient(135deg, rgba(234,88,12,0.14), rgba(244,196,48,0.08)); border: 1.5px solid rgba(234,88,12,0.4); border-radius: 18px; padding: 22px 24px; display: flex; align-items: center; gap: 18px; }
-    .vrijheid-icon { font-size: 40px; flex-shrink: 0; }
-    .vrijheid-datum { font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 1.3rem; color: var(--accent); margin-bottom: 4px; }
-    .vrijheid-tekst { font-size: 0.9rem; color: rgba(240,230,200,0.85); font-weight: 600; line-height: 1.6; }
-
-    /* Memo spel */
-    .memo-wrap { background: rgba(244,196,48,0.04); border: 1px solid rgba(244,196,48,0.2); border-radius: 18px; padding: 16px; display: flex; flex-direction: column; align-items: center; gap: 12px; width: 100%; }
-    .memo-hud { display: flex; gap: 20px; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 1.0rem; color: #f0e6c8; flex-wrap: wrap; justify-content: center; }
-    .memo-uitleg { font-size: 0.83rem; color: rgba(240,230,200,0.65); text-align: center; }
-    .memo-bord { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: 100%; max-width: 560px; }
-    .memo-kaart { position: relative; height: 72px; cursor: pointer; perspective: 600px; }
-    .memo-kaart-inner { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.35s; }
-    .memo-kaart.omgedraaid .memo-kaart-inner { transform: rotateY(180deg); }
-    .memo-kaart.gevonden .memo-kaart-inner { transform: rotateY(180deg); }
-    .memo-k-voor, .memo-k-achter { position: absolute; inset: 0; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-family: 'Nunito', sans-serif; font-weight: 800; -webkit-backface-visibility: hidden; backface-visibility: hidden; padding: 6px; text-align: center; }
-    .memo-k-voor { background: linear-gradient(135deg, #1a0f00, #2a1800); border: 2px solid rgba(244,196,48,0.3); font-size: 1.6rem; }
-    .memo-k-achter { background: linear-gradient(135deg, #140800, #201000); border: 2px solid rgba(244,196,48,0.5); transform: rotateY(180deg); font-size: 0.75rem; color: #f0e6c8; line-height: 1.3; }
-    .memo-kaart.gevonden .memo-k-achter { background: linear-gradient(135deg, #1a3a10, #2a5a18); border-color: #4ade80; color: #bbf7d0; }
-    .memo-kaart.fout .memo-kaart-inner { animation: memo-shake 0.4s ease; }
-    .vw-start-btn { background: linear-gradient(135deg, #fb923c, #ea580c); border: none; border-radius: 12px; padding: 11px 30px; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 1.3rem; color: #fff; cursor: pointer; transition: opacity 0.2s, transform 0.1s; }
-    .vw-start-btn:hover { opacity: 0.9; transform: translateY(-1px); }
-    .vw-start-btn:disabled { opacity: 0.55; cursor: default; transform: none; }
-    .memo-klaar { display: none; text-align: center; padding: 16px 0; }
-    .vwk-score { font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 1.6rem; color: var(--accent2); }
-    .vwk-feit { font-size: 0.82rem; color: rgba(251,146,60,0.8); margin-top: 8px; font-weight: 700; line-height: 1.5; background: rgba(251,146,60,0.07); padding: 10px; border-radius: 10px; }
-    .mlk-replay { margin-top: 10px; background: none; border: 1.5px solid rgba(244,196,48,0.4); border-radius: 10px; padding: 8px 20px; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 1.05rem; color: var(--accent2); cursor: pointer; }
-    .mlk-replay:hover { background: rgba(244,196,48,0.1); }
-    @keyframes memo-shake { 0%,100%{transform:rotateY(180deg) translateX(0)} 25%{transform:rotateY(180deg) translateX(-5px)} 75%{transform:rotateY(180deg) translateX(5px)} }
-    .vwk-replay { margin-top: 10px; background: none; border: 1.5px solid rgba(244,196,48,0.4); border-radius: 10px; padding: 8px 20px; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 1.05rem; color: var(--accent2); cursor: pointer; }
-    .vwk-replay:hover { background: rgba(244,196,48,0.1); }
-  </style>
+  <link rel="stylesheet" href="css/onafhankelijkheidsplein.css" />
 </head>
 <body>
 
@@ -300,123 +254,7 @@
 
   <script src="js/api.js"></script>
   <script src="js/game.js"></script>
-  <script>
-    checkAuth()
-    toonSpelerBalk()
-
-    // Override: auto-start memo game when navigating to game section
-    function naarSectie(naam) {
-      document.querySelectorAll('.page-section').forEach(s => s.classList.remove('actief'))
-      document.getElementById('page-' + naam).classList.add('actief')
-      window.scrollTo({ top: 0, behavior: 'smooth' })
-      if (naam === 'game' && !document.getElementById('memo-start-btn').disabled) {
-        startMemoSpel()
-      }
-    }
-
-    var LOCATIE_ID = 'onafhankelijkheidsplein'
-    var TOTAAL     = 4
-
-    // ── ONAFHANKELIJKHEID MEMO SPEL ──
-    ;(function(){
-      const PAREN=[
-        ['25 nov. 1975',   'Onafhankelijkheidsdag'],
-        ['Johan Ferrier',  'Eerste president'],
-        ['Henck Arron',    'Eerste premier'],
-        ['Fort Zeelandia', 'Historisch fort Paramaribo'],
-        ['Paramaribo',     'Hoofdstad Suriname'],
-        ['Jacques Pinas',  'Ontwerper Surinaamse vlag'],
-      ]
-      let kaarten=[],omgedraaid=[],gevonden=0,pogingen=0,wachten=false,timerIv,memoTimer
-
-      function maakBord(){
-        const bord=document.getElementById('memo-bord')
-        bord.innerHTML=''
-        const items=[]
-        PAREN.forEach((p,i)=>{
-          items.push({tekst:p[0],paar:i})
-          items.push({tekst:p[1],paar:i})
-        })
-        items.sort(()=>Math.random()-0.5)
-        kaarten=items.map((item,idx)=>{
-          const div=document.createElement('div')
-          div.className='memo-kaart'
-          div.innerHTML=`<div class="memo-kaart-inner"><div class="memo-k-voor">🇸🇷</div><div class="memo-k-achter">${item.tekst}</div></div>`
-          div.addEventListener('click',()=>klikKaart(idx))
-          bord.appendChild(div)
-          return{el:div,paar:item.paar,omgedraaid:false,gevonden:false}
-        })
-      }
-
-      function klikKaart(idx){
-        if(wachten)return
-        const k=kaarten[idx]
-        if(k.omgedraaid||k.gevonden||omgedraaid.length>=2)return
-        k.el.classList.add('omgedraaid')
-        k.omgedraaid=true
-        omgedraaid.push(idx)
-        if(omgedraaid.length===2){
-          pogingen++
-          document.getElementById('memo-pogingen').textContent=pogingen
-          const[a,b]=omgedraaid
-          if(kaarten[a].paar===kaarten[b].paar){
-            kaarten[a].gevonden=kaarten[b].gevonden=true
-            kaarten[a].el.classList.add('gevonden')
-            kaarten[b].el.classList.add('gevonden')
-            omgedraaid=[]
-            gevonden++
-            document.getElementById('memo-paren').textContent=gevonden+'/6'
-            speelGeluid('hit')
-            if(gevonden===6)setTimeout(stopMemo,400)
-          } else {
-            wachten=true
-            kaarten[a].el.classList.add('fout')
-            kaarten[b].el.classList.add('fout')
-            setTimeout(()=>{
-              kaarten[a].el.classList.remove('omgedraaid','fout')
-              kaarten[b].el.classList.remove('omgedraaid','fout')
-              kaarten[a].omgedraaid=kaarten[b].omgedraaid=false
-              omgedraaid=[]
-              wachten=false
-              speelGeluid('mis')
-            },1000)
-          }
-        }
-      }
-
-      window.startMemoSpel=function(){
-        gevonden=0;pogingen=0;omgedraaid=[];wachten=false;memoTimer=60
-        document.getElementById('memo-paren').textContent='0/6'
-        document.getElementById('memo-pogingen').textContent='0'
-        document.getElementById('memo-timer').textContent=memoTimer
-        document.getElementById('memo-start-btn').disabled=true
-        document.getElementById('memo-klaar').style.display='none'
-        maakBord()
-        timerIv=setInterval(()=>{
-          memoTimer--
-          document.getElementById('memo-timer').textContent=memoTimer
-          if(memoTimer<=0)stopMemo()
-        },1000)
-      }
-
-      function stopMemo(){
-        clearInterval(timerIv)
-        speelGeluid('klaar')
-        const score=gevonden===6?Math.max(50,300-pogingen*10+memoTimer*3):gevonden*30
-        const msg=gevonden===6
-          ?(pogingen<=8?`🏆 ${score} pts — Geweldig! Alle paren gevonden!`:`🎉 ${score} pts — Alle paren gevonden!`)
-          :`🃏 ${gevonden}/6 paren — Probeer opnieuw!`
-        document.getElementById('memo-klaar-score').textContent=msg
-        document.getElementById('memo-klaar').style.display='block'
-        document.getElementById('memo-start-btn').disabled=false
-      }
-
-      window.resetMemoSpel=function(){
-        document.getElementById('memo-klaar').style.display='none'
-        window.startMemoSpel()
-      }
-    })()
-  </script>
+  <script src="js/onafhankelijkheidsplein.js"></script>
 
 </body>
 </html>

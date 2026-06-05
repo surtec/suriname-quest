@@ -1,0 +1,260 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: linear-gradient(160deg, #050E28 0%, #0A1E48 50%, #050E28 100%);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Nunito', sans-serif;
+  color: #fff;
+}
+
+.palm-icon { font-size: 48px; margin-bottom: 8px; }
+
+body { position: relative; }
+.flag-badge {
+  position: fixed;
+  top: 14px;
+  left: 14px;
+  width: 80px;
+  height: auto;
+  display: block;
+  border-radius: 8px;
+  box-shadow: 0 0 16px rgba(0,0,0,0.45);
+  border: 1px solid rgba(255,255,255,0.22);
+  z-index: 20;
+  pointer-events: none;
+}
+
+.kaart {
+  width: 100%;
+  max-width: 420px;
+  padding: 2rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.logo {
+  font-family: 'Nunito', sans-serif; font-weight: 800;
+  font-size: 52px;
+  color: #f4c430;
+  text-shadow: 3px 3px 0 #8B4513, 0 0 30px rgba(244,196,48,0.3);
+  text-align: center;
+  line-height: 1.1;
+}
+
+.subtitel {
+  font-size: 13px;
+  color: #7ec98f;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-top: 4px;
+  text-align: center;
+}
+
+.formulier {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 16px;
+  padding: 1.5rem;
+  width: 100%;
+  margin-top: 1.5rem;
+}
+
+input {
+  width: 100%;
+  padding: 11px 14px;
+  border-radius: 10px;
+  border: 1.5px solid rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.08);
+  color: #fff;
+  font-family: 'Nunito', sans-serif;
+  font-size: 14px;
+  margin-bottom: 10px;
+  outline: none;
+}
+input::placeholder { color: rgba(255,255,255,0.4); }
+input:focus { border-color: rgba(244,196,48,0.5); }
+
+.knop-primair {
+  width: 100%;
+  padding: 14px;
+  background: #f4c430;
+  border: none;
+  border-radius: 12px;
+  font-family: 'Nunito', sans-serif; font-weight: 800;
+  font-size: 22px;
+  color: #1a3a00;
+  cursor: pointer;
+  margin-top: 12px;
+  transition: opacity 0.2s, transform 0.1s;
+}
+.knop-primair:hover { opacity: 0.9; transform: translateY(-1px); }
+.knop-primair:active { transform: translateY(0); }
+.knop-primair:disabled { opacity: 0.6; cursor: default; transform: none; }
+
+.knop-secundair {
+  width: 100%;
+  padding: 12px;
+  background: transparent;
+  border: 1.5px solid rgba(255,255,255,0.3);
+  border-radius: 12px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.8);
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background 0.2s, transform 0.1s;
+}
+.knop-secundair:hover { background: rgba(255,255,255,0.07); transform: translateY(-1px); }
+
+.knop-tekst {
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.45);
+  font-family: 'Nunito', sans-serif;
+  font-size: 13px;
+  cursor: pointer;
+  margin-top: 14px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.knop-tekst:hover { color: rgba(255,255,255,0.7); }
+
+.fout {
+  color: #e24b4a;
+  font-size: 13px;
+  text-align: center;
+  margin-top: 10px;
+}
+
+.naam-veld { display: none; }
+.naam-veld.zichtbaar { display: block; }
+
+#menu-sectie { display: none; width: 100%; }
+
+.welkom-box {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 16px;
+  padding: 1.5rem;
+  width: 100%;
+  margin-top: 1.5rem;
+  text-align: center;
+}
+
+.welkom-naam {
+  font-family: 'Nunito', sans-serif; font-weight: 800;
+  font-size: 26px;
+  color: #f4c430;
+  margin-bottom: 4px;
+}
+
+.welkom-stats {
+  font-size: 13px;
+  color: rgba(255,255,255,0.5);
+  margin-bottom: 1.2rem;
+}
+
+.menu-knoppen {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.knop-verder {
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(135deg, #f4c430, #e0a800);
+  border: none;
+  border-radius: 12px;
+  font-family: 'Nunito', sans-serif; font-weight: 800;
+  font-size: 24px;
+  color: #1a3a00;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.1s;
+  letter-spacing: 0.5px;
+}
+.knop-verder:hover { opacity: 0.92; transform: translateY(-2px); }
+.knop-verder:active { transform: translateY(0); }
+
+.knop-nieuw {
+  width: 100%;
+  padding: 13px;
+  background: transparent;
+  border: 2px solid rgba(126,201,143,0.5);
+  border-radius: 12px;
+  font-family: 'Nunito', sans-serif; font-weight: 800;
+  font-size: 19px;
+  color: #7ec98f;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+.knop-nieuw:hover { background: rgba(126,201,143,0.1); transform: translateY(-1px); }
+
+.scheidslijn {
+  width: 100%;
+  border: none;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  margin: 14px 0;
+}
+
+.knop-uitlog {
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.4);
+  font-family: 'Nunito', sans-serif;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 10px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.knop-uitlog:hover { color: rgba(255,255,255,0.7); }
+
+@media (max-width: 380px) {
+  .kaart { padding: 1.5rem 1rem; }
+  .logo { font-size: 40px; }
+  .flag-badge { width: 60px; }
+}
+
+.overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+}
+.overlay.actief { display: flex; }
+.overlay-box {
+  background: #0d1e3d;
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 16px;
+  padding: 2rem 1.5rem;
+  max-width: 340px;
+  width: 90%;
+  text-align: center;
+}
+.overlay-box h2 {
+  font-family: 'Nunito', sans-serif; font-weight: 800;
+  color: #f4c430;
+  font-size: 22px;
+  margin-bottom: 8px;
+}
+.overlay-box p {
+  font-size: 14px;
+  color: rgba(255,255,255,0.6);
+  line-height: 1.5;
+  margin-bottom: 1.2rem;
+}
+.overlay-knoppen { display: flex; gap: 10px; }
+.overlay-knoppen button { flex: 1; padding: 12px; border-radius: 10px; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 17px; cursor: pointer; border: none; }
+.btn-annuleer { background: rgba(255,255,255,0.08); color: #fff; }
+.btn-reset    { background: #e24b4a; color: #fff; }
+.btn-annuleer:hover { background: rgba(255,255,255,0.15); }
+.btn-reset:hover    { opacity: 0.85; }

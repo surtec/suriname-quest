@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="nl">
 <head>
   <meta charset="UTF-8" />
@@ -7,36 +7,7 @@
   <title>Fort Zeelandia — SuriQuest</title>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/game.css">
-  <style>
-    :root { --accent: #f4c430; --accent-rgb: 244,196,48; --bg: #0a1a0e; }
-    .hero {
-      background: linear-gradient(160deg, #1e3a20 0%, #0f2418 60%, #0a1a0e 100%);
-      border-bottom: 3px solid rgba(244,196,48,0.3);
-    }
-    .hero::before {
-      background:
-        radial-gradient(circle at 70% 30%, rgba(244,196,48,0.1) 0%, transparent 60%),
-        radial-gradient(circle at 20% 80%, rgba(34,197,94,0.06) 0%, transparent 50%);
-    }
-    .hero-deco { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); font-size: 48px; opacity: 0.05; letter-spacing: 4px; white-space: nowrap; pointer-events: none; }
-    @keyframes icon-float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
-    .location-icon { filter: drop-shadow(0 0 20px rgba(244,196,48,0.4)); animation: icon-float 4s ease-in-out infinite; }
-
-    /* Kanon spel */
-    .kanonspel-wrap { background: rgba(244,196,48,0.04); border: 1px solid rgba(244,196,48,0.22); border-radius: 18px; padding: 16px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
-    .kanonspel-hud { display: flex; gap: 24px; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 1.05rem; color: #f0e6c8; }
-    .ks-canvas-wrap { width: 100%; max-width: 600px; border-radius: 12px; overflow: hidden; border: 2px solid rgba(244,196,48,0.25); background: #050e1a; }
-    #kanonCanvas { display: block; width: 100%; height: auto; touch-action: none; cursor: crosshair; }
-    .ks-start-btn { background: linear-gradient(135deg, #f4c430, #e0a800); border: none; border-radius: 12px; padding: 11px 30px; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 1.3rem; color: #0a1a0e; cursor: pointer; transition: opacity 0.2s, transform 0.1s; }
-    .ks-start-btn:hover { opacity: 0.9; transform: translateY(-1px); }
-    .ks-start-btn:disabled { opacity: 0.55; cursor: default; transform: none; }
-    .kanonspel-klaar { display: none; text-align: center; padding: 16px 0; }
-    .ksk-score { font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 1.6rem; color: var(--accent); }
-    .ksk-feit { font-size: 0.82rem; color: rgba(244,196,48,0.75); margin-top: 8px; font-weight: 700; line-height: 1.5; background: rgba(244,196,48,0.07); padding: 10px; border-radius: 10px; }
-    .ksk-replay { margin-top: 10px; background: none; border: 1.5px solid rgba(244,196,48,0.4); border-radius: 10px; padding: 8px 20px; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 1.05rem; color: var(--accent); cursor: pointer; }
-    .ksk-replay:hover { background: rgba(244,196,48,0.1); }
-    @keyframes correct-pop { 0%{transform:scale(1)} 50%{transform:scale(1.03)} 100%{transform:scale(1)} }
-  </style>
+  <link rel="stylesheet" href="css/fort-zeelandia.css" />
 </head>
 <body>
 
@@ -217,124 +188,7 @@
 
   <script src="js/api.js"></script>
   <script src="js/game.js"></script>
-  <script>
-    checkAuth()
-    toonSpelerBalk()
-
-    var LOCATIE_ID = 'fort_zeelandia'
-    var TOTAAL     = 4
-
-    /* ── KANON SPEL ── */
-    ;(function(){
-      const CW=600,CH=450
-      let cv,cx,running=false,aid
-      let ksScore,ksLevens,ksTimer,ksIv,ships,balls,lastSpawn
-      function mkShip(){
-        const types=[{e:'⛵',w:50,h:40},{e:'🚢',w:60,h:44}]
-        const t=types[Math.floor(Math.random()*types.length)]
-        const y=50+Math.random()*120
-        const spd=1.5+Math.random()*1.5+(35-(ksTimer||35))*0.05
-        return{x:CW+t.w,y,vx:-spd,...t,hit:false,hitT:0}
-      }
-      function drawBg(){
-        const sky=cx.createLinearGradient(0,0,0,CH*0.65)
-        sky.addColorStop(0,'#0a1520');sky.addColorStop(1,'#1a3010')
-        cx.fillStyle=sky;cx.fillRect(0,0,CW,CH*0.65)
-        const sea=cx.createLinearGradient(0,CH*0.65,0,CH)
-        sea.addColorStop(0,'#0a2040');sea.addColorStop(1,'#061228')
-        cx.fillStyle=sea;cx.fillRect(0,CH*0.65,CW,CH*0.35)
-        cx.strokeStyle='rgba(72,120,220,0.1)';cx.lineWidth=1
-        for(let y=CH*0.68;y<CH;y+=18){cx.beginPath();cx.moveTo(0,y);cx.lineTo(CW,y);cx.stroke()}
-        cx.fillStyle='#3a2810';cx.fillRect(0,CH-52,CW,52)
-        cx.fillStyle='#4a3820'
-        for(let x=0;x<CW;x+=30){cx.fillRect(x,CH-64,22,12)}
-        cx.save();cx.translate(CW/2,CH-60)
-        cx.fillStyle='#7a6030';cx.beginPath();cx.ellipse(0,0,18,12,0,0,Math.PI*2);cx.fill()
-        cx.fillStyle='#4a4030';cx.fillRect(-6,-24,12,24);cx.restore()
-      }
-      function init(){
-        cv=document.getElementById('kanonCanvas')
-        cv.width=CW;cv.height=CH;cx=cv.getContext('2d')
-        drawBg()
-        cx.fillStyle='rgba(0,0,0,0.5)';cx.fillRect(0,0,CW,CH)
-        cx.fillStyle='#f0e6c8';cx.font='bold 15px Nunito,sans-serif';cx.textAlign='center'
-        cx.fillText('Klik ▶ Speel! om te starten',CW/2,CH/2-10)
-        cx.font='13px Nunito,sans-serif';cx.fillStyle='rgba(244,196,48,0.7)'
-        cx.fillText('Klik op vijandelijke schepen! ⛵',CW/2,CH/2+16)
-      }
-      window.startKanonSpel=function(){
-        ksScore=0;ksLevens=3;ksTimer=35;ships=[];balls=[];lastSpawn=0
-        document.getElementById('ks-score').textContent=ksScore
-        document.getElementById('ks-levens').textContent='❤️❤️❤️'
-        document.getElementById('ks-timer').textContent=ksTimer
-        document.getElementById('ks-start-btn').disabled=true
-        document.getElementById('kanonspel-klaar').style.display='none'
-        cv.addEventListener('pointerdown',onClick)
-        ksIv=setInterval(()=>{
-          ksTimer--;document.getElementById('ks-timer').textContent=ksTimer
-          if(ksTimer<=0)stopKanon()
-        },1000)
-        running=true;aid=requestAnimationFrame(loop)
-      }
-      function onClick(e){
-        if(!running)return
-        const r=cv.getBoundingClientRect()
-        const mx=(e.clientX-r.left)*(CW/r.width),my=(e.clientY-r.top)*(CH/r.height)
-        ships.forEach(s=>{
-          if(s.hit)return
-          if(mx>s.x-s.w/2&&mx<s.x+s.w/2&&my>s.y-s.h/2&&my<s.y+s.h/2){
-            s.hit=true;s.hitT=22;ksScore+=10
-            document.getElementById('ks-score').textContent=ksScore;speelGeluid('hit')
-          }
-        })
-        balls.push({x:CW/2,y:CH-60,tx:mx,ty:my,done:false})
-      }
-      function loop(){
-        if(!running)return
-        const now=performance.now()
-        const gap=Math.max(1000,2800-(35-ksTimer)*55)
-        if(now-lastSpawn>gap){ships.push(mkShip());lastSpawn=now}
-        ships.forEach(s=>{if(!s.hit)s.x+=s.vx;if(s.hitT>0)s.hitT--})
-        const escaped=ships.filter(s=>s.x<-70&&!s.hit)
-        if(escaped.length){
-          escaped.forEach(s=>ships.splice(ships.indexOf(s),1))
-          ksLevens=Math.max(0,ksLevens-escaped.length);speelGeluid('mis')
-          document.getElementById('ks-levens').textContent='❤️'.repeat(ksLevens)+'🖤'.repeat(3-ksLevens)
-          if(ksLevens<=0){stopKanon();return}
-        }
-        ships=ships.filter(s=>!(s.hit&&s.hitT<=0)&&s.x>-110)
-        balls.forEach(b=>{const dx=b.tx-b.x,dy=b.ty-b.y,d=Math.hypot(dx,dy);if(d<8)b.done=true;else{b.x+=dx/d*9;b.y+=dy/d*9}})
-        balls=balls.filter(b=>!b.done&&b.y>0)
-        drawBg()
-        cx.fillStyle='rgba(255,255,200,0.9)'
-        balls.forEach(b=>{cx.beginPath();cx.arc(b.x,b.y,5,0,Math.PI*2);cx.fill()})
-        ships.forEach(s=>{
-          cx.save();cx.font=s.h+'px serif';cx.textAlign='center';cx.textBaseline='middle'
-          if(s.hitT>0){
-            cx.globalAlpha=0.6+0.4*Math.sin(s.hitT);cx.fillText('💥',s.x,s.y)
-            if(s.hitT===18){cx.font='bold 16px Fredoka One,cursive';cx.globalAlpha=1;cx.fillStyle='rgba(244,196,48,0.95)';cx.fillText('+10',s.x,s.y-32)}
-          } else cx.fillText(s.e,s.x,s.y)
-          cx.restore()
-        })
-        cx.fillStyle='rgba(0,0,0,0.3)';cx.fillRect(0,0,CW,30)
-        cx.fillStyle='#f0e6c8';cx.font='bold 13px Fredoka One,cursive';cx.textAlign='center'
-        cx.fillText('⏱️ '+ksTimer+'s',CW/2-70,21)
-        cx.fillText('💥 '+ksScore,CW/2,21)
-        cx.fillText('❤️'.repeat(Math.max(0,ksLevens))+'🖤'.repeat(Math.max(0,3-ksLevens)),CW/2+65,21)
-        aid=requestAnimationFrame(loop)
-      }
-      function stopKanon(){
-        speelGeluid('klaar');running=false;cancelAnimationFrame(aid);clearInterval(ksIv)
-        cv.removeEventListener('pointerdown',onClick)
-        const msg=ksScore>=80?`🏆 ${ksScore} pts — Fort verdedigd!`:ksScore>=40?`🎉 ${ksScore} pts — Goed gevochten!`:`⚔️ ${ksScore} pts — Oefenen maar!`
-        document.getElementById('ksk-score').textContent=msg
-        document.getElementById('kanonspel-klaar').style.display='block'
-        document.getElementById('ks-start-btn').disabled=false
-      }
-      window.resetKanonSpel=function(){document.getElementById('kanonspel-klaar').style.display='none';window.startKanonSpel()}
-      init()
-    })()
-  </script>
+  <script src="js/fort-zeelandia.js"></script>
 
 </body>
 </html>
